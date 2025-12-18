@@ -6,9 +6,9 @@
 
 ## The Scenario
 
-*"I'm deploying an HTTPS server today, but I want it to remain secure for the next 20 years."*
+*"I want to issue post-quantum certificates. Does it change my PKI workflow?"*
 
-This is a valid concern. A certificate issued today with ECDSA or RSA might be vulnerable to quantum attacks within its lifetime. The solution? Issue a post-quantum certificate instead — using the exact same PKI workflow.
+Short answer: **No.** The PKI workflow is identical. Only the algorithm name changes. This demo proves it.
 
 ## What This Demo Shows
 
@@ -72,13 +72,17 @@ pki issue --ca-dir ./pqc-ca \
 | Signature | ~96 bytes | ~3,293 bytes | ~34x |
 | Certificate | ~1 KB | ~6 KB | ~6x |
 
+*Approximate ratios. Actual sizes depend on certificate extensions and metadata.*
+
 ### Performance Comparison
 
 | Operation | Classical | Post-Quantum | Notes |
 |-----------|-----------|--------------|-------|
-| Key generation | ~1 ms | ~5 ms | Still fast |
-| Sign | ~1 ms | ~10 ms | Still fast |
-| Verify | ~1 ms | ~3 ms | Still fast |
+| Key generation | fast | fast | Similar order of magnitude |
+| Sign | fast | fast | ML-DSA slightly slower |
+| Verify | fast | fast | ML-DSA faster than ECDSA |
+
+*Performance varies by hardware. Run `demo.sh` for real measurements on your machine.*
 
 **The trade-off is clear:** Larger sizes in exchange for quantum resistance.
 
@@ -99,33 +103,15 @@ pki issue --ca-dir ./pqc-ca \
 
 ## Why This Matters
 
-### The Quantum Threat Timeline
+Post-quantum cryptography prepares your infrastructure for the future. The key insight from this demo:
 
-```
-Today                     2030                      2040
-  |                         |                         |
-  v                         v                         v
-[Issue cert]          [Quantum computers]       [Cert expires]
-     \                      |                      /
-      \                     |                     /
-       +-------- Cert lifetime (10-20 years) ---+
-                            |
-                    [VULNERABLE PERIOD]
-```
+**Your PKI skills transfer 100%.** Learning PQC doesn't mean relearning PKI.
 
-If you issue a 10-year certificate with ECDSA today, it might be broken before it expires.
+### Want to go deeper?
 
-### The Solution: Start Now
-
-1. **Evaluate** your certificate lifetimes
-2. **Test** post-quantum algorithms in lab environments
-3. **Plan** your migration timeline
-4. **Deploy** hybrid certificates for compatibility
-
-## Next Steps
-
-- [UC-02: Hybrid Certificates](../02-hybrid-cert/) — Best of both worlds
-- [UC-03: Store Now, Decrypt Later](../03-store-now-decrypt-later/) — The real threat
+- **Why PQC for encryption?** → [UC-03: Store Now, Decrypt Later](../03-store-now-decrypt-later/)
+- **Why PQC for long-lived signatures?** → [UC-06: Code Signing](../06-code-signing/)
+- **How to migrate safely?** → [UC-02: Hybrid Certificates](../02-hybrid-cert/)
 
 ## Algorithms Used
 

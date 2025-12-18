@@ -26,8 +26,8 @@ PQC_CA="$DEMO_TMP/pqc-ca"
 # =============================================================================
 
 echo -e "${BOLD}SCENARIO:${NC}"
-echo "  \"I'm deploying an HTTPS server today, but I want it to remain"
-echo "   secure for the next 20 years.\""
+echo "  \"I want to issue post-quantum certificates."
+echo "   Does it change my PKI workflow?\""
 echo ""
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
 echo "  1. Create a classical CA (ECDSA P-384)"
