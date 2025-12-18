@@ -15,16 +15,16 @@ Quantum computers will eventually break RSA and ECC cryptography. The question i
 
 ## Use Cases
 
-| # | Title | Duration | Audience |
-|---|-------|----------|----------|
-| 01 | ["Nothing changes... except the algorithm"](usecases/01-classic-vs-pqc-tls/) | 5 min | Developers |
-| 02 | "Hybrid = best of both worlds" | 10 min | Security Architects |
-| 03 | "The real problem: Store Now, Decrypt Later" | 8 min | CISOs |
-| 04 | "PKI operations don't change" | 5 min | Operations |
-| 05 | "Full post-quantum chain of trust" | 10 min | Visionaries |
-| 06 | "Code signing for 30 years" | 8 min | IoT/Defense |
-| 07 | "Smooth rotation with bundles" | 10 min | Architects |
-| 08 | "Trust Now, Verify Forever" | 10 min | Legal/AI/Compliance |
+| # | Name | Title | Duration | Audience |
+|---|------|-------|----------|----------|
+| 01 | TLS Server Certificate | ["Nothing changes... except the algorithm"](usecases/01-classic-vs-pqc-tls/) | 5 min | Developers |
+| 02 | Hybrid Certificate (Catalyst) | "Hybrid = best of both worlds" | 10 min | Security Architects |
+| 03 | Long-Term Encryption | "The real problem: Store Now, Decrypt Later" | 8 min | CISOs |
+| 04 | Revocation & Incident | "PKI operations don't change" | 5 min | Operations |
+| 05 | Full PQC PKI | "Full post-quantum chain of trust" | 10 min | Visionaries |
+| 06 | Code Signing | "Code signing for 30 years" | 8 min | IoT/Defense |
+| 07 | Certificate Bundles | "Smooth rotation with bundles" | 10 min | Architects |
+| 08 | PQC Timestamping | "Trust Now, Verify Forever" | 10 min | Legal/AI/Compliance |
 
 ## Quick Start
 
