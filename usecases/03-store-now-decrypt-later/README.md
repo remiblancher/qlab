@@ -8,7 +8,7 @@
 
 *"Our sensitive data is encrypted. Why should I worry about quantum computers that don't exist yet?"*
 
-Because adversaries are **recording your encrypted traffic today**. When quantum computers arrive, they'll decrypt it all. This is called **Store Now, Decrypt Later (SNDL)**.
+Because adversaries are **recording your encrypted traffic today**. When quantum computers arrive, they'll decrypt it all. This is called **Store Now, Decrypt Later (SNDL)** — also known as **Harvest Now, Decrypt Later (HNDL)**.
 
 ## The SNDL Threat
 
