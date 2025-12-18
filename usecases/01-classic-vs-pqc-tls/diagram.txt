@@ -1,0 +1,103 @@
+================================================================================
+UC-01: Classical vs Post-Quantum TLS Certificate Comparison
+================================================================================
+
+WORKFLOW COMPARISON
+-------------------
+
+Classical PKI                          Post-Quantum PKI
+─────────────────                      ─────────────────
+
+┌─────────────────┐                    ┌─────────────────┐
+│   Root CA       │                    │   Root CA       │
+│   ECDSA P-384   │                    │   ML-DSA-65     │
+└────────┬────────┘                    └────────┬────────┘
+         │                                      │
+         │ Signs                                │ Signs
+         │                                      │
+         ▼                                      ▼
+┌─────────────────┐                    ┌─────────────────┐
+│  TLS Server     │                    │  TLS Server     │
+│  Certificate    │                    │  Certificate    │
+│  ECDSA P-384    │                    │  ML-DSA-65      │
+└─────────────────┘                    └─────────────────┘
+
+     SAME WORKFLOW                         SAME WORKFLOW
+     SAME CONCEPTS                         SAME CONCEPTS
+     SAME X.509 FORMAT                     SAME X.509 FORMAT
+
+         │                                      │
+         ▼                                      ▼
+    QUANTUM VULNERABLE                     QUANTUM RESISTANT
+
+
+SIZE COMPARISON
+---------------
+
+                    Classical              Post-Quantum
+                    (ECDSA P-384)          (ML-DSA-65)
+
+Public Key          ████ 97 B              ████████████████████████████ 1,952 B
+                                                        (~20x larger)
+
+Signature           ████ 96 B              ████████████████████████████████████ 3,293 B
+                                                        (~34x larger)
+
+Certificate         ████████ ~1 KB         ████████████████████████████████████████████ ~6 KB
+                                                        (~6x larger)
+
+
+SECURITY TIMELINE
+-----------------
+
+         Today                2030              2040              2050
+           │                   │                 │                 │
+ECDSA      ├───────────────────┼─────────────────┼─────────────────┤
+           │     SECURE        │   AT RISK       │   BROKEN        │
+           │                   │                 │                 │
+ML-DSA     ├───────────────────┼─────────────────┼─────────────────┤
+           │     SECURE        │   SECURE        │   SECURE        │
+           │                   │                 │                 │
+
+
+THE KEY MESSAGE
+---------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   "THE PKI DOESN'T CHANGE. ONLY THE ALGORITHM CHANGES."                     │
+│                                                                             │
+│   ✓ Same certificate structure (X.509)                                      │
+│   ✓ Same CA hierarchy                                                       │
+│   ✓ Same issuance workflow                                                  │
+│   ✓ Same revocation mechanism                                               │
+│   ✓ Same trust model                                                        │
+│                                                                             │
+│   Only different:                                                           │
+│   • Algorithm identifier                                                    │
+│   • Key/signature sizes                                                     │
+│   • OIDs                                                                    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+MIGRATION PATH
+--------------
+
+    TODAY                    TRANSITION                  FUTURE
+      │                          │                         │
+      ▼                          ▼                         ▼
+
+┌──────────┐              ┌──────────────┐           ┌──────────┐
+│ Classical│              │   Hybrid     │           │   PQC    │
+│   PKI    │  ────────►   │    PKI       │  ──────►  │   PKI    │
+│ (ECDSA)  │              │(ECDSA+ML-DSA)│           │ (ML-DSA) │
+└──────────┘              └──────────────┘           └──────────┘
+
+    100%                    Compatible                   100%
+ Compatible                with both                  Quantum-Safe
+
+
+================================================================================
+                          QentriQ - https://qentriq.com
+================================================================================
