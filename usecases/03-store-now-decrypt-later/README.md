@@ -4,6 +4,8 @@
 
 > **Key Message:** Encrypted data captured today can be decrypted tomorrow. PQC for encryption is urgent.
 
+> **Visual diagrams:** See [`diagram.txt`](diagram.txt) for detailed ASCII diagrams of the SNDL attack, Mosca's inequality, and ML-KEM comparison.
+
 ## The Scenario
 
 *"Our sensitive data is encrypted. Why should I worry about quantum computers that don't exist yet?"*

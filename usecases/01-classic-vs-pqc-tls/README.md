@@ -4,6 +4,8 @@
 
 > **Key Message:** The PKI doesn't change. Only the algorithm changes.
 
+> **Visual diagrams:** See [`diagram.txt`](diagram.txt) for ASCII diagrams comparing classical and PQC certificate workflows.
+
 ## The Scenario
 
 *"I want to issue post-quantum certificates. Does it change my PKI workflow?"*

@@ -4,6 +4,8 @@
 
 > **Key Message:** You don't choose between classical and PQC. You stack them.
 
+> **Visual diagrams:** See [`diagram.txt`](diagram.txt) for ASCII diagrams of hybrid certificate structure, client behavior, and migration timeline.
+
 ## The Scenario
 
 *"I need to stay compatible with legacy clients, while being quantum-ready for modern ones."*
