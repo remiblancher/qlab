@@ -93,6 +93,9 @@ print_success "Hybrid certificate issued in ${YELLOW}${HYBRID_CERT_TIME}ms${NC}"
 
 show_cert_brief "$DEMO_TMP/hybrid-server.crt" "Hybrid TLS Certificate"
 
+echo ""
+echo -e "  ${CYAN}Inspect certificate:${NC} pki info $DEMO_TMP/hybrid-server.crt"
+
 # =============================================================================
 # Step 3: Examine Certificate Structure
 # =============================================================================

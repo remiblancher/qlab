@@ -53,6 +53,16 @@ pki issue --ca-dir ./hybrid-ca \
     --key-out hybrid-server.key
 ```
 
+### Inspect Certificates
+
+```bash
+# View certificate details (simplified)
+pki info hybrid-server.crt
+
+# View certificate details (OpenSSL)
+openssl x509 -in hybrid-server.crt -text -noout
+```
+
 ## Hybrid Certificate Structure
 
 A Catalyst certificate (ITU-T X.509 Section 9.8) looks like this:
