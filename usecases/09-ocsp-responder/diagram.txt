@@ -1,0 +1,242 @@
+UC-09: TRUST, BUT VERIFY - REAL-TIME OCSP WITH PQC
+===================================================
+
+OCSP QUERY WORKFLOW
+───────────────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         OCSP Real-Time Verification                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Step 1: Generate OCSP Request
+─────────────────────────────
+
+┌──────────────┐                           ┌──────────────────┐
+│    Client    │                           │  pki ocsp        │
+│  Application │ ─── Certificate ────────► │  request         │
+└──────────────┘                           └────────┬─────────┘
+                                                    │
+                                                    ▼
+                                           ┌──────────────────┐
+                                           │  request.ocsp    │
+                                           │  (DER binary)    │
+                                           └──────────────────┘
+
+Step 2: Send via HTTP
+─────────────────────
+
+┌──────────────────┐                       ┌──────────────────┐
+│   request.ocsp   │                       │ OCSP Responder   │
+│                  │ ─── HTTP POST ──────► │ (pki ocsp serve) │
+│  ~100 bytes      │     :8080/8081        │                  │
+└──────────────────┘                       └────────┬─────────┘
+                                                    │
+                                           Signs with responder key
+                                                    │
+                                                    ▼
+                                           ┌──────────────────┐
+                                           │  response.ocsp   │
+                                           │  (DER signed)    │
+                                           └──────────────────┘
+
+Step 3: Verify Response
+───────────────────────
+
+┌──────────────────┐                       ┌──────────────────┐
+│  response.ocsp   │                       │  pki ocsp        │
+│                  │ ─── Verify ─────────► │  verify          │
+│  Classical: 300B │                       │                  │
+│  PQC: 3,500B     │                       └────────┬─────────┘
+└──────────────────┘                                │
+                                                    ▼
+                                           ┌──────────────────┐
+                                           │  Status: good    │
+                                           │  Status: revoked │
+                                           │  Status: unknown │
+                                           └──────────────────┘
+
+
+DELEGATED RESPONDER ARCHITECTURE
+────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            CA-Signed Mode (Simple)                          │
+│                                                                             │
+│    ┌────────┐         ┌──────────────┐         ┌─────────────┐             │
+│    │ Client │ ──────► │    OCSP      │ ◄────── │     CA      │             │
+│    │        │ ◄────── │  Responder   │         │   (online)  │             │
+│    └────────┘         └──────────────┘         └─────────────┘             │
+│                              │                        │                     │
+│                              │                        │                     │
+│                       Signs with CA key ◄─────────────┘                     │
+│                                                                             │
+│    ⚠ Risk: CA private key must be online and accessible                    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       Delegated Mode (Recommended)                          │
+│                                                                             │
+│    ┌────────┐         ┌──────────────┐         ┌─────────────┐             │
+│    │ Client │ ──────► │    OCSP      │         │     CA      │             │
+│    │        │ ◄────── │  Responder   │         │  (OFFLINE)  │             │
+│    └────────┘         └──────────────┘         └─────────────┘             │
+│                              │                        │                     │
+│                              │                        │ Issues once         │
+│                       Signs with                      ▼                     │
+│                       responder key     ┌─────────────────────────┐        │
+│                              │          │  OCSP Responder Cert    │        │
+│                              ◄──────────│  EKU: id-kp-OCSPSigning │        │
+│                                         │  + ocspNoCheck ext      │        │
+│                                         └─────────────────────────┘        │
+│                                                                             │
+│    ✓ Secure: CA key stays offline, only responder key exposed              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+OCSP RESPONDER CERTIFICATE
+──────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     OCSP Responder Certificate                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Subject: CN=PQC OCSP Responder                                             │
+│  Issuer:  CN=PQC Root CA                                                    │
+│                                                                             │
+│  Extensions:                                                                │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │  Extended Key Usage: id-kp-OCSPSigning (1.3.6.1.5.5.7.3.9)          │   │
+│  │  Basic Constraints: CA=FALSE (critical)                              │   │
+│  │  OCSP No Check: (prevents infinite OCSP loop)                        │   │
+│  │                                                                       │   │
+│  │  Hybrid Extension (PQC):                                              │   │
+│  │    Algorithm: ML-DSA-65                                               │   │
+│  │    Public Key: [2,528 bytes]                                          │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+RESPONSE SIZE COMPARISON
+────────────────────────
+
+                    Classical              PQC (Hybrid)
+                    (ECDSA P-384)          (ECDSA + ML-DSA-65)
+
+OCSP Response       ┌───────────┐          ┌───────────┐
+(hybrid mode)       │  ~300 B   │          │  ~300 B   │
+                    └───────────┘          └───────────┘
+                         │                      │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         Hybrid uses ECDSA signature
+                         (response size unchanged)
+
+
+                    Classical              Pure PQC
+                    (ECDSA P-384)          (ML-DSA-65)
+
+OCSP Response       ┌───────────┐          ┌───────────────────────────────┐
+(pure mode)         │  ~300 B   │          │          ~3,500 B             │
+                    └───────────┘          └───────────────────────────────┘
+                         │                              │
+                         └──────────┬───────────────────┘
+                                    │
+                                    ▼
+                         ML-DSA signature adds ~3,200 bytes
+                         (protocol unchanged)
+
+
+REAL-TIME STATUS CHANGE
+───────────────────────
+
+Timeline:
+─────────────────────────────────────────────────────────────────────────────►
+     │              │                    │                    │
+     │              │                    │                    │
+     ▼              ▼                    ▼                    ▼
+
+  Certificate    Query OCSP          Revoke cert        Query OCSP
+  issued         → "good"            (keyCompromise)    → "revoked"
+
+     ┌──────────────────────────────────────────────────────────────────┐
+     │                                                                  │
+     │   Before revocation:                After revocation:            │
+     │   ┌────────────────┐               ┌────────────────┐            │
+     │   │ Status: good   │               │ Status: revoked│            │
+     │   │                │    ──────►    │ Reason: key-   │            │
+     │   │                │   Revoke      │   Compromise   │            │
+     │   │                │               │ Time: now      │            │
+     │   └────────────────┘               └────────────────┘            │
+     │                                                                  │
+     │   Change is immediate - no CRL download needed!                  │
+     │                                                                  │
+     └──────────────────────────────────────────────────────────────────┘
+
+
+HTTP ENDPOINTS
+──────────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         OCSP Responder HTTP Server                          │
+│                              (pki ocsp serve)                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  GET  /{base64-encoded-request}                                             │
+│       └── For simple queries via URL path                                   │
+│                                                                             │
+│  POST /                                                                     │
+│       Content-Type: application/ocsp-request                                │
+│       Body: DER-encoded OCSP request                                        │
+│       └── For binary requests (preferred)                                   │
+│                                                                             │
+│  Response:                                                                  │
+│       Content-Type: application/ocsp-response                               │
+│       Cache-Control: max-age=3600                                           │
+│       Body: DER-encoded OCSP response                                       │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+COMPARISON: CRL vs OCSP
+───────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  CRL (Certificate Revocation List)           OCSP (Online Status Protocol) │
+│  ──────────────────────────────────          ───────────────────────────── │
+│                                                                             │
+│  ┌────────┐   Download full list   ┌────┐   ┌────────┐  Query single  ┌────┐│
+│  │ Client │ ◄───────────────────── │ CA │   │ Client │ ◄───────────► │OCSP││
+│  └────────┘                        └────┘   └────────┘               └────┘│
+│       │                                          │                         │
+│       ▼ Check locally                            ▼ Real-time response      │
+│    (Entire list)                              (Per certificate)            │
+│                                                                             │
+│  ✓ Works offline                             ✓ Real-time status            │
+│  ✓ No per-query overhead                     ✓ Bandwidth efficient         │
+│  ✗ Large downloads                           ✗ Requires network            │
+│  ✗ Delayed updates                           ✗ Privacy concerns            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+KEY MESSAGE
+───────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   UC-09: "Trust, but verify"                                                │
+│                                                                             │
+│   ✓ Same HTTP protocol (RFC 6960)                                           │
+│   ✓ Same request/response format                                            │
+│   ✓ Same delegated responder architecture                                   │
+│   ✓ Same pki commands                                                       │
+│                                                                             │
+│   Deploying a real-time OCSP service works exactly the same with PQC.      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘

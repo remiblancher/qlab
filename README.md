@@ -25,6 +25,7 @@ Quantum computers will eventually break RSA and ECC cryptography. The question i
 | 06 | Code Signing | ["Signatures that outlive the threat"](usecases/06-code-signing/) | 8 min | IoT/Defense |
 | 07 | Certificate Bundles | ["Smooth rotation with bundles"](usecases/07-certificate-bundles/) | 10 min | Architects |
 | 08 | PQC Timestamping | ["Trust Now, Verify Forever"](usecases/08-pqc-timestamping/) | 10 min | Legal/AI/Compliance |
+| 09 | OCSP Responder | ["Trust, but verify"](usecases/09-ocsp-responder/) | 8 min | Operations |
 
 ## Quick Start
 
