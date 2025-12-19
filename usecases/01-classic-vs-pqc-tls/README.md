@@ -45,6 +45,9 @@ pki issue --ca-dir ./classic-ca \
     --dns classic.example.com \
     --out classic-server.crt \
     --key-out classic-server.key
+
+# Inspect
+pki info classic-server.crt
 ```
 
 ### Post-Quantum (ML-DSA-65)
@@ -60,19 +63,14 @@ pki issue --ca-dir ./pqc-ca \
     --dns pq.example.com \
     --out pq-server.crt \
     --key-out pq-server.key
+
+# Inspect
+pki info pq-server.crt
 ```
 
 **Notice anything?** The workflow is identical. Only the algorithm name changes.
 
-### Inspect Certificates
-
-```bash
-# View certificate details (simplified)
-pki info pq-server.crt
-
-# View certificate details (OpenSSL)
-openssl x509 -in pq-server.crt -text -noout
-```
+> **Tip:** For detailed ASN.1 output, use `openssl x509 -in <cert> -text -noout`
 
 ## Expected Results
 

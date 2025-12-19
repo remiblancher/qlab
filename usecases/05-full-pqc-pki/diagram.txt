@@ -1,0 +1,150 @@
+================================================================================
+UC-05: Full Post-Quantum PKI Hierarchy
+================================================================================
+
+FULL PQC CHAIN OF TRUST
+-----------------------
+
+                    ┌─────────────────────────────────────┐
+                    │           PQC ROOT CA               │
+                    │                                     │
+                    │   Algorithm: ML-DSA-87              │
+                    │   Security:  NIST Level 5           │
+                    │              (~256-bit equivalent)  │
+                    │                                     │
+                    │   Public Key:  ~2,592 bytes         │
+                    │   Signature:   ~4,595 bytes         │
+                    │   Certificate: ~7 KB                │
+                    └─────────────────┬───────────────────┘
+                                      │
+                                      │ Signs with ML-DSA-87
+                                      │
+                                      ▼
+                    ┌─────────────────────────────────────┐
+                    │         PQC ISSUING CA              │
+                    │                                     │
+                    │   Algorithm: ML-DSA-65              │
+                    │   Security:  NIST Level 3           │
+                    │              (~192-bit equivalent)  │
+                    │                                     │
+                    │   Public Key:  ~1,952 bytes         │
+                    │   Signature:   ~3,293 bytes         │
+                    │   Certificate: ~6 KB                │
+                    └─────────────────┬───────────────────┘
+                                      │
+                                      │ Signs with ML-DSA-65
+                                      │
+                                      ▼
+                    ┌─────────────────────────────────────┐
+                    │       TLS SERVER CERTIFICATE        │
+                    │                                     │
+                    │   Signature: ML-DSA-65              │
+                    │   Key Encap: ML-KEM-768             │
+                    │   Security:  NIST Level 3           │
+                    │                                     │
+                    │   Certificate: ~6 KB                │
+                    └─────────────────────────────────────┘
+
+
+ALGORITHM SELECTION GUIDE
+-------------------------
+
+              Security Level       Recommended For           Public Key   Signature
+              ──────────────       ───────────────           ──────────   ─────────
+
+ML-DSA-44     Level 1 (~128-bit)   Client certs, IoT          1,312 B     2,420 B
+                                   (constrained devices)
+
+ML-DSA-65     Level 3 (~192-bit)   Most use cases:            1,952 B     3,293 B
+                                   Issuing CAs, TLS, S/MIME
+
+ML-DSA-87     Level 5 (~256-bit)   Root CAs, long-term        2,592 B     4,595 B
+                                   secrets, critical systems
+
+
+SIZE COMPARISON: FULL PQC vs CLASSICAL
+--------------------------------------
+
+                         Classical (ECDSA)        Full PQC (ML-DSA)
+
+Root CA Certificate      ████ ~1 KB               ████████████████████████████ ~7 KB
+
+Issuing CA Certificate   ████ ~1 KB               ████████████████████████ ~6 KB
+
+TLS Server Certificate   ████ ~1 KB               ████████████████████████ ~6 KB
+
+                         ─────────────            ─────────────────────────────
+Full Chain Total         ████████ ~3 KB           ████████████████████████████████████ ~19 KB
+                                                              (~6x larger)
+
+
+WHY DIFFERENT ALGORITHMS AT EACH LEVEL?
+---------------------------------------
+
+┌─────────────┬──────────────────────────────────────────────────────────────────┐
+│             │                                                                  │
+│  ROOT CA    │  • Longest-lived (10-25 years)                                   │
+│  ML-DSA-87  │  • Highest security requirement                                  │
+│  Level 5    │  • Larger size acceptable (rarely transmitted)                   │
+│             │  • "Crown jewels" of the PKI                                     │
+│             │                                                                  │
+├─────────────┼──────────────────────────────────────────────────────────────────┤
+│             │                                                                  │
+│ ISSUING CA  │  • Medium lifespan (3-10 years)                                  │
+│  ML-DSA-65  │  • Balance security and performance                              │
+│  Level 3    │  • Good signature size for embedding in certificates             │
+│             │  • ~192-bit security is plenty for most threats                  │
+│             │                                                                  │
+├─────────────┼──────────────────────────────────────────────────────────────────┤
+│             │                                                                  │
+│ END-ENTITY  │  • Short lifespan (90 days - 2 years)                            │
+│  ML-DSA-65  │  • Transmitted frequently (every TLS connection)                 │
+│  + ML-KEM   │  • ML-KEM for key exchange (TLS 1.3 handshake)                   │
+│  Level 3    │  • Dual algorithm: signing + encryption                          │
+│             │                                                                  │
+└─────────────┴──────────────────────────────────────────────────────────────────┘
+
+
+DEPLOYMENT SCENARIOS
+--------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  SCENARIO                    │  RECOMMENDATION        │  REASON             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  New internal PKI            │  FULL PQC              │  Start quantum-safe │
+│  Government/Military         │  FULL PQC              │  Regulatory req     │
+│  Long-lived IoT devices      │  FULL PQC              │  Future-proof       │
+│  Critical infrastructure     │  FULL PQC              │  High security      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Public-facing web servers   │  Hybrid (UC-02)        │  Legacy clients     │
+│  Short-lived tokens          │  Classical OK          │  Low SNDL risk      │
+│  Migration period            │  Hybrid (UC-02)        │  Compatibility      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+THE KEY MESSAGE
+---------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   "FULL POST-QUANTUM CHAIN OF TRUST"                                        │
+│                                                                             │
+│   ✓ Same PKI concepts (hierarchy, trust model, X.509)                       │
+│   ✓ Same workflow (init-ca, issue, revoke)                                  │
+│   ✓ Complete quantum resistance (no classical anywhere)                     │
+│   ✓ Production-ready (NIST FIPS 203/204/205 standards)                      │
+│                                                                             │
+│   Trade-off:                                                                │
+│   • ~6x larger certificates                                                 │
+│   • Slightly larger handshakes                                              │
+│                                                                             │
+│   Benefit:                                                                  │
+│   • Protection against future quantum attacks                               │
+│   • Compliance with CNSA 2.0 requirements                                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                          QentriQ - https://qentriq.com
+================================================================================

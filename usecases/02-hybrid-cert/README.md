@@ -51,17 +51,12 @@ pki issue --ca-dir ./hybrid-ca \
     --dns hybrid.example.com \
     --out hybrid-server.crt \
     --key-out hybrid-server.key
-```
 
-### Inspect Certificates
-
-```bash
-# View certificate details (simplified)
+# Inspect
 pki info hybrid-server.crt
-
-# View certificate details (OpenSSL)
-openssl x509 -in hybrid-server.crt -text -noout
 ```
+
+> **Tip:** For detailed ASN.1 output, use `openssl x509 -in hybrid-server.crt -text -noout`
 
 ## Hybrid Certificate Structure
 
