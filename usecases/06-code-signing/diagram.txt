@@ -1,0 +1,167 @@
+================================================================================
+UC-06: Post-Quantum Code Signing
+================================================================================
+
+THE THREAT: SIGNATURE FORGERY
+-----------------------------
+
+TODAY                                    FUTURE (5-15 years?)
+─────                                    ────────────────────
+
+┌────────────────────┐                   ┌────────────────────┐
+│   You sign         │                   │   Attacker with    │
+│   software         │                   │   quantum computer │
+│                    │                   │                    │
+│   Binary + ECDSA   │                   │   Breaks ECDSA     │
+│   signature        │                   │   private key      │
+└─────────┬──────────┘                   └─────────┬──────────┘
+          │                                        │
+          │                                        │
+          ▼                                        ▼
+┌────────────────────┐                   ┌────────────────────┐
+│   Signed binary    │  ──────────────►  │   Forges valid     │
+│   distributed      │                   │   signature on     │
+│   (still in use    │                   │   MALICIOUS binary │
+│    10+ years)      │                   │                    │
+└────────────────────┘                   └─────────┬──────────┘
+                                                   │
+                                                   ▼
+                                         ┌────────────────────┐
+                                         │   "Legitimate"     │
+                                         │   malware passes   │
+                                         │   verification!    │
+                                         └────────────────────┘
+
+
+THE SOLUTION: PQC SIGNATURES
+----------------------------
+
+┌────────────────────┐
+│   You sign         │
+│   software with    │
+│   ML-DSA-65        │
+│                    │
+│   Binary + PQC     │
+│   signature        │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│   Signed binary    │
+│   distributed      │
+│                    │
+│   Signature valid  │
+│   for 10+ years    │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│   FUTURE: Even     │
+│   with quantum     │
+│   computer,        │
+│   signature        │
+│   CANNOT be        │
+│   forged!          │
+└────────────────────┘
+
+
+SOFTWARE LIFESPAN vs QUANTUM TIMELINE
+-------------------------------------
+
+                    Today    2030     2035     2040     2045
+                      │        │        │        │        │
+                      ▼        ▼        ▼        ▼        ▼
+
+IoT Firmware          ├─────────────────────────────────────┤
+(10-20 years)         │███████████████████████████████████│ NEEDS PQC NOW
+
+Industrial Control    ├─────────────────────────────────────────────┤
+(15-30 years)         │████████████████████████████████████████████│ NEEDS PQC NOW
+
+Medical Devices       ├────────────────────────────────┤
+(10-15 years)         │███████████████████████████████│ NEEDS PQC NOW
+
+Desktop Software      ├──────────────────────┤
+(5-10 years)          │█████████████████████│ PLAN FOR PQC
+
+Mobile Apps           ├───────────┤
+(2-5 years)           │██████████│ CAN WAIT
+
+                      │        │
+Quantum Threat?       │        └─────► Estimated quantum threat window
+                      │                (5-15 years from now)
+
+
+SIZE COMPARISON
+---------------
+
+                      Classical              Post-Quantum
+                      (ECDSA P-384)          (ML-DSA-65)
+
+Signature Size        ████ ~96 B             ████████████████████████████████████ ~3,293 B
+
+
+For a 100 MB binary:
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│  Binary:     ████████████████████████████████████████████████  100 MB        │
+│                                                                              │
+│  + ECDSA:    │  (~0.0001% overhead)                                          │
+│                                                                              │
+│  + ML-DSA:   ██ (~0.003% overhead)                                           │
+│                                                                              │
+│  NEGLIGIBLE OVERHEAD FOR QUANTUM RESISTANCE!                                 │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+CODE SIGNING WORKFLOW
+---------------------
+
+Same workflow, different algorithm:
+
+Classical                              Post-Quantum
+─────────                              ────────────
+
+1. Generate key pair                   1. Generate key pair
+   (ECDSA P-384)                          (ML-DSA-65)
+
+2. Get code signing cert               2. Get code signing cert
+   from CA                                from CA
+
+3. Sign binary                         3. Sign binary
+   signcode.exe -sign ...                 signcode.exe -sign ...
+
+4. Distribute                          4. Distribute
+
+5. User verifies                       5. User verifies
+   (signature valid)                      (signature valid)
+
+
+     VULNERABLE                             QUANTUM-SAFE
+     to future quantum                      forever
+     attack
+
+
+THE KEY MESSAGE
+---------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   "SIGNATURES THAT OUTLIVE THE THREAT"                                      │
+│                                                                             │
+│   ✓ Code signatures must remain valid for 10+ years                         │
+│   ✓ Classical signatures can be forged by quantum computers                 │
+│   ✓ PQC signatures (ML-DSA) remain unforgeable                              │
+│   ✓ Signature size overhead is negligible for software                      │
+│                                                                             │
+│   The question isn't IF to adopt PQC code signing,                          │
+│   it's WHEN - and for long-lived software, the answer is NOW.               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                          QentriQ - https://qentriq.com
+================================================================================
