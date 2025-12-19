@@ -18,9 +18,9 @@ Quantum computers will eventually break RSA and ECC cryptography. The question i
 | # | Name | Title | Duration | Audience |
 |---|------|-------|----------|----------|
 | 01 | TLS Server Certificate | ["Nothing changes... except the algorithm"](usecases/01-classic-vs-pqc-tls/) | 5 min | Developers |
-| 02 | Hybrid Certificate (Catalyst) | "Hybrid = best of both worlds" | 10 min | Security Architects |
-| 03 | Long-Term Encryption | "The real problem: Store Now, Decrypt Later" | 8 min | CISOs |
-| 04 | Revocation & Incident | "PKI operations don't change" | 5 min | Operations |
+| 02 | Hybrid Certificate (Catalyst) | ["Hybrid = best of both worlds"](usecases/02-hybrid-cert/) | 10 min | Security Architects |
+| 03 | Long-Term Encryption | ["The real problem: Store Now, Decrypt Later"](usecases/03-store-now-decrypt-later/) | 8 min | CISOs |
+| 04 | Revocation & Incident | ["PKI operations don't change"](usecases/04-revocation-incident/) | 5 min | Operations |
 | 05 | Full PQC PKI | "Full post-quantum chain of trust" | 10 min | Visionaries |
 | 06 | Code Signing | "Code signing for 30 years" | 8 min | IoT/Defense |
 | 07 | Certificate Bundles | "Smooth rotation with bundles" | 10 min | Architects |
