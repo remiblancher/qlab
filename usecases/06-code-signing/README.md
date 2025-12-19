@@ -78,16 +78,46 @@ pki issue --ca-dir ./code-signing-ca \
 pki info code-signing.crt
 ```
 
-### Step 3: Sign Software (conceptual)
+### Step 3: Sign a Binary
 
 ```bash
-# The certificate can be used with signing tools
-# Example with OpenSSL CMS (conceptual - requires PQC-enabled OpenSSL):
-# openssl cms -sign -in binary.exe -out binary.exe.sig \
-#     -signer code-signing.crt -inkey code-signing.key
+# Create a test binary
+echo '#!/bin/bash
+echo "Hello World"' > myapp.sh
+
+# Sign with PQC (CMS/PKCS#7 format)
+pki cms sign --data myapp.sh \
+    --cert code-signing.crt --key code-signing.key \
+    -o myapp.sh.p7s
+
+# Inspect the signature
+pki info myapp.sh.p7s
 ```
 
-> **Tip:** For detailed ASN.1 output, use `openssl x509 -in code-signing.crt -text -noout`
+### Step 4: Verify the Signature
+
+```bash
+# Verify signature against original binary
+pki cms verify --signature myapp.sh.p7s \
+    --data myapp.sh \
+    --ca ./code-signing-ca/ca.crt
+```
+
+### Step 5: Add a Timestamp (Optional)
+
+```bash
+# Add PQC timestamp to prove when the signature was made
+pki tsa sign --data myapp.sh.p7s \
+    --cert code-signing.crt --key code-signing.key \
+    -o myapp.sh.tsr
+
+# Verify the timestamp
+pki tsa verify --token myapp.sh.tsr \
+    --data myapp.sh.p7s \
+    --ca ./code-signing-ca/ca.crt
+```
+
+> **Tip:** For classical certificates, you can verify with `openssl cms -verify`
 
 ## Why Code Signing Needs PQC
 

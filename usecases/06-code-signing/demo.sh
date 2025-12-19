@@ -39,7 +39,9 @@ echo -e "${BOLD}WHAT WE'LL DO:${NC}"
 echo "  1. Create a classical code signing CA (ECDSA)"
 echo "  2. Create a PQC code signing CA (ML-DSA-65)"
 echo "  3. Issue code signing certificates"
-echo "  4. Compare signature sizes"
+echo "  4. Sign a binary with both (CMS format)"
+echo "  5. Verify the signatures"
+echo "  6. Compare signature sizes"
 echo ""
 
 pause_for_explanation "Press Enter to start the demo..."
@@ -121,15 +123,88 @@ echo -e "    pki info $DEMO_TMP/classic-code.crt"
 echo -e "    pki info $DEMO_TMP/pqc-code.crt"
 
 # =============================================================================
-# Step 4: Comparison
+# Step 4: Sign a Binary
 # =============================================================================
 
-print_step "Step 4: Comparison - Classical vs PQC Code Signing"
+print_step "Step 4: Sign a Binary (CMS/PKCS#7)"
+
+# Create test binary
+cat > "$DEMO_TMP/myapp.sh" << 'EOF'
+#!/bin/bash
+echo "Hello World - ACME Software v1.0"
+EOF
+chmod +x "$DEMO_TMP/myapp.sh"
+echo -e "${CYAN}Created test binary: $DEMO_TMP/myapp.sh${NC}"
+echo ""
+
+echo -e "${CYAN}Signing with classical certificate...${NC}"
+echo -e "Command:"
+echo -e "  ${CYAN}pki cms sign --data myapp.sh --cert classic-code.crt --key classic-code.key -o myapp-classic.p7s${NC}"
+echo ""
+
+CLASSIC_SIGN_TIME=$(time_cmd "$PKI_BIN" cms sign \
+    --data "$DEMO_TMP/myapp.sh" \
+    --cert "$DEMO_TMP/classic-code.crt" \
+    --key "$DEMO_TMP/classic-code.key" \
+    -o "$DEMO_TMP/myapp-classic.p7s")
+
+print_success "Classical signature created in ${YELLOW}${CLASSIC_SIGN_TIME}ms${NC}"
+
+echo ""
+echo -e "${CYAN}Signing with PQC certificate...${NC}"
+echo -e "Command:"
+echo -e "  ${CYAN}pki cms sign --data myapp.sh --cert pqc-code.crt --key pqc-code.key -o myapp-pqc.p7s${NC}"
+echo ""
+
+PQC_SIGN_TIME=$(time_cmd "$PKI_BIN" cms sign \
+    --data "$DEMO_TMP/myapp.sh" \
+    --cert "$DEMO_TMP/pqc-code.crt" \
+    --key "$DEMO_TMP/pqc-code.key" \
+    -o "$DEMO_TMP/myapp-pqc.p7s")
+
+print_success "PQC signature created in ${YELLOW}${PQC_SIGN_TIME}ms${NC}"
+
+# =============================================================================
+# Step 5: Verify Signatures
+# =============================================================================
+
+print_step "Step 5: Verify Signatures"
+
+echo -e "${CYAN}Verifying classical signature...${NC}"
+echo -e "Command:"
+echo -e "  ${CYAN}pki cms verify --signature myapp-classic.p7s --data myapp.sh --ca ca.crt${NC}"
+echo ""
+
+"$PKI_BIN" cms verify \
+    --signature "$DEMO_TMP/myapp-classic.p7s" \
+    --data "$DEMO_TMP/myapp.sh" \
+    --ca "$CLASSIC_CA/ca.crt"
+
+print_success "Classical signature verified"
+
+echo ""
+echo -e "${CYAN}Verifying PQC signature...${NC}"
+
+"$PKI_BIN" cms verify \
+    --signature "$DEMO_TMP/myapp-pqc.p7s" \
+    --data "$DEMO_TMP/myapp.sh" \
+    --ca "$PQC_CA/ca.crt"
+
+print_success "PQC signature verified"
+
+# =============================================================================
+# Step 6: Comparison
+# =============================================================================
+
+print_step "Step 6: Comparison - Classical vs PQC Code Signing"
 
 CLASSIC_CERT_SIZE=$(cert_size "$DEMO_TMP/classic-code.crt")
 CLASSIC_KEY_SIZE=$(key_size "$DEMO_TMP/classic-code.key")
 PQC_CERT_SIZE=$(cert_size "$DEMO_TMP/pqc-code.crt")
 PQC_KEY_SIZE=$(key_size "$DEMO_TMP/pqc-code.key")
+
+CLASSIC_SIG_SIZE=$(stat -f%z "$DEMO_TMP/myapp-classic.p7s" 2>/dev/null || stat -c%s "$DEMO_TMP/myapp-classic.p7s" 2>/dev/null)
+PQC_SIG_SIZE=$(stat -f%z "$DEMO_TMP/myapp-pqc.p7s" 2>/dev/null || stat -c%s "$DEMO_TMP/myapp-pqc.p7s" 2>/dev/null)
 
 print_comparison_header
 
@@ -139,9 +214,10 @@ print_comparison_row "  Key size" "$CLASSIC_KEY_SIZE" "$PQC_KEY_SIZE" " B"
 print_comparison_row "  Issue time" "$CLASSIC_CERT_TIME" "$PQC_CERT_TIME" "ms"
 
 echo ""
-echo -e "${CYAN}Signature overhead for a 100 MB binary:${NC}"
-echo "  Classical: ~100 bytes  (0.0001% of binary)"
-echo "  PQC:       ~3,300 bytes (0.003% of binary)"
+echo -e "${BOLD}CMS Signature${NC}"
+print_comparison_row "  Sig size" "$CLASSIC_SIG_SIZE" "$PQC_SIG_SIZE" " B"
+print_comparison_row "  Sign time" "$CLASSIC_SIGN_TIME" "$PQC_SIGN_TIME" "ms"
+
 echo ""
 echo -e "${BOLD}Negligible overhead for quantum resistance!${NC}"
 echo ""
@@ -150,7 +226,7 @@ echo ""
 # Software Lifespan Context
 # =============================================================================
 
-print_step "Step 5: Why This Matters - Software Lifespan"
+print_step "Step 7: Why This Matters - Software Lifespan"
 
 echo -e "${CYAN}How long does signed software stay in use?${NC}"
 echo ""

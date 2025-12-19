@@ -69,7 +69,7 @@ pki info ./tsa-ca/ca.crt
 ```bash
 # Issue timestamp authority certificate
 pki issue --ca-dir ./tsa-ca \
-    --profile ml-dsa-kem/tsa \
+    --profile ml-dsa-kem/timestamping \
     --cn "ACME Timestamp Service" \
     --out tsa.crt \
     --key-out tsa.key
@@ -78,17 +78,31 @@ pki issue --ca-dir ./tsa-ca \
 pki info tsa.crt
 ```
 
-### Step 3: Create Timestamp (conceptual)
+### Step 3: Create a Timestamp Token
 
 ```bash
-# The certificate can be used with timestamping tools
-# Example with OpenSSL TS (conceptual - requires PQC-enabled OpenSSL):
-# openssl ts -query -data document.pdf -out request.tsq
-# openssl ts -reply -queryfile request.tsq -signer tsa.crt \
-#     -inkey tsa.key -out response.tsr
+# Create a test document
+echo "Important contract content" > document.txt
+
+# Timestamp the document with PQC
+pki tsa sign --data document.txt \
+    --cert tsa.crt --key tsa.key \
+    -o document.tsr
+
+# Inspect the token
+pki info document.tsr
 ```
 
-> **Tip:** For detailed ASN.1 output, use `openssl x509 -in tsa.crt -text -noout`
+### Step 4: Verify the Timestamp
+
+```bash
+# Verify token against original document
+pki tsa verify --token document.tsr \
+    --data document.txt \
+    --ca ./tsa-ca/ca.crt
+```
+
+> **Tip:** For classical TSA certificates, you can also verify with `openssl ts -verify`
 
 ## Why Timestamping Needs PQC
 

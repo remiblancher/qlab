@@ -39,7 +39,9 @@ echo -e "${BOLD}WHAT WE'LL DO:${NC}"
 echo "  1. Create a classical Timestamp Authority (ECDSA)"
 echo "  2. Create a PQC Timestamp Authority (ML-DSA-65)"
 echo "  3. Issue TSA certificates"
-echo "  4. Compare and understand implications"
+echo "  4. Timestamp a document with both"
+echo "  5. Verify the timestamps"
+echo "  6. Compare token sizes"
 echo ""
 
 pause_for_explanation "Press Enter to start the demo..."
@@ -96,7 +98,7 @@ echo -e "${CYAN}Issuing classical TSA certificate...${NC}"
 
 CLASSIC_CERT_TIME=$(time_cmd "$PKI_BIN" issue \
     --ca-dir "$CLASSIC_TSA" \
-    --profile ec/tsa \
+    --profile ec/timestamping \
     --cn "ACME Timestamp Service (Classical)" \
     --out "$DEMO_TMP/classic-tsa.crt" \
     --key-out "$DEMO_TMP/classic-tsa.key")
@@ -108,7 +110,7 @@ echo -e "${CYAN}Issuing PQC TSA certificate...${NC}"
 
 PQC_CERT_TIME=$(time_cmd "$PKI_BIN" issue \
     --ca-dir "$PQC_TSA" \
-    --profile ml-dsa-kem/tsa \
+    --profile ml-dsa-kem/timestamping \
     --cn "ACME Timestamp Service (PQC)" \
     --out "$DEMO_TMP/pqc-tsa.crt" \
     --key-out "$DEMO_TMP/pqc-tsa.key")
@@ -121,15 +123,84 @@ echo -e "    pki info $DEMO_TMP/classic-tsa.crt"
 echo -e "    pki info $DEMO_TMP/pqc-tsa.crt"
 
 # =============================================================================
-# Step 4: Comparison
+# Step 4: Timestamp a Document
 # =============================================================================
 
-print_step "Step 4: Comparison - Classical vs PQC Timestamping"
+print_step "Step 4: Timestamp a Document"
+
+# Create test document
+echo "Important contract signed on $(date)" > "$DEMO_TMP/document.txt"
+echo -e "${CYAN}Created test document: $DEMO_TMP/document.txt${NC}"
+echo ""
+
+echo -e "${CYAN}Timestamping with classical TSA...${NC}"
+echo -e "Command:"
+echo -e "  ${CYAN}pki tsa sign --data document.txt --cert classic-tsa.crt --key classic-tsa.key -o classic.tsr${NC}"
+echo ""
+
+CLASSIC_TSA_SIGN_TIME=$(time_cmd "$PKI_BIN" tsa sign \
+    --data "$DEMO_TMP/document.txt" \
+    --cert "$DEMO_TMP/classic-tsa.crt" \
+    --key "$DEMO_TMP/classic-tsa.key" \
+    -o "$DEMO_TMP/classic.tsr")
+
+print_success "Classical timestamp created in ${YELLOW}${CLASSIC_TSA_SIGN_TIME}ms${NC}"
+
+echo ""
+echo -e "${CYAN}Timestamping with PQC TSA...${NC}"
+echo -e "Command:"
+echo -e "  ${CYAN}pki tsa sign --data document.txt --cert pqc-tsa.crt --key pqc-tsa.key -o pqc.tsr${NC}"
+echo ""
+
+PQC_TSA_SIGN_TIME=$(time_cmd "$PKI_BIN" tsa sign \
+    --data "$DEMO_TMP/document.txt" \
+    --cert "$DEMO_TMP/pqc-tsa.crt" \
+    --key "$DEMO_TMP/pqc-tsa.key" \
+    -o "$DEMO_TMP/pqc.tsr")
+
+print_success "PQC timestamp created in ${YELLOW}${PQC_TSA_SIGN_TIME}ms${NC}"
+
+# =============================================================================
+# Step 5: Verify Timestamps
+# =============================================================================
+
+print_step "Step 5: Verify Timestamps"
+
+echo -e "${CYAN}Verifying classical timestamp...${NC}"
+echo -e "Command:"
+echo -e "  ${CYAN}pki tsa verify --token classic.tsr --data document.txt --ca ca.crt${NC}"
+echo ""
+
+"$PKI_BIN" tsa verify \
+    --token "$DEMO_TMP/classic.tsr" \
+    --data "$DEMO_TMP/document.txt" \
+    --ca "$CLASSIC_TSA/ca.crt"
+
+print_success "Classical timestamp verified"
+
+echo ""
+echo -e "${CYAN}Verifying PQC timestamp...${NC}"
+
+"$PKI_BIN" tsa verify \
+    --token "$DEMO_TMP/pqc.tsr" \
+    --data "$DEMO_TMP/document.txt" \
+    --ca "$PQC_TSA/ca.crt"
+
+print_success "PQC timestamp verified"
+
+# =============================================================================
+# Step 6: Comparison
+# =============================================================================
+
+print_step "Step 6: Comparison - Classical vs PQC Timestamping"
 
 CLASSIC_CERT_SIZE=$(cert_size "$DEMO_TMP/classic-tsa.crt")
 CLASSIC_KEY_SIZE=$(key_size "$DEMO_TMP/classic-tsa.key")
 PQC_CERT_SIZE=$(cert_size "$DEMO_TMP/pqc-tsa.crt")
 PQC_KEY_SIZE=$(key_size "$DEMO_TMP/pqc-tsa.key")
+
+CLASSIC_TOKEN_SIZE=$(stat -f%z "$DEMO_TMP/classic.tsr" 2>/dev/null || stat -c%s "$DEMO_TMP/classic.tsr" 2>/dev/null)
+PQC_TOKEN_SIZE=$(stat -f%z "$DEMO_TMP/pqc.tsr" 2>/dev/null || stat -c%s "$DEMO_TMP/pqc.tsr" 2>/dev/null)
 
 print_comparison_header
 
@@ -139,9 +210,10 @@ print_comparison_row "  Key size" "$CLASSIC_KEY_SIZE" "$PQC_KEY_SIZE" " B"
 print_comparison_row "  Issue time" "$CLASSIC_CERT_TIME" "$PQC_CERT_TIME" "ms"
 
 echo ""
-echo -e "${CYAN}Timestamp token overhead for a document:${NC}"
-echo "  Classical: ~2-3 KB  (includes signature + cert chain)"
-echo "  PQC:       ~6-8 KB  (includes signature + cert chain)"
+echo -e "${BOLD}Timestamp Token${NC}"
+print_comparison_row "  Token size" "$CLASSIC_TOKEN_SIZE" "$PQC_TOKEN_SIZE" " B"
+print_comparison_row "  Sign time" "$CLASSIC_TSA_SIGN_TIME" "$PQC_TSA_SIGN_TIME" "ms"
+
 echo ""
 echo -e "${BOLD}Minimal overhead for 30+ years of legal validity!${NC}"
 echo ""
@@ -150,7 +222,7 @@ echo ""
 # Document Retention Context
 # =============================================================================
 
-print_step "Step 5: Why This Matters - Document Retention"
+print_step "Step 7: Why This Matters - Document Retention"
 
 echo -e "${CYAN}How long do timestamped documents need to be valid?${NC}"
 echo ""
