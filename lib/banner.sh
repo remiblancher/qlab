@@ -19,7 +19,7 @@ EOF
     echo -e "${NC}"
     echo -e "${BOLD_WHITE}  $title${NC}"
     echo -e "${CYAN}  ─────────────────────────────────────────────────${NC}"
-    echo -e "  ${PURPLE}QentriQ${NC} — Post-Quantum Cryptography Experts"
+    echo -e "  ${PURPLE}QentriQ${NC} — Quantum-Safe PKI"
     echo -e "  ${BLUE}https://qentriq.com${NC}"
     echo ""
 }
