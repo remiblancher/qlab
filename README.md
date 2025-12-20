@@ -27,7 +27,7 @@ Learn the core concepts of Post-Quantum PKI.
 | PKI-04 | ["Hybrid PQC: Best of Both Worlds"](usecases/pki/04-hybrid-catalyst/) | ECDSA + ML-DSA in 1 cert | 8 min |
 | PKI-05 | ["Oops, We Need to Revoke!"](usecases/pki/05-revocation-crl/) | Status: good → revoked | 5 min |
 
-### Section 2: Applications (~62 min)
+### Section 2: Applications (~64 min)
 
 See PQC in action with real-world applications.
 
@@ -39,7 +39,7 @@ See PQC in action with real-world applications.
 | APP-04 | ["PQC OCSP: Is This Cert Still Good?"](usecases/applications/04-ocsp-responder/) | Real-time cert status check | 8 min |
 | APP-05 | ["Crypto-Agility: Rotate Without Breaking"](usecases/applications/05-crypto-agility/) | Synchronized cert rotation | 10 min |
 | APP-06 | ["Build a PQC Tunnel"](usecases/applications/06-tls-tunnel/) | Data through PQC tunnel | 10 min |
-| APP-07 | ["LTV: Trust Today, Verify in 2055"](usecases/applications/07-ltv-document-signing/) | Proof still valid in 2055 | 8 min |
+| APP-07 | ["LTV: Sign Today, Verify in 30 Years"](usecases/applications/07-ltv-document-signing/) | Proof file valid in 2055 | 10 min |
 
 ### Section 3: Ops & Migration (~26 min) — *Optional*
 
