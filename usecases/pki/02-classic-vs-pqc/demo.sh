@@ -66,7 +66,7 @@ pause
 step "Issue Classical TLS Certificate" \
      "Profile 'ec/tls-server' = ECDSA key, TLS Server extensions (EKU, SAN)"
 
-run_cmd "$PKI_BIN issue --ca-dir $CLASSIC_CA --profile ec/tls-server --cn classic.example.com --out $DEMO_TMP/classic-server.crt --key-out $DEMO_TMP/classic-server.key"
+run_cmd "$PKI_BIN issue --ca-dir $CLASSIC_CA --profile ec/tls-server --cn classic.example.com --dns classic.example.com --out $DEMO_TMP/classic-server.crt --key-out $DEMO_TMP/classic-server.key"
 run_cmd "$PKI_BIN info $DEMO_TMP/classic-server.crt"
 
 pause
@@ -92,7 +92,7 @@ pause
 step "Issue Post-Quantum TLS Certificate" \
      "Profile 'ml-dsa-kem/tls-server' = ML-DSA + ML-KEM keys, TLS Server extensions"
 
-run_cmd "$PKI_BIN issue --ca-dir $PQC_CA --profile ml-dsa-kem/tls-server --cn pq.example.com --out $DEMO_TMP/pq-server.crt --key-out $DEMO_TMP/pq-server.key"
+run_cmd "$PKI_BIN issue --ca-dir $PQC_CA --profile ml-dsa-kem/tls-server --cn pq.example.com --dns pq.example.com --out $DEMO_TMP/pq-server.crt --key-out $DEMO_TMP/pq-server.key"
 run_cmd "$PKI_BIN info $DEMO_TMP/pq-server.crt"
 
 pause
