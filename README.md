@@ -91,15 +91,6 @@ cd usecases/pki/01-store-now-decrypt-later
     └─────────────────────────────┘
 ```
 
-### By Role
-
-| Role | Recommended Path |
-|------|------------------|
-| **Developer** | PKI-01, PKI-02 → APP-01, APP-03 |
-| **Security Architect** | All PKI → APP-04, APP-05 → OPS-01, OPS-02 |
-| **CISO/Executive** | PKI-01, PKI-04 → APP-02 |
-| **Operations** | PKI-05 → APP-04, APP-05, APP-06 → All OPS |
-
 ## Supported Algorithms
 
 ### Classical (Production)
