@@ -18,6 +18,7 @@ show_banner() {
 EOF
     echo -e "${NC}"
     echo -e "${BOLD_WHITE}  $title${NC}"
+    echo -e "${CYAN}  ─────────────────────────────────────────────────${NC}"
     echo ""
 }
 
