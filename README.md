@@ -33,7 +33,7 @@ See PQC in action with real-world applications.
 
 | # | Title | What You'll See | Duration |
 |---|-------|-----------------|----------|
-| APP-01 | ["PQC Signing: Sign It, Prove It"](usecases/applications/01-pqc-code-signing/) | Firmware: signed ✓ tampered ✗ | 8 min |
+| APP-01 | ["PQC Code Signing: Secure Your Releases"](usecases/applications/01-pqc-code-signing/) | Firmware: signed ✓ tampered ✗ | 8 min |
 | APP-02 | ["PQC Timestamping: Trust Now, Verify Forever"](usecases/applications/02-pqc-timestamping/) | Certified timestamp on file | 8 min |
 | APP-03 | ["PQC mTLS: Show Me Your Badge"](usecases/applications/03-mtls-authentication/) | "Welcome Alice!" via mTLS | 10 min |
 | APP-04 | ["PQC OCSP: Is This Cert Still Good?"](usecases/applications/04-ocsp-responder/) | Real-time cert status check | 8 min |

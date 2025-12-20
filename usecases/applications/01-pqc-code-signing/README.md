@@ -1,6 +1,6 @@
-# APP-01: "PQC Signing: Sign It, Prove It"
+# APP-01: "PQC Code Signing: Secure Your Releases"
 
-## Document Signing with Post-Quantum Cryptography
+## Code Signing with Post-Quantum Cryptography
 
 > **Key Message:** Software signatures must remain valid for years. PQC ensures they can't be forged by future quantum computers.
 
