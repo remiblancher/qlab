@@ -136,7 +136,68 @@ print_comparison_row() {
 }
 
 # =============================================================================
-# Interactive Helpers
+# Step-by-Step Demo Helpers
+# =============================================================================
+
+STEP_CURRENT=0
+STEP_TOTAL=0
+
+# Initialize step counter
+init_steps() {
+    STEP_TOTAL="$1"
+    STEP_CURRENT=0
+}
+
+# Show a step header with explanation
+step() {
+    STEP_CURRENT=$((STEP_CURRENT + 1))
+    local title="$1"
+    local description="$2"
+
+    echo ""
+    echo -e "${BOLD}${CYAN}[STEP $STEP_CURRENT/$STEP_TOTAL]${NC} ${BOLD}$title${NC}"
+    if [[ -n "$description" ]]; then
+        echo -e "${DIM}$description${NC}"
+    fi
+    echo ""
+}
+
+# Run a command with display
+run_cmd() {
+    local cmd="$1"
+    echo -e "  ${YELLOW}\$ $cmd${NC}"
+    echo ""
+    eval "$cmd"
+}
+
+# Show generated files in a directory
+show_files() {
+    local dir="$1"
+    local label="${2:-Generated files:}"
+
+    echo ""
+    echo -e "  ${GREEN}$label${NC}"
+    if [[ -d "$dir" ]]; then
+        for f in "$dir"/*; do
+            if [[ -f "$f" ]]; then
+                local name=$(basename "$f")
+                local size=$(wc -c < "$f" | tr -d ' ')
+                local size_kb=$(echo "scale=1; $size / 1024" | bc)
+                printf "    %-20s %6s KB\n" "$name" "$size_kb"
+            fi
+        done
+    fi
+}
+
+# Pause and wait for user
+pause() {
+    local message="${1:-Press Enter to continue...}"
+    echo ""
+    read -p "$(echo -e "  ${DIM}$message${NC}")" _
+}
+
+# =============================================================================
+# Interactive Helpers (legacy)
 # =============================================================================
 
 pause_for_explanation() {
