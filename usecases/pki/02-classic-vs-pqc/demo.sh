@@ -53,6 +53,7 @@ step "Create Classical Root CA" \
      "Profile 'ec/root-ca' = ECDSA P-384, 20 years validity, CA extensions"
 
 run_cmd "$PKI_BIN init-ca --profile ec/root-ca --name 'Classic Root CA' --dir $CLASSIC_CA"
+run_cmd "$PKI_BIN info $CLASSIC_CA/ca.crt"
 
 show_files "$CLASSIC_CA"
 
@@ -79,6 +80,7 @@ step "Create Post-Quantum Root CA" \
      "Profile 'ml-dsa-kem/root-ca' = ML-DSA-65 (FIPS 204), 20 years, CA extensions"
 
 run_cmd "$PKI_BIN init-ca --profile ml-dsa-kem/root-ca --name 'PQ Root CA' --dir $PQC_CA"
+run_cmd "$PKI_BIN info $PQC_CA/ca.crt"
 
 show_files "$PQC_CA"
 
@@ -106,12 +108,12 @@ step "Comparison" \
 
 # Get sizes
 CLASSIC_CA_CERT_SIZE=$(cert_size "$CLASSIC_CA/ca.crt")
-CLASSIC_CA_KEY_SIZE=$(key_size "$CLASSIC_CA/ca.key")
+CLASSIC_CA_KEY_SIZE=$(key_size "$CLASSIC_CA/private/ca.key")
 CLASSIC_CERT_SIZE=$(cert_size "$DEMO_TMP/classic-server.crt")
 CLASSIC_KEY_SIZE=$(key_size "$DEMO_TMP/classic-server.key")
 
 PQC_CA_CERT_SIZE=$(cert_size "$PQC_CA/ca.crt")
-PQC_CA_KEY_SIZE=$(key_size "$PQC_CA/ca.key")
+PQC_CA_KEY_SIZE=$(key_size "$PQC_CA/private/ca.key")
 PQC_CERT_SIZE=$(cert_size "$DEMO_TMP/pq-server.crt")
 PQC_KEY_SIZE=$(key_size "$DEMO_TMP/pq-server.key")
 

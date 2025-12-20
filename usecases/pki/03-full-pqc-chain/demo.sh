@@ -165,9 +165,9 @@ echo ""
 print_step "Step 5: Size Comparison"
 
 ROOT_CA_CERT_SIZE=$(cert_size "$ROOT_CA/ca.crt")
-ROOT_CA_KEY_SIZE=$(key_size "$ROOT_CA/ca.key")
+ROOT_CA_KEY_SIZE=$(key_size "$ROOT_CA/private/ca.key")
 ISSUING_CA_CERT_SIZE=$(cert_size "$ISSUING_CA/ca.crt")
-ISSUING_CA_KEY_SIZE=$(key_size "$ISSUING_CA/ca.key")
+ISSUING_CA_KEY_SIZE=$(key_size "$ISSUING_CA/private/ca.key")
 SERVER_CERT_SIZE=$(cert_size "$DEMO_TMP/server.crt")
 SERVER_KEY_SIZE=$(key_size "$DEMO_TMP/server.key")
 

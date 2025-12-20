@@ -166,7 +166,7 @@ echo ""
 # Generate OCSP response for classical (ECDSA) - CA-signed mode
 echo -e "${CYAN}Generating classical OCSP response (ECDSA P-384)...${NC}"
 echo -e "Command:"
-echo -e "  ${CYAN}pki ocsp sign --serial $CLASSIC_SERIAL --status revoked --ca ca.crt --key ca.key${NC}"
+echo -e "  ${CYAN}pki ocsp sign --serial $CLASSIC_SERIAL --status revoked --ca ca.crt --key private/ca.key${NC}"
 echo ""
 
 "$PKI_BIN" ocsp sign \
@@ -174,7 +174,7 @@ echo ""
     --status revoked \
     --revocation-reason keyCompromise \
     --ca "$CLASSIC_CA/ca.crt" \
-    --key "$CLASSIC_CA/ca.key" \
+    --key "$CLASSIC_CA/private/ca.key" \
     -o "$DEMO_TMP/classic-response.ocsp" > /dev/null 2>&1
 
 # Generate OCSP response for hybrid CA
@@ -185,7 +185,7 @@ echo -e "${CYAN}Generating hybrid OCSP response (ECDSA P-384 + ML-DSA extension)
     --status revoked \
     --revocation-reason keyCompromise \
     --ca "$PQC_CA/ca.crt" \
-    --key "$PQC_CA/ca.key" \
+    --key "$PQC_CA/private/ca.key" \
     -o "$DEMO_TMP/hybrid-response.ocsp" > /dev/null 2>&1
 
 CLASSIC_OCSP_SIZE=$(wc -c < "$DEMO_TMP/classic-response.ocsp" | tr -d ' ')
