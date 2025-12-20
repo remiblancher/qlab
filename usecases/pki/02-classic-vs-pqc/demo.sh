@@ -33,11 +33,14 @@ echo ""
 init_steps 5
 
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
-echo "  1. Create a classical CA (ECDSA P-384)"
-echo "  2. Issue a classical TLS server certificate"
-echo "  3. Create a post-quantum CA (ML-DSA-65)"
-echo "  4. Issue a post-quantum TLS server certificate"
-echo "  5. Compare: sizes and performance"
+echo "  1. Create a classical Root CA using profile 'ec/root-ca'"
+echo "  2. Issue a TLS certificate using profile 'ec/tls-server'"
+echo "  3. Create a post-quantum Root CA using profile 'ml-dsa-kem/root-ca'"
+echo "  4. Issue a TLS certificate using profile 'ml-dsa-kem/tls-server'"
+echo "  5. Compare sizes"
+echo ""
+
+echo -e "${DIM}A profile defines: algorithm + validity + X.509 extensions${NC}"
 echo ""
 
 pause "Press Enter to start..."
@@ -46,10 +49,10 @@ pause "Press Enter to start..."
 # Step 1: Create Classical CA
 # =============================================================================
 
-step "Create Classical CA (ECDSA P-384)" \
-     "ECDSA with curve P-384 provides ~192-bit security against classical computers."
+step "Create Classical Root CA" \
+     "Profile 'ec/root-ca' = ECDSA P-384, 20 years validity, CA extensions"
 
-run_cmd "$PKI_BIN init-ca --name 'Classic Root CA' --org 'Demo' --algorithm ecdsa-p384 --dir $CLASSIC_CA"
+run_cmd "$PKI_BIN init-ca --profile ec/root-ca --name 'Classic Root CA' --dir $CLASSIC_CA"
 
 show_files "$CLASSIC_CA"
 
@@ -60,7 +63,7 @@ pause
 # =============================================================================
 
 step "Issue Classical TLS Certificate" \
-     "Standard server certificate for classic.example.com"
+     "Profile 'ec/tls-server' = ECDSA key, TLS Server extensions (EKU, SAN)"
 
 run_cmd "$PKI_BIN issue --ca-dir $CLASSIC_CA --profile ec/tls-server --cn classic.example.com --out $DEMO_TMP/classic-server.crt --key-out $DEMO_TMP/classic-server.key"
 
@@ -72,10 +75,10 @@ pause
 # Step 3: Create Post-Quantum CA
 # =============================================================================
 
-step "Create Post-Quantum CA (ML-DSA-65)" \
-     "ML-DSA (FIPS 204) provides quantum-resistant signatures at security level 3."
+step "Create Post-Quantum Root CA" \
+     "Profile 'ml-dsa-kem/root-ca' = ML-DSA-65 (FIPS 204), 20 years, CA extensions"
 
-run_cmd "$PKI_BIN init-ca --name 'PQ Root CA' --org 'Demo' --algorithm ml-dsa-65 --dir $PQC_CA"
+run_cmd "$PKI_BIN init-ca --profile ml-dsa-kem/root-ca --name 'PQ Root CA' --dir $PQC_CA"
 
 show_files "$PQC_CA"
 
@@ -86,7 +89,7 @@ pause
 # =============================================================================
 
 step "Issue Post-Quantum TLS Certificate" \
-     "Same workflow, different algorithm - certificate for pq.example.com"
+     "Profile 'ml-dsa-kem/tls-server' = ML-DSA + ML-KEM keys, TLS Server extensions"
 
 run_cmd "$PKI_BIN issue --ca-dir $PQC_CA --profile ml-dsa-kem/tls-server --cn pq.example.com --out $DEMO_TMP/pq-server.crt --key-out $DEMO_TMP/pq-server.key"
 
@@ -99,7 +102,7 @@ pause
 # =============================================================================
 
 step "Comparison" \
-     "Let's compare the sizes between classical and post-quantum."
+     "Same workflow, different sizes."
 
 # Get sizes
 CLASSIC_CA_CERT_SIZE=$(cert_size "$CLASSIC_CA/ca.crt")
@@ -129,21 +132,20 @@ print_comparison_row "  Key size" "$CLASSIC_KEY_SIZE" "$PQC_KEY_SIZE" " B"
 
 echo ""
 echo -e "${BOLD}What stayed the same:${NC}"
-echo "  - Certificate structure (X.509)"
-echo "  - CA hierarchy concept"
-echo "  - Issuance workflow"
-echo "  - Trust model"
+echo "  - Commands: init-ca, issue"
+echo "  - Workflow: CA -> Certificate"
+echo "  - Structure: X.509 certificates"
 echo ""
 
 echo -e "${BOLD}What changed:${NC}"
-echo "  - Algorithm: ECDSA -> ML-DSA"
-echo "  - Sizes: ~10x larger certificates and keys"
+echo "  - Profile: ec/* -> ml-dsa-kem/*"
+echo "  - Sizes: ~10x larger"
 echo ""
 
-show_lesson "Post-quantum PKI uses the same concepts as classical PKI.
-The migration is about changing algorithms, not changing architecture."
+show_lesson "Switching to post-quantum is a profile change, not an architecture change.
+Your PKI workflow stays exactly the same."
 
-echo -e "${DIM}Explore generated artifacts: $DEMO_TMP${NC}"
+echo -e "${DIM}Explore artifacts: $DEMO_TMP${NC}"
 echo ""
 
 show_footer
