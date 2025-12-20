@@ -42,6 +42,22 @@ esac
 echo -e "${GREEN}Detected:${NC} $OS / $ARCH"
 
 # =============================================================================
+# Check if binary already exists
+# =============================================================================
+
+if [[ -x "$LAB_ROOT/bin/pki" ]]; then
+    echo ""
+    echo -e "${GREEN}PKI tool already installed at: $LAB_ROOT/bin/pki${NC}"
+    echo ""
+    "$LAB_ROOT/bin/pki" version 2>/dev/null || echo -e "${YELLOW}(version check not available)${NC}"
+    echo ""
+    echo -e "To rebuild from source, remove the binary first:"
+    echo -e "  ${CYAN}rm $LAB_ROOT/bin/pki && ./tooling/install.sh${NC}"
+    echo ""
+    exit 0
+fi
+
+# =============================================================================
 # Option 1: Build from source (if pki repo is available)
 # =============================================================================
 

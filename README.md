@@ -54,13 +54,16 @@ Bridge between demos and production migration.
 ## Quick Start
 
 ```bash
-# Install the PKI tool
-./tooling/install.sh
+# 1. Clone the repository
+git clone https://github.com/remiblancher/post-quantum-pki-lab.git
+cd post-quantum-pki-lab
 
-# Run your first demo
+# 2. Run your first demo (PKI tool is included)
 cd usecases/pki/01-store-now-decrypt-later
 ./demo.sh
 ```
+
+> **Note:** The PKI binary is included in `bin/pki`. If you need to rebuild it from source, run `./tooling/install.sh`.
 
 ## Learning Paths
 
