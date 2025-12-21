@@ -118,6 +118,27 @@ Your ECDSA certificates are being harvested right now. When quantum computers ar
 
 Discover the "Store Now, Decrypt Later" threat.
 
+## Algorithms Used
+
+### ECDSA P-384 (Classical)
+- Elliptic Curve Digital Signature Algorithm
+- NIST P-384 curve
+- ~192-bit security level
+- Vulnerable to Shor's algorithm on quantum computers
+
+### ML-DSA-65 (Post-Quantum)
+- Module-Lattice Digital Signature Algorithm
+- NIST FIPS 204 standard (2024)
+- Security Level 3 (~192-bit equivalent)
+- Resistant to known quantum attacks
+- Based on the hardness of Module-LWE problem
+
+## References
+
+- [NIST Post-Quantum Cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
+- [FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
+- [Cloudflare CIRCL Library](https://github.com/cloudflare/circl)
+
 ## Reset
 
 ```bash
