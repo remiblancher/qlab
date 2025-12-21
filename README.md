@@ -79,9 +79,10 @@ Then start with: `./journey/00-quickstart/demo.sh`
 
 ```
 post-quantum-pki-lab/
-├── profiles/                   # Algorithm profiles (ec, ml-dsa-kem, hybrid...)
-├── journey/                    # Guided demos (each has output/ for artifacts)
+├── journey/                    # Guided demos
 │   ├── 00-quickstart/          # Quick Start (10 min)
+│   │   ├── profiles/           # Profiles for this demo
+│   │   └── output/             # Generated artifacts
 │   ├── 01-revelation/          # "Store Now, Decrypt Later"
 │   ├── 02-pqc-basics/          # Full Chain + Hybrid
 │   ├── 03-applications/        # mTLS, Code Signing, Timestamping

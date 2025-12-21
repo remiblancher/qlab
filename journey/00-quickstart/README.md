@@ -32,17 +32,18 @@ Short answer: **No.** The PKI workflow is identical. Only the algorithm name cha
 
 After running the demo, artifacts are in `output/`.
 
-> **Profiles:** See `profiles/` at project root to customize validity, extensions, or subject DN
+> **Profiles:** See `profiles/` in this directory to customize algorithms or extensions.
 
 ### Step 1: Classical (ECDSA P-384)
 
 ```bash
 # Create CA
-pki init-ca --profile ec/root-ca --name "Classic Root CA" --dir ./classic-ca
+pki init-ca --profile profiles/classic-root-ca.yaml \
+    --name "Classic Root CA" --dir ./classic-ca
 
 # Issue TLS certificate
 pki issue --ca-dir ./classic-ca \
-    --profile ec/tls-server \
+    --profile profiles/classic-tls-server.yaml \
     --cn classic.example.com \
     --dns classic.example.com \
     --out classic-server.crt \
@@ -56,11 +57,12 @@ pki info classic-server.crt
 
 ```bash
 # Create CA
-pki init-ca --profile ml-dsa-kem/root-ca --name "PQ Root CA" --dir ./pqc-ca
+pki init-ca --profile profiles/pqc-root-ca.yaml \
+    --name "PQ Root CA" --dir ./pqc-ca
 
 # Issue TLS certificate
 pki issue --ca-dir ./pqc-ca \
-    --profile ml-dsa-kem/tls-server \
+    --profile profiles/pqc-tls-server.yaml \
     --cn pq.example.com \
     --dns pq.example.com \
     --out pq-server.crt \

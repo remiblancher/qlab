@@ -1,0 +1,27 @@
+# Post-Quantum Root CA - ML-DSA-65
+# Simplified profile for quickstart demo
+# Uses ML-DSA-65 (NIST Level 3) for consistency with TLS certificates
+
+name: pqc-root-ca
+description: "Root CA ML-DSA-65 (FIPS 204)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+
+validity: 7300d  # 20 years
+
+signature:
+  algorithm: ml-dsa-65
+
+extensions:
+  basicConstraints:
+    critical: true
+    ca: true
+    pathLen: 1
+  keyUsage:
+    critical: true
+    values:
+      - keyCertSign
+      - cRLSign

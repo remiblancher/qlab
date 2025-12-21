@@ -1,0 +1,32 @@
+# Classic TLS Server - ECDSA P-384
+# Simplified profile for quickstart demo
+
+name: classic-tls-server
+description: "TLS server ECDSA P-384"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+  required:
+    - cn
+
+validity: 365d
+
+signature:
+  algorithm: ec-p384
+  keyUsage:
+    - digitalSignature
+
+extensions:
+  extKeyUsage:
+    critical: false
+    values:
+      - serverAuth
+  basicConstraints:
+    critical: true
+    ca: false
+  subjectAltName:
+    critical: false
+    dns:
+      - "${DNS}"

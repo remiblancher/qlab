@@ -1,0 +1,32 @@
+# Post-Quantum TLS Server - ML-DSA-65
+# Simplified profile for quickstart demo
+
+name: pqc-tls-server
+description: "TLS server ML-DSA-65 (FIPS 204)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+  required:
+    - cn
+
+validity: 365d
+
+signature:
+  algorithm: ml-dsa-65
+  keyUsage:
+    - digitalSignature
+
+extensions:
+  extKeyUsage:
+    critical: false
+    values:
+      - serverAuth
+  basicConstraints:
+    critical: true
+    ca: false
+  subjectAltName:
+    critical: false
+    dns:
+      - "${DNS}"

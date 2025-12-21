@@ -1,0 +1,26 @@
+# Classic Root CA - ECDSA P-384
+# Simplified profile for quickstart demo
+
+name: classic-root-ca
+description: "Root CA ECDSA P-384"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+
+validity: 7300d  # 20 years
+
+signature:
+  algorithm: ec-p384
+
+extensions:
+  basicConstraints:
+    critical: true
+    ca: true
+    pathLen: 1
+  keyUsage:
+    critical: true
+    values:
+      - keyCertSign
+      - cRLSign

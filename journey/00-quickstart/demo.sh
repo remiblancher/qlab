@@ -20,6 +20,7 @@ setup_demo "Quick Start"
 
 CLASSIC_CA="$DEMO_TMP/classic-ca"
 PQC_CA="$DEMO_TMP/pqc-ca"
+PROFILES="$SCRIPT_DIR/profiles"
 
 # =============================================================================
 # Introduction
@@ -33,10 +34,10 @@ echo ""
 init_steps 5
 
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
-echo "  1. Create a classical Root CA using profile 'ec/root-ca'"
-echo "  2. Issue a TLS certificate using profile 'ec/tls-server'"
-echo "  3. Create a post-quantum Root CA using profile 'ml-dsa-kem/root-ca'"
-echo "  4. Issue a TLS certificate using profile 'ml-dsa-kem/tls-server'"
+echo "  1. Create a classical Root CA (ECDSA P-384)"
+echo "  2. Issue a TLS certificate (ECDSA P-384)"
+echo "  3. Create a post-quantum Root CA (ML-DSA-65)"
+echo "  4. Issue a TLS certificate (ML-DSA-65)"
 echo "  5. Compare sizes"
 echo ""
 
@@ -50,9 +51,9 @@ pause "Press Enter to start..."
 # =============================================================================
 
 step "Create Classical Root CA" \
-     "Profile 'ec/root-ca' = ECDSA P-384, 20 years validity, CA extensions"
+     "ECDSA P-384, 20 years validity, CA extensions"
 
-run_cmd "$PKI_BIN init-ca --profile ec/root-ca --name 'Classic Root CA' --dir $CLASSIC_CA"
+run_cmd "$PKI_BIN init-ca --profile $PROFILES/classic-root-ca.yaml --name 'Classic Root CA' --dir $CLASSIC_CA"
 
 show_files "$CLASSIC_CA"
 
@@ -63,9 +64,9 @@ pause
 # =============================================================================
 
 step "Issue Classical TLS Certificate" \
-     "Profile 'ec/tls-server' = ECDSA key, TLS Server extensions (EKU, SAN)"
+     "ECDSA P-384, TLS Server extensions (EKU, SAN)"
 
-run_cmd "$PKI_BIN issue --ca-dir $CLASSIC_CA --profile ec/tls-server --cn classic.example.com --dns classic.example.com --out $DEMO_TMP/classic-server.crt --key-out $DEMO_TMP/classic-server.key"
+run_cmd "$PKI_BIN issue --ca-dir $CLASSIC_CA --profile $PROFILES/classic-tls-server.yaml --cn classic.example.com --dns classic.example.com --out $DEMO_TMP/classic-server.crt --key-out $DEMO_TMP/classic-server.key"
 
 echo ""
 echo -e "  ${GREEN}Certificate issued.${NC}"
@@ -77,9 +78,9 @@ pause
 # =============================================================================
 
 step "Create Post-Quantum Root CA" \
-     "Profile 'ml-dsa-kem/root-ca' = ML-DSA-65 (FIPS 204), 20 years, CA extensions"
+     "ML-DSA-65 (FIPS 204), 20 years, CA extensions"
 
-run_cmd "$PKI_BIN init-ca --profile ml-dsa-kem/root-ca --name 'PQ Root CA' --dir $PQC_CA"
+run_cmd "$PKI_BIN init-ca --profile $PROFILES/pqc-root-ca.yaml --name 'PQ Root CA' --dir $PQC_CA"
 
 show_files "$PQC_CA"
 
@@ -90,9 +91,9 @@ pause
 # =============================================================================
 
 step "Issue Post-Quantum TLS Certificate" \
-     "Profile 'ml-dsa-kem/tls-server' = ML-DSA key, TLS Server extensions"
+     "ML-DSA-65 (FIPS 204), TLS Server extensions"
 
-run_cmd "$PKI_BIN issue --ca-dir $PQC_CA --profile ml-dsa-kem/tls-server --cn pq.example.com --dns pq.example.com --out $DEMO_TMP/pq-server.crt --key-out $DEMO_TMP/pq-server.key"
+run_cmd "$PKI_BIN issue --ca-dir $PQC_CA --profile $PROFILES/pqc-tls-server.yaml --cn pq.example.com --dns pq.example.com --out $DEMO_TMP/pq-server.crt --key-out $DEMO_TMP/pq-server.key"
 
 echo ""
 echo -e "  ${GREEN}Certificate issued.${NC}"
