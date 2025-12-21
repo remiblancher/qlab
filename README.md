@@ -40,43 +40,43 @@ cd post-quantum-pki-lab
 
 ### 🚀 Getting Started
 
-| # | Mission | Time | Crypto |
-|---|---------|------|--------|
-| 0 | [**Quick Start**](quickstart/) — My first PKI | 10 min | ECDSA |
-| 1 | [**The Revelation**](journey/00-revelation/) — Store Now, Decrypt Later | 8 min | — |
+| # | Mission | Time |
+|---|---------|------|
+| 0 | [**Quick Start**](quickstart/) — Create your first CA (ECDSA) | 10 min |
+| 1 | [**The Revelation**](journey/00-revelation/) — Why PQC matters (SNDL threat) | 8 min |
 
 ### 📚 Level 1: PQC Basics
 
-| # | Mission | Time | Crypto |
-|---|---------|------|--------|
-| 2 | [**Full PQC Chain**](journey/01-pqc-basics/01-full-chain/) — 100% ML-DSA hierarchy | 10 min | ML-DSA |
-| 3 | [**Hybrid Catalyst**](journey/01-pqc-basics/02-hybrid/) — ECDSA + ML-DSA dual-key | 10 min | ECDSA + ML-DSA |
+| # | Mission | Time |
+|---|---------|------|
+| 2 | [**Full PQC Chain**](journey/01-pqc-basics/01-full-chain/) — Root → Issuing → TLS (ML-DSA) | 10 min |
+| 3 | [**Hybrid Catalyst**](journey/01-pqc-basics/02-hybrid/) — Dual-key certificate (ECDSA + ML-DSA) | 10 min |
 
 ### 🔧 Level 2: Applications
 
-| # | Mission | Time | Crypto |
-|---|---------|------|--------|
-| 4 | [**mTLS**](journey/02-applications/01-mtls/) — Mutual authentication | 8 min | ML-DSA |
-| 5 | [**Code Signing**](journey/02-applications/02-code-signing/) — Sign your releases | 8 min | ML-DSA |
-| 6 | [**Timestamping**](journey/02-applications/03-timestamping/) — Proof of existence | 8 min | ML-DSA |
+| # | Mission | Time |
+|---|---------|------|
+| 4 | [**mTLS**](journey/02-applications/01-mtls/) — Mutual authentication (ML-DSA) | 8 min |
+| 5 | [**Code Signing**](journey/02-applications/02-code-signing/) — Sign your releases (ML-DSA) | 8 min |
+| 6 | [**Timestamping**](journey/02-applications/03-timestamping/) — Proof of existence (ML-DSA) | 8 min |
 
 ### ⚙️ Level 3: Ops & Lifecycle
 
-| # | Mission | Time | Crypto |
-|---|---------|------|--------|
-| 7 | [**Revocation**](journey/03-ops-lifecycle/01-revocation/) — CRL generation | 10 min | Hybrid |
-| 8 | [**OCSP**](journey/03-ops-lifecycle/02-ocsp/) — Real-time status | 10 min | Hybrid |
-| 9 | [**Crypto-Agility**](journey/03-ops-lifecycle/03-crypto-agility/) — Migrate without breaking | 10 min | ECDSA → ML-DSA |
+| # | Mission | Time |
+|---|---------|------|
+| 7 | [**Revocation**](journey/03-ops-lifecycle/01-revocation/) — CRL generation (Hybrid) | 10 min |
+| 8 | [**OCSP**](journey/03-ops-lifecycle/02-ocsp/) — Real-time status (Hybrid) | 10 min |
+| 9 | [**Crypto-Agility**](journey/03-ops-lifecycle/03-crypto-agility/) — Migrate ECDSA → ML-DSA | 10 min |
 
 ### 🎯 Level 4: Advanced (Optional)
 
 > These missions are optional and exploratory. You can stop at Level 3 without losing the main thread.
 
-| # | Mission | Time | Crypto |
-|---|---------|------|--------|
-| 10 | [**LTV Signatures**](journey/04-advanced/01-ltv-signatures/) — Valid in 30 years | 8 min | Hybrid |
-| 11 | [**PQC Tunnel**](journey/04-advanced/02-pqc-tunnel/) — ML-KEM key exchange demo | 8 min | ML-KEM |
-| 12 | [**CMS Encryption**](journey/04-advanced/03-cms-encryption/) — Encrypt documents | 8 min | ML-KEM |
+| # | Mission | Time |
+|---|---------|------|
+| 10 | [**LTV Signatures**](journey/04-advanced/01-ltv-signatures/) — Valid in 30 years (Hybrid) | 8 min |
+| 11 | [**PQC Tunnel**](journey/04-advanced/02-pqc-tunnel/) — Key exchange demo (ML-KEM) | 8 min |
+| 12 | [**CMS Encryption**](journey/04-advanced/03-cms-encryption/) — Encrypt documents (ML-KEM) | 8 min |
 
 ---
 
@@ -96,10 +96,10 @@ post-quantum-pki-lab/
 │   └── 04-advanced/            # LTV, PQC Tunnel, CMS
 ├── workspace/                  # Your artifacts (persistent)
 │   ├── quickstart/             # Classic CA
-│   ├── niveau-1/               # PQC CA + Hybrid CA
-│   ├── niveau-2/               # Signatures, timestamps
-│   ├── niveau-3/               # CRL, OCSP
-│   └── niveau-4/               # LTV, tunnels
+│   ├── level-1/                # PQC CA + Hybrid CA
+│   ├── level-2/                # Signatures, timestamps
+│   ├── level-3/                # CRL, OCSP
+│   └── level-4/                # LTV, tunnels
 ├── reference/usecases/         # Reference documentation
 ├── lib/                        # Shell helpers
 └── bin/pki                     # PKI tool (Go)
@@ -119,7 +119,7 @@ post-quantum-pki-lab/
 - **SLH-DSA** (FIPS 205) — Hash-based signatures
 - **ML-KEM** (FIPS 203) — Key encapsulation
 
-### Hybrid
+### Hybrid (Experimental)
 - Catalyst certificates (ITU-T X.509 9.8)
 - Composite certificates *(not yet implemented)*
 
