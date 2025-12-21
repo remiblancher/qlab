@@ -98,17 +98,12 @@ pki info pq-server.crt
 
 **The trade-off:** Larger sizes, but faster operations and quantum resistance.
 
-## What You Learned
+## Key Takeaway
 
-### What stayed the same:
-- Commands: `init-ca`, `issue`
-- Certificate structure (X.509)
-- CA hierarchy concept
-- Your PKI knowledge
+**Switching to post-quantum is a profile change, not an architecture change.**
 
-### What changed:
-- Profile: `ec/*` → `ml-dsa-kem/*`
-- Key and signature sizes
+The workflow stays identical: `init-ca` → `issue` → X.509 certificates.
+Only the algorithm (and sizes) change.
 
 ## References
 

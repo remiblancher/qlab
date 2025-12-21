@@ -133,17 +133,6 @@ print_comparison_row "  Key size" "$CLASSIC_KEY_SIZE" "$PQC_KEY_SIZE" " B"
 # =============================================================================
 
 echo ""
-echo -e "${BOLD}What stayed the same:${NC}"
-echo "  - Commands: init-ca, issue"
-echo "  - Workflow: CA -> Certificate"
-echo "  - Structure: X.509 certificates"
-echo ""
-
-echo -e "${BOLD}What changed:${NC}"
-echo "  - Profile: ec/* -> ml-dsa-kem/*"
-echo "  - Sizes: ~5-10x larger"
-echo ""
-
 show_lesson "Switching to post-quantum is a profile change, not an architecture change.
 Your PKI workflow stays exactly the same."
 
