@@ -1,234 +1,165 @@
 #!/bin/bash
 # =============================================================================
-#  QUICK START: My First PKI (10 minutes)
+#  QUICK START: Classical vs Post-Quantum
 #
-#  Create your first CA and issue a TLS certificate.
-#  Algorithm: ECDSA P-384 (classical)
+#  Create both ECDSA and ML-DSA CAs, issue certificates, compare sizes.
+#
+#  Key Message: Same workflow, different sizes.
 # =============================================================================
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAB_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-
-source "$LAB_ROOT/lib/colors.sh"
-source "$LAB_ROOT/lib/interactive.sh"
-source "$LAB_ROOT/lib/workspace.sh"
-
-PKI_BIN="$LAB_ROOT/bin/pki"
+source "$SCRIPT_DIR/../lib/common.sh"
 
 # =============================================================================
-# Check prerequisites
+# Demo Setup
 # =============================================================================
 
-check_pki_installed() {
-    if [[ ! -x "$PKI_BIN" ]]; then
-        echo ""
-        echo -e "${RED}[ERROR]${NC} PKI tool not installed"
-        echo ""
-        echo "  Run: ${CYAN}./tooling/install.sh${NC}"
-        echo ""
-        exit 1
-    fi
-}
+setup_demo "Quick Start"
+
+CLASSIC_CA="$DEMO_TMP/classic-ca"
+PQC_CA="$DEMO_TMP/pqc-ca"
 
 # =============================================================================
-# Welcome
+# Introduction
 # =============================================================================
 
-show_welcome() {
-    clear
-    echo ""
-    echo -e "${BOLD}${CYAN}"
-    echo "  =============================================="
-    echo "   QUICK START: My First PKI"
-    echo "  =============================================="
-    echo -e "${NC}"
-    echo ""
-    echo "  You will:"
-    echo "    1. Create a Certificate Authority (CA)"
-    echo "    2. Issue a TLS certificate"
-    echo "    3. Verify the certificate"
-    echo "    4. Compare with Post-Quantum"
-    echo ""
-    echo -e "  ${DIM}Duration: ~10 minutes${NC}"
-    echo ""
-}
+echo -e "${BOLD}WHAT YOU'LL DO:${NC}"
+echo "  1. Create a classical CA (ECDSA P-384)"
+echo "  2. Issue a TLS certificate"
+echo "  3. Create a post-quantum CA (ML-DSA-65)"
+echo "  4. Issue a TLS certificate"
+echo "  5. Compare sizes"
+echo ""
+
+echo -e "${DIM}A profile defines: algorithm + validity + X.509 extensions${NC}"
+echo ""
+
+pause "Press Enter to start..."
+
+init_steps 5
 
 # =============================================================================
-# Step 1: Create CA
+# Step 1: Create Classical CA
 # =============================================================================
 
-step_1_create_ca() {
-    step 1 "Create your Certificate Authority (CA)"
+step "Create Classical Root CA" \
+     "Profile 'ec/root-ca' = ECDSA P-384, 20 years validity, CA extensions"
 
-    echo "  A CA is the root of trust. It signs all certificates."
-    echo ""
-    echo "  A CA has:"
-    echo "    - ca.key: private key (keep secret!)"
-    echo "    - ca.crt: self-signed certificate (distribute)"
-    echo ""
+run_cmd "$PKI_BIN init-ca --profile ec/root-ca --name 'Classic Root CA' --dir $CLASSIC_CA"
 
-    local ca_dir="$LEVEL_WORKSPACE/classic-ca"
+show_files "$CLASSIC_CA"
 
-    if [[ -f "$ca_dir/ca.crt" ]]; then
-        info "CA already exists, reusing it."
-        validate_files "$ca_dir" "ca.crt" "ca.key"
-        return 0
-    fi
-
-    run_cmd "$PKI_BIN init-ca --name 'My First CA' --algorithm ecdsa-p384 --dir $ca_dir" \
-            "Creating CA with ECDSA P-384..."
-
-    validate_files "$ca_dir" "ca.crt" "ca.key" "index.txt" "serial"
-}
+pause
 
 # =============================================================================
-# Step 2: Issue TLS certificate
+# Step 2: Issue Classical TLS Certificate
 # =============================================================================
 
-step_2_issue_cert() {
-    step 2 "Issue a TLS certificate"
+step "Issue Classical TLS Certificate" \
+     "Profile 'ec/tls-server' = ECDSA key, TLS Server extensions (EKU, SAN)"
 
-    echo "  A TLS certificate proves server identity."
-    echo ""
-    echo "  We need:"
-    echo "    - Common Name (CN): server name"
-    echo "    - DNS SAN: domain names"
-    echo "    - Profile: ec/tls-server"
-    echo ""
+run_cmd "$PKI_BIN issue --ca-dir $CLASSIC_CA --profile ec/tls-server --cn classic.example.com --dns classic.example.com --out $DEMO_TMP/classic-server.crt --key-out $DEMO_TMP/classic-server.key"
 
-    local ca_dir="$LEVEL_WORKSPACE/classic-ca"
-    local cert_out="$LEVEL_WORKSPACE/server.crt"
-    local key_out="$LEVEL_WORKSPACE/server.key"
+echo ""
+echo -e "  ${GREEN}Certificate issued.${NC}"
 
-    if [[ -f "$cert_out" ]]; then
-        info "Certificate already exists."
-        validate_file "$cert_out" "Server certificate"
-        validate_file "$key_out" "Server private key"
-        return 0
-    fi
-
-    run_cmd "$PKI_BIN issue --ca-dir $ca_dir --profile ec/tls-server --cn 'my-server.local' --dns 'my-server.local' --out $cert_out --key-out $key_out" \
-            "Issuing TLS certificate..."
-
-    validate_file "$cert_out" "Server certificate"
-    validate_file "$key_out" "Server private key"
-
-    echo ""
-    echo -e "${BOLD}Certificate details:${NC}"
-    "$PKI_BIN" info "$cert_out" 2>/dev/null | head -10 | sed 's/^/  /'
-}
+pause
 
 # =============================================================================
-# Step 3: Verify certificate
+# Step 3: Create Post-Quantum CA
 # =============================================================================
 
-step_3_verify() {
-    step 3 "Verify the certificate"
+step "Create Post-Quantum Root CA" \
+     "Profile 'ml-dsa/root-ca' = ML-DSA-65 (FIPS 204), 20 years, CA extensions"
 
-    echo "  Verification checks:"
-    echo "    - CA signature is valid"
-    echo "    - Certificate not expired"
-    echo "    - Chain of trust is complete"
-    echo ""
+run_cmd "$PKI_BIN init-ca --profile ml-dsa/root-ca --name 'PQ Root CA' --dir $PQC_CA"
 
-    local ca_dir="$LEVEL_WORKSPACE/classic-ca"
-    local cert_file="$LEVEL_WORKSPACE/server.crt"
+show_files "$PQC_CA"
 
-    run_cmd "$PKI_BIN verify --ca $ca_dir/ca.crt --cert $cert_file" \
-            "Verifying certificate chain..."
-}
+pause
 
 # =============================================================================
-# Step 4: Compare with Post-Quantum
+# Step 4: Issue Post-Quantum TLS Certificate
 # =============================================================================
 
-step_4_compare_pqc() {
-    step 4 "Compare with Post-Quantum"
+step "Issue Post-Quantum TLS Certificate" \
+     "Profile 'ml-dsa/tls-server' = ML-DSA key, TLS Server extensions"
 
-    echo "  Post-Quantum algorithms resist quantum computer attacks."
-    echo ""
-    echo "  ML-DSA (FIPS 204): lattice-based signatures"
-    echo "  ML-KEM (FIPS 203): lattice-based key exchange"
-    echo ""
+run_cmd "$PKI_BIN issue --ca-dir $PQC_CA --profile ml-dsa/tls-server --cn pq.example.com --dns pq.example.com --out $DEMO_TMP/pq-server.crt --key-out $DEMO_TMP/pq-server.key"
 
-    local pqc_ca="$LEVEL_WORKSPACE/pqc-ca-demo"
+echo ""
+echo -e "  ${GREEN}Certificate issued.${NC}"
 
-    run_cmd "$PKI_BIN init-ca --name 'PQC Demo CA' --algorithm ml-dsa-65 --dir $pqc_ca" \
-            "Creating PQC CA with ML-DSA-65..."
-
-    run_cmd "$PKI_BIN issue --ca-dir $pqc_ca --profile ml-dsa/tls-server --cn 'pqc-server.local' --dns 'pqc-server.local' --out $LEVEL_WORKSPACE/pqc-server.crt --key-out $LEVEL_WORKSPACE/pqc-server.key" \
-            "Issuing PQC certificate..."
-
-    # Size comparison
-    local classic_cert=$(wc -c < "$LEVEL_WORKSPACE/server.crt" | tr -d ' ')
-    local classic_key=$(wc -c < "$LEVEL_WORKSPACE/server.key" | tr -d ' ')
-    local pqc_cert=$(wc -c < "$LEVEL_WORKSPACE/pqc-server.crt" | tr -d ' ')
-    local pqc_key=$(wc -c < "$LEVEL_WORKSPACE/pqc-server.key" | tr -d ' ')
-
-    echo ""
-    echo -e "${BOLD}Size comparison:${NC}"
-    echo ""
-    printf "  %-20s %10s %10s %10s\n" "" "ECDSA" "ML-DSA" "Ratio"
-    printf "  %-20s %10s %10s %10s\n" "----" "-----" "------" "-----"
-
-    local cert_ratio=$(echo "scale=1; $pqc_cert / $classic_cert" | bc)
-    printf "  %-20s %8s B %8s B %8sx\n" "Certificate" "$classic_cert" "$pqc_cert" "$cert_ratio"
-
-    local key_ratio=$(echo "scale=1; $pqc_key / $classic_key" | bc)
-    printf "  %-20s %8s B %8s B %8sx\n" "Private Key" "$classic_key" "$pqc_key" "$key_ratio"
-
-    echo ""
-    warn "PQC certificates are larger (~${cert_ratio}x) but quantum-resistant."
-}
+pause
 
 # =============================================================================
-# Summary
+# Step 5: Comparison
 # =============================================================================
 
-show_final() {
-    echo ""
-    echo -e "${BOLD}${GREEN}=== QUICK START COMPLETE ===${NC}"
+step "Size Comparison" \
+     "Same workflow, different sizes."
 
-    show_summary "What you accomplished:" \
-        "Created a CA (ECDSA P-384)" \
-        "Issued a TLS certificate" \
-        "Verified the chain of trust" \
-        "Compared classical vs post-quantum sizes"
+# Get sizes
+CLASSIC_CA_CERT_SIZE=$(cert_size "$CLASSIC_CA/ca.crt")
+CLASSIC_CA_KEY_SIZE=$(key_size "$CLASSIC_CA/private/ca.key")
+CLASSIC_CERT_SIZE=$(cert_size "$DEMO_TMP/classic-server.crt")
+CLASSIC_KEY_SIZE=$(key_size "$DEMO_TMP/classic-server.key")
 
-    echo -e "  ${BOLD}Your files:${NC} ${CYAN}$LEVEL_WORKSPACE/${NC}"
-    echo ""
+PQC_CA_CERT_SIZE=$(cert_size "$PQC_CA/ca.crt")
+PQC_CA_KEY_SIZE=$(key_size "$PQC_CA/private/ca.key")
+PQC_CERT_SIZE=$(cert_size "$DEMO_TMP/pq-server.crt")
+PQC_KEY_SIZE=$(key_size "$DEMO_TMP/pq-server.key")
 
-    show_takeaway "The PKI model is the same. Only the algorithm changes.
-Migrating to PQC is an engineering problem, not magic."
+print_comparison_header
 
-    show_next "./journey/00-revelation/demo.sh" "The Revelation: Why PQC matters"
-}
+echo -e "${BOLD}CA Certificate${NC}"
+print_comparison_row "  Cert size" "$CLASSIC_CA_CERT_SIZE" "$PQC_CA_CERT_SIZE" " B"
+print_comparison_row "  Key size" "$CLASSIC_CA_KEY_SIZE" "$PQC_CA_KEY_SIZE" " B"
+
+echo ""
+echo -e "${BOLD}TLS Server Certificate${NC}"
+print_comparison_row "  Cert size" "$CLASSIC_CERT_SIZE" "$PQC_CERT_SIZE" " B"
+print_comparison_row "  Key size" "$CLASSIC_KEY_SIZE" "$PQC_KEY_SIZE" " B"
 
 # =============================================================================
-# Main
+# Conclusion
 # =============================================================================
 
-main() {
-    check_pki_installed
-    init_workspace "quickstart"
+echo ""
+echo -e "${BOLD}What stayed the same:${NC}"
+echo "  - Commands: init-ca, issue"
+echo "  - Workflow: CA -> Certificate"
+echo "  - Structure: X.509 certificates"
+echo ""
 
-    show_welcome
-    wait_enter
+echo -e "${BOLD}What changed:${NC}"
+echo "  - Profile: ec/* -> ml-dsa/*"
+echo "  - Sizes: ~5-10x larger"
+echo ""
 
-    step_1_create_ca
-    wait_enter
+show_lesson "Switching to post-quantum is a profile change, not an architecture change.
+Your PKI workflow stays exactly the same."
 
-    step_2_issue_cert
-    wait_enter
+# =============================================================================
+# Teaser
+# =============================================================================
 
-    step_3_verify
-    wait_enter
+echo ""
+echo -e "${BOLD}${YELLOW}But wait...${NC}"
+echo ""
+echo "  This classical PKI works perfectly today."
+echo "  The question is: ${BOLD}for how long?${NC}"
+echo ""
+echo "  Your ECDSA certificates are being harvested right now."
+echo "  When quantum computers arrive, they'll be decrypted."
+echo ""
+echo -e "  ${CYAN}Next mission:${NC} ./journey/00-revelation/demo.sh"
+echo -e "  ${DIM}Discover the \"Store Now, Decrypt Later\" threat.${NC}"
+echo ""
 
-    step_4_compare_pqc
+echo -e "${DIM}Explore artifacts: $DEMO_TMP${NC}"
+echo ""
 
-    show_final
-}
-
-main "$@"
+show_footer

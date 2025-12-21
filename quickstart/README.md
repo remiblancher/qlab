@@ -1,103 +1,94 @@
-# Quick Start: My First PKI
+# Quick Start: Classical vs Post-Quantum
 
 **Duration: 10 minutes**
 
 ## Objective
 
-Create your first PKI (Public Key Infrastructure) by typing the commands yourself.
+Compare classical (ECDSA) and post-quantum (ML-DSA) PKI side by side.
 
-At the end of this Quick Start, you will have:
-- A working Certificate Authority (CA)
-- A TLS certificate for a server
-- Understood the difference between classical and post-quantum
+At the end, you will have:
+- A classical CA (ECDSA P-384)
+- A post-quantum CA (ML-DSA-65)
+- TLS certificates from both
+- Understood: same workflow, different sizes
 
 ## Prerequisites
 
-1. The `pki` tool must be installed:
+1. Install the `pki` tool:
    ```bash
    ./tooling/install.sh
    ```
 
 2. A bash terminal
 
-## Launch the Quick Start
+## Run the Demo
 
 ```bash
 ./quickstart/demo.sh
 ```
 
-## What You'll Learn
+## What You'll See
 
-### Step 1: Create Your CA
+### Step 1-2: Classical PKI
 ```bash
-pki init-ca --name "My First CA" --algorithm ecdsa-p384 --dir ./workspace/quickstart/classic-ca
+# Create ECDSA CA
+pki init-ca --profile ec/root-ca --name "Classic Root CA" --dir ./classic-ca
+
+# Issue TLS certificate
+pki issue --ca-dir ./classic-ca --profile ec/tls-server \
+    --cn classic.example.com --dns classic.example.com \
+    --out classic-server.crt --key-out classic-server.key
 ```
 
-A CA has:
-- `ca.key`: the private key (keep it secret!)
-- `ca.crt`: the self-signed certificate (distribute it)
-
-### Step 2: Issue a TLS Certificate
+### Step 3-4: Post-Quantum PKI
 ```bash
-pki issue --ca-dir ./workspace/quickstart/classic-ca \
-    --profile ec/tls-server \
-    --cn "my-server.local" \
-    --dns "my-server.local" \
-    --out ./workspace/quickstart/server.crt \
-    --key-out ./workspace/quickstart/server.key
+# Create ML-DSA CA
+pki init-ca --profile ml-dsa/root-ca --name "PQ Root CA" --dir ./pqc-ca
+
+# Issue TLS certificate
+pki issue --ca-dir ./pqc-ca --profile ml-dsa/tls-server \
+    --cn pq.example.com --dns pq.example.com \
+    --out pq-server.crt --key-out pq-server.key
 ```
 
-### Step 3: Verify the Certificate
-```bash
-pki verify --ca ./workspace/quickstart/classic-ca/ca.crt \
-    --cert ./workspace/quickstart/server.crt
-```
+### Step 5: Size Comparison
 
-### Step 4: Compare with Post-Quantum
-
-The script automatically creates a post-quantum CA (ML-DSA-65) to compare sizes.
-
-**Typical observation:**
 | File | ECDSA | ML-DSA | Ratio |
 |------|-------|--------|-------|
 | CA Certificate | ~800 B | ~3 KB | ~4x |
 | Server Certificate | ~1 KB | ~5 KB | ~5x |
 | Private Key | ~300 B | ~4 KB | ~13x |
 
+*Actual sizes vary by certificate extensions.*
+
 ## Generated Files
 
-After the Quick Start, your files are in:
 ```
 workspace/quickstart/
-├── classic-ca/           # Your ECDSA P-384 CA
+├── classic-ca/           # ECDSA P-384 CA
 │   ├── ca.crt
-│   ├── ca.key
-│   ├── index.txt
-│   └── serial
-├── server.crt            # Your TLS certificate
-├── server.key            # Your TLS private key
-├── pqc-ca-demo/          # Demo ML-DSA-65 CA
-├── pqc-server.crt        # Demo PQC certificate
-└── pqc-server.key        # Demo PQC key
+│   └── private/ca.key
+├── classic-server.crt
+├── classic-server.key
+├── pqc-ca/               # ML-DSA-65 CA
+│   ├── ca.crt
+│   └── private/ca.key
+├── pq-server.crt
+└── pq-server.key
 ```
 
 ## What's Next?
 
-Your classical CA will be breakable by a quantum computer. To understand the urgency:
+Your classical CA works today. But for how long?
 
 ```bash
 ./journey/00-revelation/demo.sh
 ```
 
-Or launch the main menu:
-```bash
-./start.sh
-```
+Discover the "Store Now, Decrypt Later" threat.
 
 ## Reset
 
-To restart the Quick Start from scratch:
 ```bash
-rm -rf ./workspace/quickstart
-./quickstart/demo.sh
+./reset.sh quickstart
 ```
