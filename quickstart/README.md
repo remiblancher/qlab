@@ -30,6 +30,12 @@ Short answer: **No.** The PKI workflow is identical. Only the algorithm name cha
 
 ## The Commands
 
+```bash
+cd workspace/quickstart
+```
+
+> **Profiles:** [`pki/profiles/`](../pki/profiles/) — customize `signature.algorithm` to change crypto
+
 ### Step 1: Classical (ECDSA P-384)
 
 ```bash
@@ -130,5 +136,3 @@ pki info pq-server.crt
 ---
 
 ← [Home](../README.md) | [Next: The Revelation →](../journey/00-revelation/)
-
-**Need help with your PQC transition?** Contact [QentriQ](https://qentriq.com)
