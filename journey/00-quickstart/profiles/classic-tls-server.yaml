@@ -1,4 +1,4 @@
-# Classic TLS Server - ECDSA P-384
+# Classic TLS Server - ECDSA P-384 with SHA-384
 # Simplified profile for quickstart demo
 
 name: classic-tls-server
@@ -14,11 +14,17 @@ subject:
 validity: 365d
 
 signature:
-  algorithm: ec-p384
-  keyUsage:
-    - digitalSignature
+  algorithms:
+    - ec-p384
+  algo_config:
+    - scheme: ecdsa
+      hash: sha384
 
 extensions:
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
   extKeyUsage:
     critical: false
     values:

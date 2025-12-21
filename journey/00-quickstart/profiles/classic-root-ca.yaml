@@ -1,4 +1,4 @@
-# Classic Root CA - ECDSA P-384
+# Classic Root CA - ECDSA P-384 with SHA-384
 # Simplified profile for quickstart demo
 
 name: classic-root-ca
@@ -12,7 +12,11 @@ subject:
 validity: 7300d  # 20 years
 
 signature:
-  algorithm: ec-p384
+  algorithms:
+    - ec-p384
+  algo_config:
+    - scheme: ecdsa
+      hash: sha384
 
 extensions:
   basicConstraints:

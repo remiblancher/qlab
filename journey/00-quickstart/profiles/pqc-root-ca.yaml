@@ -1,6 +1,7 @@
 # Post-Quantum Root CA - ML-DSA-65
 # Simplified profile for quickstart demo
 # Uses ML-DSA-65 (NIST Level 3) for consistency with TLS certificates
+# ML-DSA uses integrated SHAKE-256 hash
 
 name: pqc-root-ca
 description: "Root CA ML-DSA-65 (FIPS 204)"
@@ -13,7 +14,8 @@ subject:
 validity: 7300d  # 20 years
 
 signature:
-  algorithm: ml-dsa-65
+  algorithms:
+    - ml-dsa-65
 
 extensions:
   basicConstraints:

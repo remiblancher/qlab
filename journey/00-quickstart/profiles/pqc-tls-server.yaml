@@ -1,5 +1,6 @@
 # Post-Quantum TLS Server - ML-DSA-65
 # Simplified profile for quickstart demo
+# ML-DSA uses integrated SHAKE-256 hash
 
 name: pqc-tls-server
 description: "TLS server ML-DSA-65 (FIPS 204)"
@@ -14,11 +15,14 @@ subject:
 validity: 365d
 
 signature:
-  algorithm: ml-dsa-65
-  keyUsage:
-    - digitalSignature
+  algorithms:
+    - ml-dsa-65
 
 extensions:
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
   extKeyUsage:
     critical: false
     values:
