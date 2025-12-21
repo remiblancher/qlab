@@ -3,18 +3,19 @@
 # Common Functions for Post-Quantum PKI Lab
 # =============================================================================
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/colors.sh"
-source "$SCRIPT_DIR/banner.sh"
+LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$LIB_DIR/colors.sh"
+source "$LIB_DIR/banner.sh"
 
 # Get the lab root directory
-LAB_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+LAB_ROOT="$(cd "$LIB_DIR/.." && pwd)"
 
 # PKI binary location (always in bin/)
 PKI_BIN="$LAB_ROOT/bin/pki"
 
-# Workspace directory for demo artifacts (persists after demo)
-WORKSPACE="$LAB_ROOT/workspace"
+# Output directory for demo artifacts (local to each demo)
+# Uses SCRIPT_DIR from the calling demo script
+OUTPUT_DIR="${SCRIPT_DIR:-$LIB_DIR}/output"
 
 # =============================================================================
 # Setup and Cleanup
@@ -23,18 +24,15 @@ WORKSPACE="$LAB_ROOT/workspace"
 setup_demo() {
     local demo_name="$1"
 
-    # Extract UC identifier (e.g., "PKI-01: Store Now..." → "pki-01")
-    local uc_id=$(echo "$demo_name" | grep -oE '^[A-Z]+-[0-9]+' | tr '[:upper:]' '[:lower:]')
-
-    # Set demo workspace
-    DEMO_TMP="$WORKSPACE/${uc_id:-demo}"
+    # Output goes directly in the demo's output/ directory
+    DEMO_TMP="$OUTPUT_DIR"
 
     # Clean previous run if exists
     if [[ -d "$DEMO_TMP" ]]; then
         rm -rf "$DEMO_TMP"
     fi
 
-    # Create workspace directory
+    # Create output directory
     mkdir -p "$DEMO_TMP"
 
     # Show banner

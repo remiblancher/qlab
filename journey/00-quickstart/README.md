@@ -30,9 +30,7 @@ Short answer: **No.** The PKI workflow is identical. Only the algorithm name cha
 
 ## The Commands
 
-```bash
-cd workspace/quickstart
-```
+After running the demo, artifacts are in `output/`.
 
 > **Profiles:** See `profiles/` at project root to customize validity, extensions, or subject DN
 

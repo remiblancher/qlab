@@ -79,21 +79,14 @@ Then start with: `./journey/00-quickstart/demo.sh`
 
 ```
 post-quantum-pki-lab/
-├── reset.sh                    # Reset workspaces
 ├── profiles/                   # Algorithm profiles (ec, ml-dsa-kem, hybrid...)
-├── journey/                    # Guided journey
+├── journey/                    # Guided demos (each has output/ for artifacts)
 │   ├── 00-quickstart/          # Quick Start (10 min)
 │   ├── 01-revelation/          # "Store Now, Decrypt Later"
-│   ├── 02-pqc-basics/          # "Build Your Foundation" + "Best of Both"
+│   ├── 02-pqc-basics/          # Full Chain + Hybrid
 │   ├── 03-applications/        # mTLS, Code Signing, Timestamping
 │   ├── 04-ops-lifecycle/       # Revocation, OCSP, Crypto-Agility
 │   └── 05-advanced/            # LTV, PQC Tunnel, CMS
-├── workspace/                  # Your artifacts (persistent)
-│   ├── quickstart/             # Classic CA
-│   ├── level-1/                # PQC CA + Hybrid CA
-│   ├── level-2/                # Signatures, timestamps
-│   ├── level-3/                # CRL, OCSP
-│   └── level-4/                # LTV, tunnels
 ├── reference/usecases/         # Reference documentation
 ├── lib/                        # Shell helpers
 └── bin/pki                     # PKI tool (Go)
