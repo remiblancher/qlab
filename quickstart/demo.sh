@@ -1,11 +1,9 @@
 #!/bin/bash
 # =============================================================================
-#  QUICK START : Ma première PKI (10 minutes)
+#  QUICK START: My First PKI (10 minutes)
 #
-#  Objectif : Créer ta première CA et émettre un certificat TLS.
-#             Tu vas TAPER les commandes toi-même.
-#
-#  Algorithme : ECDSA P-384 (classique, pour commencer)
+#  Create your first CA and issue a TLS certificate.
+#  Algorithm: ECDSA P-384 (classical)
 # =============================================================================
 
 set -e
@@ -13,285 +11,199 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LAB_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Source les helpers
 source "$LAB_ROOT/lib/colors.sh"
 source "$LAB_ROOT/lib/interactive.sh"
 source "$LAB_ROOT/lib/workspace.sh"
 
-# PKI binary
 PKI_BIN="$LAB_ROOT/bin/pki"
 
 # =============================================================================
-# Vérifications préliminaires
+# Check prerequisites
 # =============================================================================
 
 check_pki_installed() {
     if [[ ! -x "$PKI_BIN" ]]; then
         echo ""
-        print_error "L'outil PKI n'est pas installé"
+        echo -e "${RED}[ERROR]${NC} PKI tool not installed"
         echo ""
-        echo "  Pour l'installer, exécute :"
-        echo -e "  ${CYAN}./tooling/install.sh${NC}"
+        echo "  Run: ${CYAN}./tooling/install.sh${NC}"
         echo ""
         exit 1
     fi
 }
 
 # =============================================================================
-# Bannière de bienvenue
+# Welcome
 # =============================================================================
 
 show_welcome() {
     clear
     echo ""
     echo -e "${BOLD}${CYAN}"
-    echo "  ╔═══════════════════════════════════════════════════════════════╗"
-    echo "  ║                                                               ║"
-    echo "  ║   🔐  POST-QUANTUM PKI LAB                                    ║"
-    echo "  ║                                                               ║"
-    echo "  ║   QUICK START : Ma première PKI                               ║"
-    echo "  ║                                                               ║"
-    echo "  ╚═══════════════════════════════════════════════════════════════╝"
+    echo "  =============================================="
+    echo "   QUICK START: My First PKI"
+    echo "  =============================================="
     echo -e "${NC}"
     echo ""
-    echo -e "  ${BOLD}Durée estimée :${NC} 10 minutes"
-    echo -e "  ${BOLD}Algorithme    :${NC} ECDSA P-384 (classique)"
+    echo "  You will:"
+    echo "    1. Create a Certificate Authority (CA)"
+    echo "    2. Issue a TLS certificate"
+    echo "    3. Verify the certificate"
+    echo "    4. Compare with Post-Quantum"
     echo ""
-    echo "  Dans ce Quick Start, tu vas :"
-    echo ""
-    echo "    1. Créer ta propre Autorité de Certification (CA)"
-    echo "    2. Émettre un certificat TLS pour un serveur"
-    echo "    3. Vérifier que ton certificat est valide"
-    echo "    4. Découvrir la différence avec le Post-Quantum"
-    echo ""
-    echo -e "  ${DIM}Tu vas taper les commandes toi-même pour mieux retenir.${NC}"
+    echo -e "  ${DIM}Duration: ~10 minutes${NC}"
     echo ""
 }
 
 # =============================================================================
-# Étape 1 : Créer ta CA
+# Step 1: Create CA
 # =============================================================================
 
-etape_1_creer_ca() {
-    etape "Créer ta Autorité de Certification (CA)" \
-          "Une CA est l'entité qui signe les certificats. C'est la racine de confiance."
+step_1_create_ca() {
+    step 1 "Create your Certificate Authority (CA)"
 
-    echo "  Une CA possède :"
-    echo "    - Une clé privée (ca.key) → garde-la secrète !"
-    echo "    - Un certificat auto-signé (ca.crt) → distribue-le"
+    echo "  A CA is the root of trust. It signs all certificates."
     echo ""
-    echo -e "  ${BOLD}Algorithme choisi :${NC} ECDSA P-384"
-    echo "    - Courbe elliptique standard (NIST)"
-    echo "    - 192 bits de sécurité"
-    echo "    - Clés et signatures compactes"
+    echo "  A CA has:"
+    echo "    - ca.key: private key (keep secret!)"
+    echo "    - ca.crt: self-signed certificate (distribute)"
     echo ""
 
     local ca_dir="$LEVEL_WORKSPACE/classic-ca"
 
-    # Vérifier si la CA existe déjà
     if [[ -f "$ca_dir/ca.crt" ]]; then
-        echo -e "${YELLOW}[INFO]${NC} Ta CA existe déjà ! On la réutilise."
-        echo ""
-        validate_file "$ca_dir/ca.crt" "Certificat CA"
-        validate_file "$ca_dir/ca.key" "Clé privée CA"
-        echo ""
-        learned "Une CA peut être réutilisée pour émettre plusieurs certificats"
+        info "CA already exists, reusing it."
+        validate_files "$ca_dir" "ca.crt" "ca.key"
         return 0
     fi
 
-    # L'utilisateur tape la commande
-    teach_cmd "pki init-ca --name \"Ma Premiere CA\" --algorithm ecdsa-p384 --dir $ca_dir" \
-              "Cette commande initialise une nouvelle CA avec l'algorithme ECDSA P-384"
+    run_cmd "$PKI_BIN init-ca --name 'My First CA' --algorithm ecdsa-p384 --dir $ca_dir" \
+            "Creating CA with ECDSA P-384..."
 
-    # Validation
-    echo ""
     validate_files "$ca_dir" "ca.crt" "ca.key" "index.txt" "serial"
-
-    checkpoint "CA créée avec succès !"
-
-    # Ce qu'on a appris
-    learned "pki init-ca crée une CA avec clé + certificat auto-signé"
 }
 
 # =============================================================================
-# Étape 2 : Émettre un certificat TLS
+# Step 2: Issue TLS certificate
 # =============================================================================
 
-etape_2_emettre_cert() {
-    etape "Émettre un certificat TLS" \
-          "Un certificat TLS permet à un serveur de prouver son identité."
+step_2_issue_cert() {
+    step 2 "Issue a TLS certificate"
 
-    echo "  Pour un certificat TLS serveur, on a besoin de :"
-    echo "    - Un Common Name (CN) : le nom du serveur"
-    echo "    - Des DNS SANs : les noms de domaine alternatifs"
-    echo "    - Un profil : ec/tls-server (certificat serveur ECDSA)"
+    echo "  A TLS certificate proves server identity."
+    echo ""
+    echo "  We need:"
+    echo "    - Common Name (CN): server name"
+    echo "    - DNS SAN: domain names"
+    echo "    - Profile: ec/tls-server"
     echo ""
 
     local ca_dir="$LEVEL_WORKSPACE/classic-ca"
     local cert_out="$LEVEL_WORKSPACE/server.crt"
     local key_out="$LEVEL_WORKSPACE/server.key"
 
-    # Vérifier si le certificat existe déjà
     if [[ -f "$cert_out" ]]; then
-        echo -e "${YELLOW}[INFO]${NC} Un certificat serveur existe déjà !"
-        echo ""
-        validate_file "$cert_out" "Certificat serveur"
-        validate_file "$key_out" "Clé privée serveur"
-        echo ""
-        learned "Tu peux émettre autant de certificats que tu veux avec ta CA"
+        info "Certificate already exists."
+        validate_file "$cert_out" "Server certificate"
+        validate_file "$key_out" "Server private key"
         return 0
     fi
 
-    # L'utilisateur tape la commande
-    teach_cmd "pki issue --ca-dir $ca_dir --profile ec/tls-server --cn \"mon-serveur.local\" --dns \"mon-serveur.local\" --out $cert_out --key-out $key_out" \
-              "Cette commande demande à ta CA de signer un nouveau certificat"
+    run_cmd "$PKI_BIN issue --ca-dir $ca_dir --profile ec/tls-server --cn 'my-server.local' --dns 'my-server.local' --out $cert_out --key-out $key_out" \
+            "Issuing TLS certificate..."
 
-    # Validation
+    validate_file "$cert_out" "Server certificate"
+    validate_file "$key_out" "Server private key"
+
     echo ""
-    validate_file "$cert_out" "Certificat TLS"
-    validate_file "$key_out" "Clé privée TLS"
-
-    # Afficher les infos du certificat
-    echo ""
-    echo -e "  ${BOLD}Détails du certificat :${NC}"
-    "$PKI_BIN" info "$cert_out" 2>/dev/null | head -15 | sed 's/^/    /'
-
-    checkpoint "Certificat TLS émis !"
-
-    learned "pki issue utilise ta CA pour signer un nouveau certificat"
+    echo -e "${BOLD}Certificate details:${NC}"
+    "$PKI_BIN" info "$cert_out" 2>/dev/null | head -10 | sed 's/^/  /'
 }
 
 # =============================================================================
-# Étape 3 : Vérifier le certificat
+# Step 3: Verify certificate
 # =============================================================================
 
-etape_3_verifier() {
-    etape "Vérifier ton certificat" \
-          "La vérification confirme que le certificat est valide et signé par ta CA."
+step_3_verify() {
+    step 3 "Verify the certificate"
 
-    echo "  La vérification vérifie :"
-    echo "    - La signature de la CA"
-    echo "    - La période de validité"
-    echo "    - La chaîne de confiance"
+    echo "  Verification checks:"
+    echo "    - CA signature is valid"
+    echo "    - Certificate not expired"
+    echo "    - Chain of trust is complete"
     echo ""
 
     local ca_dir="$LEVEL_WORKSPACE/classic-ca"
     local cert_file="$LEVEL_WORKSPACE/server.crt"
 
-    # L'utilisateur tape la commande
-    teach_cmd "pki verify --ca $ca_dir/ca.crt --cert $cert_file" \
-              "Cette commande vérifie que le certificat est bien signé par ta CA"
-
-    checkpoint "Certificat vérifié avec succès !"
-
-    learned "pki verify valide la chaîne de confiance"
+    run_cmd "$PKI_BIN verify --ca $ca_dir/ca.crt --cert $cert_file" \
+            "Verifying certificate chain..."
 }
 
 # =============================================================================
-# Étape 4 : Découvrir le Post-Quantum
+# Step 4: Compare with Post-Quantum
 # =============================================================================
 
-etape_4_decouvrir_pqc() {
-    etape "Découvrir la différence Post-Quantum" \
-          "Comparons ton certificat classique avec un certificat post-quantique."
+step_4_compare_pqc() {
+    step 4 "Compare with Post-Quantum"
 
-    echo "  Le Post-Quantum (PQC) utilise des algorithmes résistants"
-    echo "  aux ordinateurs quantiques :"
+    echo "  Post-Quantum algorithms resist quantum computer attacks."
     echo ""
-    echo "    - ML-DSA (ex-Dilithium) : signatures"
-    echo "    - ML-KEM (ex-Kyber) : échange de clés"
-    echo ""
-    echo -e "  ${CYAN}Créons une CA post-quantique pour comparer...${NC}"
+    echo "  ML-DSA (FIPS 204): lattice-based signatures"
+    echo "  ML-KEM (FIPS 203): lattice-based key exchange"
     echo ""
 
     local pqc_ca="$LEVEL_WORKSPACE/pqc-ca-demo"
 
-    # Création automatique (pas besoin de taper)
-    demo_cmd "$PKI_BIN init-ca --name 'PQC Demo CA' --algorithm ml-dsa-65 --dir $pqc_ca" \
-             "Création d'une CA avec ML-DSA-65..."
+    run_cmd "$PKI_BIN init-ca --name 'PQC Demo CA' --algorithm ml-dsa-65 --dir $pqc_ca" \
+            "Creating PQC CA with ML-DSA-65..."
 
-    # Émettre un certificat PQC
-    demo_cmd "$PKI_BIN issue --ca-dir $pqc_ca --profile ml-dsa/tls-server --cn 'pqc-server.local' --dns 'pqc-server.local' --out $LEVEL_WORKSPACE/pqc-server.crt --key-out $LEVEL_WORKSPACE/pqc-server.key" \
-             "Émission d'un certificat PQC..."
+    run_cmd "$PKI_BIN issue --ca-dir $pqc_ca --profile ml-dsa/tls-server --cn 'pqc-server.local' --dns 'pqc-server.local' --out $LEVEL_WORKSPACE/pqc-server.crt --key-out $LEVEL_WORKSPACE/pqc-server.key" \
+            "Issuing PQC certificate..."
 
-    echo ""
-
-    # Comparaison des tailles
-    local classic_ca_size=$(wc -c < "$LEVEL_WORKSPACE/classic-ca/ca.crt" | tr -d ' ')
-    local classic_cert_size=$(wc -c < "$LEVEL_WORKSPACE/server.crt" | tr -d ' ')
-    local classic_key_size=$(wc -c < "$LEVEL_WORKSPACE/server.key" | tr -d ' ')
-
-    local pqc_ca_size=$(wc -c < "$pqc_ca/ca.crt" | tr -d ' ')
-    local pqc_cert_size=$(wc -c < "$LEVEL_WORKSPACE/pqc-server.crt" | tr -d ' ')
-    local pqc_key_size=$(wc -c < "$LEVEL_WORKSPACE/pqc-server.key" | tr -d ' ')
+    # Size comparison
+    local classic_cert=$(wc -c < "$LEVEL_WORKSPACE/server.crt" | tr -d ' ')
+    local classic_key=$(wc -c < "$LEVEL_WORKSPACE/server.key" | tr -d ' ')
+    local pqc_cert=$(wc -c < "$LEVEL_WORKSPACE/pqc-server.crt" | tr -d ' ')
+    local pqc_key=$(wc -c < "$LEVEL_WORKSPACE/pqc-server.key" | tr -d ' ')
 
     echo ""
-    echo -e "${BOLD}┌─────────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${BOLD}│  COMPARAISON : Classique (ECDSA) vs Post-Quantum (ML-DSA)       │${NC}"
-    echo -e "${BOLD}├─────────────────────────────────────────────────────────────────┤${NC}"
-    printf "${BOLD}│${NC}  %-20s %12s %12s %12s ${BOLD}│${NC}\n" "Fichier" "ECDSA" "ML-DSA" "Ratio"
-    echo -e "${BOLD}├─────────────────────────────────────────────────────────────────┤${NC}"
-
-    # CA Certificate
-    local ca_ratio=$(echo "scale=1; $pqc_ca_size / $classic_ca_size" | bc)
-    printf "${BOLD}│${NC}  %-20s %10s B %10s B %10sx ${BOLD}│${NC}\n" "CA Certificate" "$classic_ca_size" "$pqc_ca_size" "$ca_ratio"
-
-    # Server Certificate
-    local cert_ratio=$(echo "scale=1; $pqc_cert_size / $classic_cert_size" | bc)
-    printf "${BOLD}│${NC}  %-20s %10s B %10s B %10sx ${BOLD}│${NC}\n" "Server Certificate" "$classic_cert_size" "$pqc_cert_size" "$cert_ratio"
-
-    # Private Key
-    local key_ratio=$(echo "scale=1; $pqc_key_size / $classic_key_size" | bc)
-    printf "${BOLD}│${NC}  %-20s %10s B %10s B %10sx ${BOLD}│${NC}\n" "Private Key" "$classic_key_size" "$pqc_key_size" "$key_ratio"
-
-    echo -e "${BOLD}└─────────────────────────────────────────────────────────────────┘${NC}"
+    echo -e "${BOLD}Size comparison:${NC}"
     echo ""
+    printf "  %-20s %10s %10s %10s\n" "" "ECDSA" "ML-DSA" "Ratio"
+    printf "  %-20s %10s %10s %10s\n" "----" "-----" "------" "-----"
 
-    echo -e "  ${YELLOW}Observation :${NC} Les certificats PQC sont plus gros (~${cert_ratio}x)"
-    echo "  Mais c'est le prix à payer pour résister aux ordinateurs quantiques."
+    local cert_ratio=$(echo "scale=1; $pqc_cert / $classic_cert" | bc)
+    printf "  %-20s %8s B %8s B %8sx\n" "Certificate" "$classic_cert" "$pqc_cert" "$cert_ratio"
+
+    local key_ratio=$(echo "scale=1; $pqc_key / $classic_key" | bc)
+    printf "  %-20s %8s B %8s B %8sx\n" "Private Key" "$classic_key" "$pqc_key" "$key_ratio"
+
     echo ""
-
-    checkpoint "Comparaison terminée !"
-
-    learned "Le PQC utilise les mêmes commandes, seul l'algorithme change"
+    warn "PQC certificates are larger (~${cert_ratio}x) but quantum-resistant."
 }
 
 # =============================================================================
-# Récapitulatif final
+# Summary
 # =============================================================================
 
-show_recap_final() {
+show_final() {
     echo ""
-    echo -e "${BOLD}${BG_GREEN}${WHITE} QUICK START TERMINÉ ! ${NC}"
+    echo -e "${BOLD}${GREEN}=== QUICK START COMPLETE ===${NC}"
+
+    show_summary "What you accomplished:" \
+        "Created a CA (ECDSA P-384)" \
+        "Issued a TLS certificate" \
+        "Verified the chain of trust" \
+        "Compared classical vs post-quantum sizes"
+
+    echo -e "  ${BOLD}Your files:${NC} ${CYAN}$LEVEL_WORKSPACE/${NC}"
     echo ""
 
-    show_recap "Ce que tu as accompli :" \
-        "Créé une CA (Autorité de Certification) ECDSA P-384" \
-        "Émis un certificat TLS pour ton serveur" \
-        "Vérifié la chaîne de confiance" \
-        "Comparé avec le Post-Quantum (ML-DSA)"
+    show_takeaway "The PKI model is the same. Only the algorithm changes.
+Migrating to PQC is an engineering problem, not magic."
 
-    echo -e "  ${BOLD}Tes fichiers sont dans :${NC}"
-    echo -e "    ${CYAN}$LEVEL_WORKSPACE/${NC}"
-    echo ""
-
-    show_lesson "La PKI ne change pas. Seul l'algorithme change.
-Passer au Post-Quantum, c'est juste changer un paramètre."
-
-    echo ""
-    echo -e "${BOLD}Et maintenant ?${NC}"
-    echo ""
-    echo "  Ta CA classique que tu viens de créer... elle sera cassable"
-    echo "  par un ordinateur quantique. Quand ? C'est LA question."
-    echo ""
-    echo "  Pour comprendre l'urgence et commencer ta migration :"
-    echo ""
-    echo -e "    ${CYAN}./journey/00-revelation/demo.sh${NC}"
-    echo ""
-    echo "  Ou lance le menu principal :"
-    echo ""
-    echo -e "    ${CYAN}./start.sh${NC}"
-    echo ""
+    show_next "./journey/00-revelation/demo.sh" "The Revelation: Why PQC matters"
 }
 
 # =============================================================================
@@ -299,35 +211,24 @@ Passer au Post-Quantum, c'est juste changer un paramètre."
 # =============================================================================
 
 main() {
-    # Vérifications
     check_pki_installed
-
-    # Initialiser le workspace (persistant)
     init_workspace "quickstart"
 
-    # Afficher la bienvenue
     show_welcome
-
-    wait_enter "Appuie sur Entrée pour commencer..."
-
-    # Initialiser les étapes
-    init_etapes 4
-
-    # Exécuter les étapes
-    etape_1_creer_ca
     wait_enter
 
-    etape_2_emettre_cert
+    step_1_create_ca
     wait_enter
 
-    etape_3_verifier
+    step_2_issue_cert
     wait_enter
 
-    etape_4_decouvrir_pqc
+    step_3_verify
+    wait_enter
 
-    # Récapitulatif
-    show_recap_final
+    step_4_compare_pqc
+
+    show_final
 }
 
-# Exécution
 main "$@"

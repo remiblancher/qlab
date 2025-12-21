@@ -25,10 +25,7 @@ git clone https://github.com/remiblancher/post-quantum-pki-lab.git
 cd post-quantum-pki-lab
 ./tooling/install.sh
 
-# 2. Launch menu
-./start.sh
-
-# 3. Or directly the Quick Start (10 min)
+# 2. Run the Quick Start (10 min)
 ./quickstart/demo.sh
 ```
 
@@ -84,7 +81,7 @@ cd post-quantum-pki-lab
 
 ```
 post-quantum-pki-lab/
-├── start.sh                    # Main menu
+├── reset.sh                    # Reset workspaces
 ├── quickstart/                 # Quick Start (10 min)
 │   ├── demo.sh
 │   └── README.md
@@ -133,42 +130,17 @@ post-quantum-pki-lab/
 
 ---
 
-## Interactive Mode
+## Workspace
 
-This lab uses an interactive mode where you type the important commands:
-
-```bash
-┌─────────────────────────────────────────────────────────────────┐
-│  MISSION 1: Create your CA                                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  A CA (Certificate Authority) is the trust anchor.             │
-│  It signs all your certificates.                                │
-│                                                                 │
-│  >>> Type this command:                                         │
-│                                                                 │
-│      pki init-ca --name "My CA" --algorithm ml-dsa-65          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-
-$ pki init-ca --name "My CA" --algorithm ml-dsa-65
-✓ CA created: ca.crt (ML-DSA-65)
-```
-
-Complex commands are executed automatically with explanation.
-
----
-
-## Persistent Workspace
-
-Each level has its own workspace. Your CAs and certificates are preserved between sessions:
+Each level has its own workspace. Your CAs and certificates are preserved between sessions.
 
 ```bash
-# View workspace status
-./start.sh  # then option "s"
+# Reset a specific level
+./reset.sh quickstart
+./reset.sh level-1
 
-# Reset a level
-./start.sh  # then option "r"
+# Reset all workspaces
+./reset.sh all
 ```
 
 ---
