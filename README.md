@@ -17,17 +17,15 @@ This lab demonstrates:
 
 ---
 
-## Quick Start
+## Installation
 
 ```bash
-# 1. Clone and install
 git clone https://github.com/remiblancher/post-quantum-pki-lab.git
 cd post-quantum-pki-lab
 ./tooling/install.sh
-
-# 2. Run the Quick Start (10 min)
-./quickstart/demo.sh
 ```
+
+Then start with: `./quickstart/demo.sh`
 
 ---
 
