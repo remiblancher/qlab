@@ -43,6 +43,9 @@ pki issue --ca-dir ./classic-ca \
     --dns classic.example.com \
     --out classic-server.crt \
     --key-out classic-server.key
+
+# Inspect
+pki info classic-server.crt
 ```
 
 ### Step 2: Post-Quantum (ML-DSA-65)
@@ -58,9 +61,14 @@ pki issue --ca-dir ./pqc-ca \
     --dns pq.example.com \
     --out pq-server.crt \
     --key-out pq-server.key
+
+# Inspect
+pki info pq-server.crt
 ```
 
-**Notice anything?** The workflow is identical. Only the profile name changes.
+**Notice anything?** The workflow is identical. Only the algorithm name changes.
+
+> **Tip:** For detailed ASN.1 output, use `openssl x509 -in <cert> -text -noout`
 
 ## Expected Results
 
