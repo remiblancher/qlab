@@ -25,15 +25,26 @@ PQC_CA="$DEMO_TMP/pqc-ca"
 # Introduction
 # =============================================================================
 
-echo -e "${BOLD}WHAT YOU'LL DO:${NC}"
-echo "  1. Create a classical CA (ECDSA P-384)"
-echo "  2. Issue a TLS certificate"
-echo "  3. Create a post-quantum CA (ML-DSA-65)"
-echo "  4. Issue a TLS certificate"
-echo "  5. Compare sizes"
+echo -e "${BOLD}Classical vs Post-Quantum: Same PKI, Different Crypto${NC}"
+echo ""
+echo -e "${DIM}Key Message: The PKI doesn't change. Only the algorithm changes.${NC}"
 echo ""
 
-echo -e "${DIM}A profile defines: algorithm + validity + X.509 extensions${NC}"
+echo -e "${BOLD}SCENARIO:${NC}"
+echo "  \"I want to issue post-quantum certificates."
+echo "   Does it change my PKI workflow?\""
+echo ""
+echo -e "  Short answer: ${GREEN}No.${NC} The workflow is identical."
+echo "  Only the algorithm name changes. This demo proves it."
+echo ""
+
+echo -e "${BOLD}WHAT WE'LL DO:${NC}"
+echo ""
+printf "  %-12s %-20s %-20s\n" "Step" "Classical" "Post-Quantum"
+echo "  ──────────────────────────────────────────────────────"
+printf "  %-12s %-20s %-20s\n" "Create CA" "ECDSA P-384" "ML-DSA-65"
+printf "  %-12s %-20s %-20s\n" "Issue cert" "Same workflow" "Same workflow"
+printf "  %-12s %-20s %-20s\n" "Result" "Vulnerable" "Quantum-resistant"
 echo ""
 
 pause "Press Enter to start..."
