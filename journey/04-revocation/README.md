@@ -1,4 +1,4 @@
-# Certificate Revocation
+# Oops, We Need to Revoke!
 
 ## Incident Response: When Keys Are Compromised
 
