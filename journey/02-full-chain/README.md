@@ -1,29 +1,16 @@
-# Mission 1: "Build Your Quantum-Safe Foundation"
+# Full PQC Chain of Trust
 
-## Full PQC Chain with ML-DSA
+## Build a Complete PQC PKI Hierarchy
 
-### The Problem
+> **Key Message:** Build a complete quantum-resistant PKI from root to end-entity.
 
-Your classic CA (ECDSA) will be breakable by a quantum computer.
-All the certificates it signed will become untrustworthy.
+---
 
-```
-TODAY                                IN 10-15 YEARS
-─────                                ──────────────
+## The Scenario
 
-   Your ECDSA CA                        Quantum Computer
-       │                                       │
-       │ Signs                                 │ Breaks ECDSA
-       ▼                                       ▼
-  [Certificate]  ───────────────────────►  [FORGED Certificate]
+*"I'm ready to go fully quantum-safe. How do I build a complete PQC PKI from root to end-entity?"*
 
-  "This server is                        "Anyone can forge
-   authentic"                             this certificate"
-```
-
-### The Solution
-
-Create a new CA hierarchy with **ML-DSA** (post-quantum).
+This demo shows a production-ready 3-level PKI hierarchy using only post-quantum algorithms. No classical cryptography anywhere in the chain.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -52,41 +39,136 @@ Create a new CA hierarchy with **ML-DSA** (post-quantum).
 
 ---
 
-## What You'll Do
+## What This Demo Shows
 
-1. **Create the Root CA** with ML-DSA-87 (maximum security level)
-2. **Create the Issuing CA** with ML-DSA-65 (signed by Root)
-3. **Issue a TLS certificate** for a server
-4. **Verify the chain of trust**
-
----
-
-## ML-DSA Security Levels
-
-| Level | Algorithm | Security | Usage |
-|-------|-----------|----------|-------|
-| 2 | ML-DSA-44 | 128 bits | Lightweight applications |
-| 3 | ML-DSA-65 | 192 bits | **General use** |
-| 5 | ML-DSA-87 | 256 bits | **Root CA, high security** |
-
-**Recommendation**: ML-DSA-87 for Root, ML-DSA-65 for everything else.
+| Level | Algorithm | Security Level |
+|-------|-----------|----------------|
+| Root CA | ML-DSA-87 | NIST Level 5 (~256-bit) |
+| Issuing CA | ML-DSA-65 | NIST Level 3 (~192-bit) |
+| TLS Server | ML-DSA-65 | NIST Level 3 (~192-bit) |
 
 ---
 
-## What You'll Have at the End
-
-- Post-quantum Root CA (ML-DSA-87)
-- Post-quantum Issuing CA (ML-DSA-65)
-- Post-quantum TLS certificate
-- Verified chain of trust
-
----
-
-## Run the Mission
+## Run the Demo
 
 ```bash
 ./demo.sh
 ```
+
+---
+
+## The Commands
+
+### Step 1: Create Root CA (ML-DSA-87)
+
+```bash
+# Initialize the root CA with highest security level
+pki init-ca --name "PQC Root CA" \
+    --org "Demo Organization" \
+    --algorithm ml-dsa-87 \
+    --dir ./pqc-root-ca
+
+# Inspect
+pki info ./pqc-root-ca/ca.crt
+```
+
+### Step 2: Create Issuing CA (ML-DSA-65)
+
+```bash
+# Create issuing CA signed by root
+pki init-ca --name "PQC Issuing CA" \
+    --org "Demo Organization" \
+    --algorithm ml-dsa-65 \
+    --parent ./pqc-root-ca \
+    --dir ./pqc-issuing-ca
+
+# Inspect
+pki info ./pqc-issuing-ca/ca.crt
+```
+
+### Step 3: Issue TLS Server Certificate
+
+```bash
+# Issue end-entity certificate for TLS server
+pki issue --ca-dir ./pqc-issuing-ca \
+    --profile tls-server \
+    --cn server.example.com \
+    --dns server.example.com \
+    --out server.crt \
+    --key-out server.key
+
+# Inspect
+pki info server.crt
+```
+
+> **Tip:** For detailed ASN.1 output, use `openssl x509 -in <cert> -text -noout`
+
+---
+
+## Size Comparison
+
+| Certificate | Classical (ECDSA) | Full PQC | Ratio |
+|-------------|-------------------|----------|-------|
+| Root CA | ~1 KB | ~7 KB | ~7x |
+| Issuing CA | ~1 KB | ~6 KB | ~6x |
+| TLS Server | ~1 KB | ~6 KB | ~6x |
+| **Full chain** | ~3 KB | ~19 KB | ~6x |
+
+*Approximate sizes. The trade-off: larger certificates for quantum resistance.*
+
+---
+
+## Algorithm Selection Guide
+
+| Use Case | Recommended Algorithm | Why |
+|----------|----------------------|-----|
+| Root CA | ML-DSA-87 | Maximum security, long-lived |
+| Issuing CA | ML-DSA-65 | Balance security/performance |
+| TLS Server | ML-DSA-65 | Server authentication |
+| TLS Client | ML-DSA-44 | Constrained devices OK |
+| Code Signing | ML-DSA-65 | Long-lived signatures |
+
+### When to Use SLH-DSA Instead
+
+SLH-DSA (hash-based signatures) is a conservative alternative:
+
+| Algorithm | Pros | Cons |
+|-----------|------|------|
+| **ML-DSA** | Small keys, fast verify | Newer, lattice-based |
+| **SLH-DSA** | Well-understood math | Large signatures (~17-49 KB) |
+
+Use SLH-DSA when:
+- Maximum cryptographic conservatism is required
+- Signature size is not a constraint
+- You want hash-based (no lattice assumptions)
+
+---
+
+## What You Learned
+
+1. **Same workflow:** Creating a PQC hierarchy uses identical PKI concepts
+2. **Algorithm stacking:** Root uses highest level, decreasing down the chain
+3. **Size trade-off:** ~6x larger certificates for quantum resistance
+
+---
+
+## When to Deploy Full PQC
+
+| Scenario | Recommendation |
+|----------|----------------|
+| New internal PKI | **Full PQC** - Start quantum-safe |
+| Public-facing servers | Hybrid (UC-03) - Legacy client support |
+| Government/Military | **Full PQC** - Regulatory requirements |
+| IoT (long-lived) | **Full PQC** - Future-proof devices |
+| Short-lived tokens | Classical OK - Low SNDL risk |
+
+---
+
+## References
+
+- [NIST FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
+- [NIST FIPS 205: SLH-DSA Standard](https://csrc.nist.gov/pubs/fips/205/final)
+- [NSA CNSA 2.0 Guidelines](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)
 
 ---
 
