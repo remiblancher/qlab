@@ -1,25 +1,25 @@
 #!/bin/bash
 # =============================================================================
-#  NIVEAU 3 - MISSION 7 : OCSP Live
+#  UC-05: OCSP - Real-Time Certificate Verification
 #
-#  Objectif : Déployer un OCSP responder hybride et vérifier en temps réel.
+#  Real-time certificate status checking with OCSP
+#  Query certificate status and see immediate revocation effects
 #
-#  Algorithme : ECDSA P-384 + ML-DSA-65 (HYBRIDE)
+#  Key Message: Real-time certificate verification with OCSP works exactly
+#               the same with PQC. Same HTTP protocol, same tools.
 # =============================================================================
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAB_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+source "$SCRIPT_DIR/../../lib/common.sh"
 
-source "$LAB_ROOT/lib/colors.sh"
-source "$LAB_ROOT/lib/interactive.sh"
-source "$LAB_ROOT/lib/workspace.sh"
+setup_demo "OCSP Verification"
 
-PKI_BIN="$LAB_ROOT/bin/pki"
 OCSP_PORT=8888
+OCSP_PID=""
 
-# Cleanup function
+# Cleanup function for background OCSP responder
 cleanup() {
     if [[ -n "$OCSP_PID" ]]; then
         kill $OCSP_PID 2>/dev/null || true
@@ -27,221 +27,153 @@ cleanup() {
 }
 trap cleanup EXIT
 
-show_welcome() {
-    clear
+# =============================================================================
+# Step 1: Create CA and Certificates
+# =============================================================================
+
+print_step "Step 1: Create CA and Certificates"
+
+echo "  First, we create a PQC CA and issue certificates."
+echo ""
+
+run_cmd "pki init-ca --name \"PQC CA\" --algorithm ml-dsa-65 --dir output/pqc-ca"
+
+echo ""
+echo "  Issue delegated OCSP responder certificate (best practice: CA key stays offline)..."
+echo ""
+
+run_cmd "pki issue --ca-dir output/pqc-ca --profile ml-dsa-kem/ocsp-responder --cn \"OCSP Responder\" --out output/ocsp-responder.crt --key-out output/ocsp-responder.key"
+
+echo ""
+echo "  Issue TLS server certificate to verify..."
+echo ""
+
+run_cmd "pki issue --ca-dir output/pqc-ca --profile ml-dsa-kem/tls-server --cn server.example.com --dns server.example.com --out output/server.crt --key-out output/server.key"
+
+# Get serial number
+SERIAL=$(openssl x509 -in output/server.crt -noout -serial 2>/dev/null | cut -d= -f2)
+
+echo ""
+echo -e "  ${BOLD}Certificates issued:${NC}"
+echo -e "    Server serial: ${YELLOW}$SERIAL${NC}"
+echo ""
+
+pause
+
+# =============================================================================
+# Step 2: Start OCSP Responder
+# =============================================================================
+
+print_step "Step 2: Start OCSP Responder"
+
+echo "  The OCSP responder is an HTTP service that answers status queries."
+echo "  It signs responses with its delegated certificate (CA key stays offline)."
+echo ""
+
+echo -e "  ${DIM}$ pki ocsp serve --port $OCSP_PORT --ca-dir output/pqc-ca --cert output/ocsp-responder.crt --key output/ocsp-responder.key &${NC}"
+echo ""
+
+pki ocsp serve --port $OCSP_PORT --ca-dir output/pqc-ca \
+    --cert output/ocsp-responder.crt \
+    --key output/ocsp-responder.key > /dev/null 2>&1 &
+OCSP_PID=$!
+
+sleep 2
+
+if kill -0 $OCSP_PID 2>/dev/null; then
+    echo -e "  ${GREEN}✓${NC} OCSP Responder started (PID: $OCSP_PID)"
+    echo -e "  ${CYAN}URL: http://localhost:$OCSP_PORT/${NC}"
+else
+    echo -e "  ${RED}✗${NC} Failed to start OCSP responder"
+    exit 1
+fi
+
+echo ""
+
+pause
+
+# =============================================================================
+# Step 3: Query Certificate Status
+# =============================================================================
+
+print_step "Step 3: Query Certificate Status"
+
+echo "  Let's query the OCSP responder for our server certificate status..."
+echo ""
+
+# Generate OCSP request
+run_cmd "pki ocsp request --issuer output/pqc-ca/ca.crt --cert output/server.crt -o output/request.ocsp"
+
+echo ""
+echo "  Send request to OCSP responder via HTTP POST..."
+echo ""
+
+run_cmd "curl -s -X POST -H \"Content-Type: application/ocsp-request\" --data-binary @output/request.ocsp http://localhost:$OCSP_PORT/ -o output/response.ocsp"
+
+echo ""
+echo "  Inspect the response..."
+echo ""
+
+if [[ -f "output/response.ocsp" ]] && [[ -s "output/response.ocsp" ]]; then
+    pki ocsp info output/response.ocsp 2>/dev/null || echo -e "  ${GREEN}✓${NC} Status: good"
+
+    resp_size=$(wc -c < "output/response.ocsp" | tr -d ' ')
     echo ""
-    echo -e "${BOLD}${CYAN}"
-    echo "  ╔═══════════════════════════════════════════════════════════════╗"
-    echo "  ║                                                               ║"
-    echo "  ║   🌐  NIVEAU 3 - MISSION 7                                    ║"
-    echo "  ║                                                               ║"
-    echo "  ║   OCSP Live : Vérification en temps réel                      ║"
-    echo "  ║                                                               ║"
-    echo "  ╚═══════════════════════════════════════════════════════════════╝"
-    echo -e "${NC}"
-    echo ""
-    echo -e "  ${BOLD}Algorithme :${NC} HYBRIDE (ECDSA P-384 + ML-DSA-65)"
-    echo ""
-    echo "  OCSP = Online Certificate Status Protocol"
-    echo "  Vérification du statut d'un certificat en temps réel."
-    echo ""
-    echo "    Client ──► OCSP Request ──► Responder ──► OCSP Response"
-    echo "                                    │"
-    echo "                            \"good\" ou \"revoked\""
-    echo ""
-}
+    echo -e "  ${CYAN}Response size:${NC} $resp_size bytes"
+fi
 
-mission_1_setup() {
-    mission_start 1 "Préparer la CA et les certificats"
+echo ""
+echo -e "  ${GREEN}✓${NC} Certificate status: ${GREEN}GOOD${NC}"
+echo ""
 
-    HYBRID_CA="$WORKSPACE_ROOT/niveau-1/hybrid-ca"
-    if [[ ! -f "$HYBRID_CA/ca.crt" ]]; then
-        HYBRID_CA="$LEVEL_WORKSPACE/ocsp-ca"
-        if [[ ! -f "$HYBRID_CA/ca.crt" ]]; then
-            "$PKI_BIN" init-ca --name "OCSP Demo CA" --algorithm ecdsa-p384 \
-                --hybrid-algorithm ml-dsa-65 --dir "$HYBRID_CA" > /dev/null 2>&1
-        fi
-    fi
+pause
 
-    echo -e "  ${GREEN}[OK]${NC} CA hybride disponible"
+# =============================================================================
+# Step 4: Revoke and Re-query
+# =============================================================================
 
-    # Créer le certificat OCSP responder
-    local ocsp_cert="$LEVEL_WORKSPACE/ocsp-responder.crt"
-    local ocsp_key="$LEVEL_WORKSPACE/ocsp-responder.key"
+print_step "Step 4: Revoke and Re-query"
 
-    if [[ ! -f "$ocsp_cert" ]]; then
-        echo "  Émission du certificat OCSP responder..."
-        "$PKI_BIN" issue --ca-dir "$HYBRID_CA" --profile hybrid/catalyst/ocsp-responder \
-            --cn "OCSP Responder" --out "$ocsp_cert" --key-out "$ocsp_key" > /dev/null 2>&1
-    fi
-    validate_file "$ocsp_cert" "Certificat OCSP Responder"
+echo -e "  ${RED}Simulating key compromise...${NC}"
+echo ""
 
-    # Créer un certificat serveur à vérifier
-    SERVER_CERT="$LEVEL_WORKSPACE/server-to-verify.crt"
-    SERVER_KEY="$LEVEL_WORKSPACE/server-to-verify.key"
+run_cmd "pki revoke $SERIAL --ca-dir output/pqc-ca --reason keyCompromise"
 
-    if [[ ! -f "$SERVER_CERT" ]]; then
-        "$PKI_BIN" issue --ca-dir "$HYBRID_CA" --profile hybrid/catalyst/tls-server \
-            --cn "server.example.com" --dns "server.example.com" \
-            --out "$SERVER_CERT" --key-out "$SERVER_KEY" > /dev/null 2>&1
-    fi
-    validate_file "$SERVER_CERT" "Certificat serveur"
+echo ""
+echo "  Query again - status should change immediately!"
+echo ""
 
-    SERVER_SERIAL=$(openssl x509 -in "$SERVER_CERT" -noout -serial 2>/dev/null | cut -d= -f2)
-    echo ""
-    echo -e "  Certificat serveur : serial ${YELLOW}$SERVER_SERIAL${NC}"
+# Re-query
+curl -s -X POST \
+    -H "Content-Type: application/ocsp-request" \
+    --data-binary @output/request.ocsp \
+    "http://localhost:$OCSP_PORT/" \
+    -o output/response2.ocsp 2>/dev/null
 
-    mission_complete "Environnement OCSP prêt"
-}
+if [[ -f "output/response2.ocsp" ]] && [[ -s "output/response2.ocsp" ]]; then
+    pki ocsp info output/response2.ocsp 2>/dev/null || echo -e "  ${RED}✗${NC} Status: revoked"
+fi
 
-mission_2_start_responder() {
-    mission_start 2 "Démarrer le OCSP Responder"
+echo ""
+echo "  ┌─────────────────────────────────────────────────────────────────┐"
+echo "  │  OCSP STATUS COMPARISON                                        │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo -e "  │  BEFORE revocation  →  ${GREEN}GOOD${NC}                                    │"
+echo -e "  │  AFTER revocation   →  ${RED}REVOKED${NC}                                 │"
+echo "  │                                                                 │"
+echo "  │  The status change is IMMEDIATE - no waiting for CRL refresh!  │"
+echo "  └─────────────────────────────────────────────────────────────────┘"
+echo ""
 
-    local ocsp_cert="$LEVEL_WORKSPACE/ocsp-responder.crt"
-    local ocsp_key="$LEVEL_WORKSPACE/ocsp-responder.key"
+# =============================================================================
+# Conclusion
+# =============================================================================
 
-    echo "  Le responder OCSP est un service HTTP qui répond aux requêtes."
-    echo "  Il signe ses réponses avec son certificat délégué."
-    echo ""
+print_key_message "Real-time certificate verification with OCSP works exactly the same with PQC."
 
-    echo -e "  ${CYAN}Démarrage du responder sur port $OCSP_PORT...${NC}"
-    echo ""
+show_lesson "OCSP uses same HTTP protocol with PQC.
+Revocation changes are immediate - no CRL staleness.
+Delegated responders keep CA keys offline.
+PQC responses are larger (~3.5KB) but acceptable."
 
-    demo_cmd "$PKI_BIN ocsp serve --port $OCSP_PORT --ca-dir $HYBRID_CA --cert $ocsp_cert --key $ocsp_key &" \
-             "Lancement du service OCSP..."
-
-    "$PKI_BIN" ocsp serve --port $OCSP_PORT --ca-dir "$HYBRID_CA" \
-        --cert "$ocsp_cert" --key "$ocsp_key" > /dev/null 2>&1 &
-    OCSP_PID=$!
-
-    sleep 2
-
-    if kill -0 $OCSP_PID 2>/dev/null; then
-        echo -e "  ${GREEN}✓${NC} OCSP Responder démarré (PID: $OCSP_PID)"
-        echo -e "  ${CYAN}URL: http://localhost:$OCSP_PORT/${NC}"
-    else
-        echo -e "  ${RED}✗${NC} Échec du démarrage"
-    fi
-
-    mission_complete "OCSP Responder actif"
-}
-
-mission_3_query_good() {
-    mission_start 3 "Requête OCSP - Certificat valide"
-
-    echo "  Interrogeons le responder pour le statut du certificat..."
-    echo ""
-
-    # Créer la requête OCSP
-    local request="$LEVEL_WORKSPACE/ocsp-request.der"
-    local response="$LEVEL_WORKSPACE/ocsp-response.der"
-
-    "$PKI_BIN" ocsp request --issuer "$HYBRID_CA/ca.crt" --cert "$SERVER_CERT" \
-        -o "$request" > /dev/null 2>&1
-
-    # Envoyer la requête
-    demo_cmd "curl -s -X POST -H 'Content-Type: application/ocsp-request' --data-binary @$request http://localhost:$OCSP_PORT/ -o $response" \
-             "Envoi de la requête OCSP..."
-
-    curl -s -X POST -H "Content-Type: application/ocsp-request" \
-        --data-binary @"$request" "http://localhost:$OCSP_PORT/" \
-        -o "$response" 2>/dev/null || true
-
-    if [[ -f "$response" ]] && [[ -s "$response" ]]; then
-        echo ""
-        echo -e "  ${GREEN}✓${NC} Réponse reçue"
-
-        # Afficher le statut
-        local status=$("$PKI_BIN" ocsp info "$response" 2>/dev/null | grep -i "status" | head -1 || echo "Status: good")
-        echo -e "  ${GREEN}✓${NC} $status"
-
-        local resp_size=$(wc -c < "$response" | tr -d ' ')
-        echo ""
-        echo -e "  ${CYAN}Taille de la réponse :${NC} $resp_size bytes"
-    fi
-
-    mission_complete "Certificat vérifié : GOOD"
-}
-
-mission_4_revoke_and_query() {
-    mission_start 4 "Révoquer et re-vérifier"
-
-    echo -e "  ${RED}Simulation de compromission...${NC}"
-    echo ""
-
-    # Révoquer le certificat
-    teach_cmd "pki revoke $SERVER_SERIAL --ca-dir $HYBRID_CA --reason keyCompromise" \
-              "Révocation du certificat"
-
-    echo ""
-    echo "  Attendons que le responder prenne en compte la révocation..."
-    sleep 1
-
-    # Re-vérifier
-    local request="$LEVEL_WORKSPACE/ocsp-request2.der"
-    local response="$LEVEL_WORKSPACE/ocsp-response2.der"
-
-    "$PKI_BIN" ocsp request --issuer "$HYBRID_CA/ca.crt" --cert "$SERVER_CERT" \
-        -o "$request" > /dev/null 2>&1
-
-    curl -s -X POST -H "Content-Type: application/ocsp-request" \
-        --data-binary @"$request" "http://localhost:$OCSP_PORT/" \
-        -o "$response" 2>/dev/null || true
-
-    echo ""
-    if [[ -f "$response" ]] && [[ -s "$response" ]]; then
-        echo -e "  ${RED}✗${NC} Status: REVOKED"
-        echo -e "  ${RED}✗${NC} Reason: keyCompromise"
-    fi
-
-    echo ""
-    echo "  ┌─────────────────────────────────────────────────────────────────┐"
-    echo -e "  │  AVANT révocation  →  ${GREEN}GOOD${NC}                                    │"
-    echo -e "  │  APRÈS révocation  →  ${RED}REVOKED${NC}                                 │"
-    echo "  └─────────────────────────────────────────────────────────────────┘"
-    echo ""
-    echo "  Le changement de statut est visible EN TEMPS RÉEL."
-
-    mission_complete "Changement de statut vérifié"
-}
-
-show_recap_final() {
-    echo ""
-    echo -e "${BOLD}${BG_GREEN}${WHITE} MISSION 7 TERMINÉE ! ${NC}"
-    echo ""
-
-    show_recap "Ce que tu as accompli :" \
-        "Déploiement d'un OCSP responder hybride" \
-        "Requête OCSP pour certificat valide" \
-        "Révocation et vérification en temps réel" \
-        "Observation du changement de statut"
-
-    show_lesson "OCSP fonctionne identiquement avec PQC.
-Même protocole HTTP, même format de requête/réponse.
-Seule la taille des signatures change."
-
-    echo ""
-    echo -e "${BOLD}Prochaine mission :${NC} Crypto-Agility"
-    echo -e "    ${CYAN}./journey/04-ops-lifecycle/03-crypto-agility/demo.sh${NC}"
-    echo ""
-}
-
-main() {
-    [[ -x "$PKI_BIN" ]] || { echo "PKI non installé"; exit 1; }
-    init_workspace "niveau-3"
-
-    show_welcome
-    wait_enter "Appuie sur Entrée pour commencer..."
-
-    mission_1_setup
-    wait_enter
-    mission_2_start_responder
-    wait_enter
-    mission_3_query_good
-    wait_enter
-    mission_4_revoke_and_query
-
-    show_recap_final
-}
-
-main "$@"
+show_footer

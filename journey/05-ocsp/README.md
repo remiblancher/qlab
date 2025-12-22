@@ -1,87 +1,128 @@
-# Mission 7: "Is This Cert Still Good?"
+# Is This Cert Still Good?
 
-## OCSP Responder with Hybrid
+## Real-Time Certificate Verification with OCSP
 
-### The Problem
+> **Key Message:** Real-time certificate verification with OCSP works exactly the same with PQC. Same HTTP protocol, same tools.
 
-You have a CRL. But it's updated every hour.
+---
 
-A certificate was revoked 30 seconds ago.
-Clients don't know yet.
+## The Scenario
+
+You have a CRL. But it's updated every hour. A certificate was revoked 30 seconds ago. Clients don't know yet.
 
 ```
-TIMELINE
-────────
+TIMELINE: The CRL Staleness Problem
+───────────────────────────────────
 
   03:00    03:30    04:00    04:30    05:00
     │        │        │        │        │
     ▼        ▼        ▼        ▼        ▼
-  CRL      Revoc    CRL      CRL      CRL
-  published cert    published published published
+  CRL      Cert     CRL      CRL      CRL
+  published REVOKED published published published
 
-                ↑
-                │
-                For 30 min, clients
-                still trust the
-                revoked certificate!
+              ↑
+              │
+              For 30 min, clients
+              still trust the
+              revoked certificate!
 ```
 
-### The Threat
+*"I need real-time certificate status. CRLs are too slow. Does OCSP work with PQC?"*
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                                                                  │
-│  VULNERABILITY WINDOW: Stale CRL                                │
-│                                                                  │
-│                                                                  │
-│    03:30  Certificate revoked (key compromised)                 │
-│    03:35  Client checks the certificate                         │
-│                                                                  │
-│       Client                         CRL (03:00)                 │
-│         │                               │                        │
-│         │  "Is this cert valid?"        │                        │
-│         │  ───────────────────────────► │                        │
-│         │                               │                        │
-│         │  ◄─────────────────────────── │                        │
-│         │  "Yes, valid"                 │                        │
-│         │  (stale CRL!)                 │                        │
-│         ▼                                                        │
-│       ✓ Connection accepted                                      │
-│                                                                  │
-│    The attacker can use the cert for 30 min!                    │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
+Yes. Same HTTP protocol, same request/response format. Only signature sizes change.
+
+---
+
+## What This Demo Shows
+
+| Step | What Happens | Expected Result |
+|------|--------------|-----------------|
+| 1 | Start OCSP responder | HTTP service on port 8888 |
+| 2 | Query valid certificate | Status: GOOD |
+| 3 | Revoke certificate | Certificate marked revoked |
+| 4 | Query again | Status: REVOKED (immediate!) |
+
+---
+
+## Run the Demo
+
+```bash
+./demo.sh
 ```
 
-### The Solution: OCSP (Online Certificate Status Protocol)
+---
 
-**Real-time** verification:
+## The Commands
 
+### Step 1: Create CA and OCSP Responder Certificate
+
+```bash
+# Create PQC CA with ML-DSA-65
+pki init-ca --name "PQC CA" \
+    --algorithm ml-dsa-65 \
+    --dir output/pqc-ca
+
+# Issue delegated OCSP responder certificate
+# Best practice: CA key stays offline
+pki issue --ca-dir output/pqc-ca \
+    --profile ml-dsa-kem/ocsp-responder \
+    --cn "OCSP Responder" \
+    --out output/ocsp-responder.crt \
+    --key-out output/ocsp-responder.key
+
+# Issue TLS certificate to verify
+pki issue --ca-dir output/pqc-ca \
+    --profile ml-dsa-kem/tls-server \
+    --cn server.example.com \
+    --dns server.example.com \
+    --out output/server.crt \
+    --key-out output/server.key
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                                                                  │
-│  OCSP: Instant query                                            │
-│                                                                  │
-│                                                                  │
-│    Client                         OCSP Responder                │
-│      │                                  │                        │
-│      │  "Status of cert 12345?"         │                        │
-│      │  ──────────────────────────────► │                        │
-│      │                                  │                        │
-│      │                                  │  Checks real-time      │
-│      │                                  │  database              │
-│      │                                  │                        │
-│      │  ◄────────────────────────────── │                        │
-│      │  OCSP Response:                  │                        │
-│      │  - Status: REVOKED               │                        │
-│      │  - Reason: keyCompromise         │                        │
-│      │  - Time: 03:30:00                │                        │
-│      │  - Signature: OCSP (hybrid)      │                        │
-│      │                                  │                        │
-│      ▼                                                           │
-│    ❌ Connection refused (real-time)                             │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
+
+### Step 2: Start OCSP Responder
+
+```bash
+# Start with delegated certificate (recommended)
+pki ocsp serve --port 8888 --ca-dir output/pqc-ca \
+    --cert output/ocsp-responder.crt \
+    --key output/ocsp-responder.key
+```
+
+### Step 3: Query Certificate Status
+
+```bash
+# Generate OCSP request
+pki ocsp request --issuer output/pqc-ca/ca.crt \
+    --cert output/server.crt \
+    -o output/request.ocsp
+
+# Send to responder via HTTP POST
+curl -s -X POST \
+    -H "Content-Type: application/ocsp-request" \
+    --data-binary @output/request.ocsp \
+    http://localhost:8888/ \
+    -o output/response.ocsp
+
+# Inspect response
+pki ocsp info output/response.ocsp
+```
+
+### Step 4: Revoke and Re-query
+
+```bash
+# Revoke certificate
+pki revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
+
+# Query again - status changes immediately!
+curl -s -X POST \
+    -H "Content-Type: application/ocsp-request" \
+    --data-binary @output/request.ocsp \
+    http://localhost:8888/ \
+    -o output/response2.ocsp
+
+pki ocsp info output/response2.ocsp
+# Status: revoked
+# Revocation Reason: keyCompromise
 ```
 
 ---
@@ -102,59 +143,81 @@ TIMELINE
 
 ---
 
-## What You'll Do
+## OCSP Architecture
 
-1. **Start an OCSP responder** for your hybrid CA
-2. **Query the status** of a valid certificate
-3. **Revoke the certificate** via the CA
-4. **Observe the change**: status goes from "good" to "revoked"
-5. **Compare**: CRL vs OCSP in real-time
-
----
-
-## Anatomy of an OCSP Response
+### CA-Signed Mode (Simple)
 
 ```
-OCSP Response
-─────────────
-
-┌─────────────────────────────────────────────────────────────┐
-│  Version: 1                                                 │
-│  Responder: CN=OCSP Responder                              │
-│  Produced At: 2024-12-15T03:35:00Z                         │
-│                                                             │
-│  Response:                                                  │
-│  ──────────                                                 │
-│  Serial: 12345                                              │
-│  Status: revoked                                            │
-│  Revocation Time: 2024-12-15T03:30:00Z                     │
-│  Revocation Reason: keyCompromise                          │
-│                                                             │
-│  This Update: 2024-12-15T03:35:00Z                         │
-│  Next Update: 2024-12-15T04:35:00Z                         │
-│                                                             │
-│  Signature: ECDSA P-384 + ML-DSA-65                        │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────┐                      ┌──────────────────┐
+│   Client    │ ─── OCSP Request ──► │  OCSP Responder  │
+│ (curl/app)  │ ◄── OCSP Response ── │ (pki ocsp serve) │
+└─────────────┘                      └────────┬─────────┘
+                                              │
+                                     Signs with CA key
+                                     (CA key online - risk!)
 ```
 
----
+### Delegated Responder Mode (Recommended)
 
-## What You'll Have at the End
-
-- Working OCSP responder
-- Captured responses (good / revoked)
-- Proof of real-time change
-- Understanding of OCSP workflow
-
----
-
-## Run the Mission
-
-```bash
-./demo.sh
+```
+┌─────────────┐                      ┌──────────────────┐
+│   Client    │ ─── OCSP Request ──► │  OCSP Responder  │
+│ (curl/app)  │ ◄── OCSP Response ── │ (pki ocsp serve) │
+└─────────────┘                      └────────┬─────────┘
+                                              │
+                                     Signs with responder key
+                                     (CA key stays offline!)
+                                              │
+                                     ┌────────▼─────────┐
+                                     │ OCSP Responder   │
+                                     │   Certificate    │
+                                     │ (id-kp-OCSPSign) │
+                                     └──────────────────┘
 ```
 
+The OCSP responder certificate has:
+- Extended Key Usage: `id-kp-OCSPSigning` (1.3.6.1.5.5.7.3.9)
+- OCSP No Check extension (prevents infinite verification loop)
+
 ---
 
-← [Revocation](../07-revocation/) | [Next: Crypto-Agility →](../09-crypto-agility/)
+## Size Comparison
+
+| Component | Classical (ECDSA) | Post-Quantum (ML-DSA) | Notes |
+|-----------|-------------------|----------------------|-------|
+| OCSP Request | ~100 bytes | ~100 bytes | Same format |
+| OCSP Response | ~300 bytes | ~3,500 bytes | PQC signature larger |
+
+*Responses are larger due to ML-DSA signatures, but the protocol is unchanged.*
+
+---
+
+## Response Times
+
+| Operation | Classical | PQC | Notes |
+|-----------|-----------|-----|-------|
+| Request generation | <1ms | <1ms | Same |
+| Network round-trip | ~Xms | ~Xms | Same protocol |
+| Signature verification | <1ms | ~2-5ms | ML-DSA slightly slower |
+
+---
+
+## What You Learned
+
+1. **Same HTTP protocol:** RFC 6960 works unchanged with PQC
+2. **Delegated responders:** Best practice keeps CA keys offline
+3. **Real-time status:** Revocation changes are immediate
+4. **Size tradeoff:** PQC responses are larger but acceptable
+5. **Drop-in replacement:** Existing OCSP clients work with PQC responders
+
+---
+
+## References
+
+- [RFC 6960: Online Certificate Status Protocol (OCSP)](https://datatracker.ietf.org/doc/html/rfc6960)
+- [RFC 5019: Lightweight OCSP Profile](https://datatracker.ietf.org/doc/html/rfc5019)
+- [RFC 6277: OCSP Algorithm Agility](https://datatracker.ietf.org/doc/html/rfc6277)
+
+---
+
+← [Revocation](../04-revocation/) | [Next: Code Signing →](../06-code-signing/)

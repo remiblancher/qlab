@@ -13,6 +13,9 @@ LAB_ROOT="$(cd "$LIB_DIR/.." && pwd)"
 # PKI binary location (always in bin/)
 PKI_BIN="$LAB_ROOT/bin/pki"
 
+# Add bin directory to PATH so 'pki' command works
+export PATH="$LAB_ROOT/bin:$PATH"
+
 # Output directory for demo artifacts (local to each demo)
 # Uses SCRIPT_DIR from the calling demo script
 OUTPUT_DIR="${SCRIPT_DIR:-$LIB_DIR}/output"
