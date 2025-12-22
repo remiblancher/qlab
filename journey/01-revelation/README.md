@@ -87,6 +87,17 @@ TODAY                           FUTURE (5-15 years?)
 
 ---
 
+## When to Act
+
+| Data Sensitivity Lifetime | Action Required |
+|--------------------------|-----------------|
+| < 5 years | Monitor, plan migration |
+| 5-10 years | Begin hybrid deployment |
+| 10-25 years | Urgent: Deploy PQC now |
+| > 25 years | Critical: Should already have PQC |
+
+---
+
 ## Mosca's Inequality
 
 Michele Mosca formalized the urgency of migration:

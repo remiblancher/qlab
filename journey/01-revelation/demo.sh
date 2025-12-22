@@ -4,7 +4,7 @@
 #
 #  Interactive Mosca calculator to assess your PQC migration urgency
 #
-#  Key Message: Encrypted data captured today can be decrypted tomorrow.
+#  Key Message: Encryption and signatures are both at risk. PQC is urgent.
 # =============================================================================
 
 set -e
@@ -61,7 +61,7 @@ echo -e "${CYAN}Formula: If X + Y > Z → You have time. Otherwise → ACT NOW${
 echo ""
 echo "  X = Years until quantum computers"
 echo "  Y = Years to migrate to PQC"
-echo "  Z = Years your data must stay secret"
+echo "  Z = Years your data/signatures must stay protected"
 echo ""
 
 echo -e "${BOLD}Enter your values:${NC}"
@@ -76,7 +76,7 @@ Y=${Y:-5}
 read -p "  Z - Years your data must stay secret: " Z
 if [[ -z "$Z" ]]; then
     echo ""
-    echo -e "  ${YELLOW}Examples: Healthcare=50, Government=75, Financial=10${NC}"
+    echo -e "  ${YELLOW}Examples: Healthcare=50, Government=75, Firmware=20${NC}"
     read -p "  Z: " Z
     Z=${Z:-20}
 fi
@@ -100,13 +100,34 @@ else
     echo -e "  ${RED}⚠ $SUM ≤ $Z → ACT NOW! Your data is at risk.${NC}"
 fi
 
+pause
+
+# =============================================================================
+# Step 3: The Solutions - NIST Standards
+# =============================================================================
+
+print_step "Step 3: The Solutions"
+
+echo "  NIST finalized 3 post-quantum algorithms (August 2024):"
+echo ""
+echo "  ┌─────────────────────────────────────────────────────────────┐"
+echo "  │  Algorithm   │  Standard  │  Protects Against  │  Replaces │"
+echo "  ├─────────────────────────────────────────────────────────────┤"
+echo "  │  ML-KEM      │  FIPS 203  │  SNDL (encryption) │  ECDH     │"
+echo "  │  ML-DSA      │  FIPS 204  │  TNFL (signatures) │  ECDSA    │"
+echo "  │  SLH-DSA     │  FIPS 205  │  TNFL (hash-based) │  RSA      │"
+echo "  └─────────────────────────────────────────────────────────────┘"
+echo ""
+echo -e "  ${GREEN}This lab focuses on ML-DSA for PKI signatures.${NC}"
+echo ""
+
 # =============================================================================
 # Conclusion
 # =============================================================================
 
-print_key_message "Encrypted data captured today can be decrypted tomorrow."
+print_key_message "Encryption and signatures are both at risk. Start your PQC migration now."
 
-show_lesson "SNDL is happening now. Use Mosca's inequality to assess your urgency.
-See README.md and diagram.txt for detailed threat analysis."
+show_lesson "SNDL and TNFL are happening now. Use Mosca's inequality to assess urgency.
+See README.md for detailed threat analysis."
 
 show_footer
