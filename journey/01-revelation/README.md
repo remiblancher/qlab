@@ -146,27 +146,47 @@ The demo is an **interactive Mosca calculator** that helps you assess your PQC m
 
 ---
 
-## NIST Standards (August 2024)
+## The Solution: Post-Quantum Algorithms
 
-NIST finalized 3 post-quantum algorithms:
+NIST finalized 3 post-quantum algorithms (August 2024):
 
-| Algorithm | Standard | Usage | Replaces |
-|-----------|----------|-------|----------|
-| **ML-DSA** | FIPS 204 | Signatures | RSA, ECDSA, Ed25519 |
-| **ML-KEM** | FIPS 203 | Key exchange | ECDH, RSA-KEM |
-| **SLH-DSA** | FIPS 205 | Signatures (hash-based) | Alternative to ML-DSA |
+| Algorithm | Standard | Family | Protects Against | Replaces |
+|-----------|----------|--------|------------------|----------|
+| [ML-KEM](https://csrc.nist.gov/pubs/fips/203/final) | FIPS 203 | Module Lattice | SNDL (encryption) | ECDH, RSA-KEM |
+| [ML-DSA](https://csrc.nist.gov/pubs/fips/204/final) | FIPS 204 | Module Lattice | TNFL (signatures) | ECDSA, RSA |
+| [SLH-DSA](https://csrc.nist.gov/pubs/fips/205/final) | FIPS 205 | Stateless Hash | TNFL (signatures) | Alternative to ML-DSA |
 
-### ML-DSA (formerly Dilithium)
+### ML-KEM Variants (Key Encapsulation)
 
-- Based on **lattice** cryptography
-- 3 security levels: ML-DSA-44, ML-DSA-65, ML-DSA-87
-- Larger signatures (~2-4 KB) but very fast
+| Variant | Security | Public Key | Ciphertext |
+|---------|----------|------------|------------|
+| ML-KEM-512 | Level 1 (~128-bit) | 800 bytes | 768 bytes |
+| ML-KEM-768 | Level 3 (~192-bit) | 1,184 bytes | 1,088 bytes |
+| ML-KEM-1024 | Level 5 (~256-bit) | 1,568 bytes | 1,568 bytes |
 
-### ML-KEM (formerly Kyber)
+### ML-DSA Variants (Signatures) — *used in this lab*
 
-- Also based on **lattices**
-- 3 levels: ML-KEM-512, ML-KEM-768, ML-KEM-1024
-- For key exchange (TLS, VPN, etc.)
+| Variant | Security | Public Key | Signature |
+|---------|----------|------------|-----------|
+| ML-DSA-44 | Level 2 (~128-bit) | 1,312 bytes | 2,420 bytes |
+| ML-DSA-65 | Level 3 (~192-bit) | 1,952 bytes | 3,293 bytes |
+| ML-DSA-87 | Level 5 (~256-bit) | 2,592 bytes | 4,595 bytes |
+
+### Why Hybrid?
+
+During transition, combine **classical + PQC** algorithms:
+
+- Hybrid Key Exchange: X25519 + ML-KEM-768
+- Hybrid Signature: ECDSA + ML-DSA-65
+
+**Why not pure PQC?**
+- PQC algorithms are new — less cryptanalysis history
+- Classical algorithms are battle-tested but quantum-vulnerable
+
+**Benefits:**
+- If classical breaks → PQC protects
+- If PQC has unknown weakness → classical protects
+- Maintains backwards compatibility
 
 ---
 
