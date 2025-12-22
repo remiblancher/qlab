@@ -52,7 +52,7 @@ Then start with: `./journey/00-quickstart/demo.sh`
 | # | Mission | Time |
 |---|---------|------|
 | 4 | [**Revocation**](journey/04-revocation/) — CRL generation | 10 min |
-| 5 | [**OCSP**](journey/05-ocsp/) — Real-time status checking | 10 min |
+| 5 | [**PQC OCSP**](journey/05-ocsp/) — Is This Cert Still Good? | 10 min |
 
 ### 🔧 Applications
 

@@ -1,4 +1,4 @@
-# Is This Cert Still Good?
+# PQC OCSP: Is This Cert Still Good?
 
 ## Real-Time Certificate Verification with OCSP
 
