@@ -1,0 +1,34 @@
+# Document Signing Certificate - ML-DSA-65
+# End-entity certificate for document signing
+# NIST Level 3 (~192-bit classical equivalent)
+
+name: document-signing
+description: "Document Signing ML-DSA-65 (FIPS 204)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+  required:
+    - cn
+
+validity: 365d
+
+signature:
+  algorithms:
+    - ml-dsa-65
+
+extensions:
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+      - nonRepudiation
+  extKeyUsage:
+    critical: false
+    values:
+      - emailProtection
+      - codeSigning
+  basicConstraints:
+    critical: true
+    ca: false

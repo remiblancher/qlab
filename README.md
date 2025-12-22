@@ -60,7 +60,7 @@ Then start with: `./journey/00-quickstart/demo.sh`
 |---|---------|------|
 | 6 | [**PQC Code Signing**](journey/06-code-signing/) — Signatures That Outlive the Threat | 8 min |
 | 7 | [**PQC Timestamping**](journey/07-timestamping/) — Trust Now, Verify Forever | 8 min |
-| 8 | [**LTV Signatures**](journey/08-ltv-signatures/) — Valid in 30 years | 8 min |
+| 8 | [**PQC LTV**](journey/08-ltv-signatures/) — Sign Today, Verify in 30 Years | 8 min |
 | 9 | [**CMS Encryption**](journey/09-cms-encryption/) — Encrypt documents (ML-KEM) | 8 min |
 
 ### 🎯 Advanced
