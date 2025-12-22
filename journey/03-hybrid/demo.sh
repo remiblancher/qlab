@@ -1,342 +1,140 @@
 #!/bin/bash
 # =============================================================================
-#  NIVEAU 1 - MISSION 2 : Hybrid Catalyst
+#  UC-03: Hybrid Certificates (Catalyst)
 #
-#  Objectif : Créer des certificats hybrides (classique + PQC).
-#             Le meilleur des deux mondes.
+#  Best of Both Worlds: Classical + Post-Quantum
+#  ECDSA P-384 + ML-DSA-65 in a single certificate
 #
-#  Algorithmes : ECDSA P-384 + ML-DSA-65 (Catalyst ITU-T X.509)
+#  Key Message: You don't choose between classical and PQC. You stack them.
 # =============================================================================
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAB_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+source "$SCRIPT_DIR/../../lib/common.sh"
 
-# Source les helpers
-source "$LAB_ROOT/lib/colors.sh"
-source "$LAB_ROOT/lib/interactive.sh"
-source "$LAB_ROOT/lib/workspace.sh"
-
-# PKI binary
-PKI_BIN="$LAB_ROOT/bin/pki"
+setup_demo "Hybrid Certificates (Catalyst)"
 
 # =============================================================================
-# Vérifications
+# Step 1: Create Hybrid Root CA
 # =============================================================================
 
-check_pki_installed() {
-    if [[ ! -x "$PKI_BIN" ]]; then
-        print_error "L'outil PKI n'est pas installé"
-        echo "  Exécute : ./tooling/install.sh"
-        exit 1
-    fi
-}
+print_step "Step 1: Create Hybrid Root CA (ECDSA P-384 + ML-DSA-65)"
+
+echo "  A hybrid CA contains TWO key pairs:"
+echo ""
+echo "    Primary:     ECDSA P-384 (classical)"
+echo "    Alternative: ML-DSA-65 (post-quantum)"
+echo ""
+echo "  Standard: ITU-T X.509 Section 9.8 (Catalyst)"
+echo ""
+
+run_cmd "pki init-ca --profile profiles/hybrid-root-ca.yaml --name \"Hybrid Root CA\" --dir output/hybrid-ca"
+
+echo ""
+echo -e "  ${BOLD}Hybrid CA details:${NC}"
+pki info output/hybrid-ca/ca.crt 2>/dev/null | head -10 | sed 's/^/    /'
+echo ""
+
+pause
 
 # =============================================================================
-# Bannière
+# Step 2: Issue Hybrid TLS Certificate
 # =============================================================================
 
-show_welcome() {
-    clear
-    echo ""
-    echo -e "${BOLD}${PURPLE}"
-    echo "  ╔═══════════════════════════════════════════════════════════════╗"
-    echo "  ║                                                               ║"
-    echo "  ║   🔀  NIVEAU 1 - MISSION 2                                    ║"
-    echo "  ║                                                               ║"
-    echo "  ║   Hybrid Catalyst : Le meilleur des deux mondes              ║"
-    echo "  ║                                                               ║"
-    echo "  ╚═══════════════════════════════════════════════════════════════╝"
-    echo -e "${NC}"
-    echo ""
-    echo -e "  ${BOLD}Durée estimée :${NC} 10 minutes"
-    echo -e "  ${BOLD}Algorithmes   :${NC} ECDSA P-384 + ML-DSA-65"
-    echo ""
-    echo "  Le problème :"
-    echo "    \"Je dois rester compatible avec les clients legacy,"
-    echo "     tout en étant prêt pour le post-quantique.\""
-    echo ""
-    echo "  La solution : Certificats hybrides (Catalyst)"
-    echo "    - Clé classique (ECDSA) pour les clients legacy"
-    echo "    - Clé PQC (ML-DSA) pour les clients modernes"
-    echo "    - Les deux dans UN SEUL certificat"
-    echo ""
-}
+print_step "Step 2: Issue Hybrid TLS Certificate"
+
+echo "  The certificate inherits the hybrid nature from the CA."
+echo "  It will contain both ECDSA and ML-DSA keys/signatures."
+echo ""
+
+run_cmd "pki issue --ca-dir output/hybrid-ca --profile profiles/hybrid-tls-server.yaml --cn hybrid.example.com --dns hybrid.example.com --out output/hybrid-server.crt --key-out output/hybrid-server.key"
+
+echo ""
+echo -e "  ${BOLD}Hybrid certificate details:${NC}"
+pki info output/hybrid-server.crt 2>/dev/null | head -12 | sed 's/^/    /'
+echo ""
+
+pause
 
 # =============================================================================
-# Mission 1 : Créer la CA Hybride
+# Step 3: Test Interoperability
 # =============================================================================
 
-mission_1_hybrid_ca() {
-    mission_start 1 "Créer une CA Hybride"
+print_step "Step 3: Test Interoperability"
 
-    echo "  Une CA hybride contient DEUX paires de clés :"
+echo "  The power of hybrid: works with EVERYONE!"
+echo ""
+echo -e "  ${BOLD}Test 1: Legacy Client (OpenSSL)${NC}"
+echo "    OpenSSL doesn't understand PQC, but still verifies."
+echo ""
+
+echo -e "  ${DIM}$ openssl verify -CAfile output/hybrid-ca/ca.crt output/hybrid-server.crt${NC}"
+if openssl verify -CAfile output/hybrid-ca/ca.crt output/hybrid-server.crt 2>&1; then
     echo ""
-    echo "    ┌─────────────────────────────────────────────┐"
-    echo "    │  CERTIFICAT HYBRIDE (CATALYST)              │"
-    echo "    ├─────────────────────────────────────────────┤"
-    echo "    │  Clé principale  : ECDSA P-384 (classique)  │"
-    echo "    │  Signature       : ECDSA P-384              │"
-    echo "    ├─────────────────────────────────────────────┤"
-    echo "    │  Extension: Alternative Public Key          │"
-    echo "    │    → ML-DSA-65 (post-quantum)               │"
-    echo "    │  Extension: Alternative Signature           │"
-    echo "    │    → ML-DSA-65 (post-quantum)               │"
-    echo "    └─────────────────────────────────────────────┘"
+    echo -e "    ${GREEN}✓${NC} Legacy client: Certificate verified via ECDSA"
+    echo -e "    ${DIM}(PQC extensions are ignored)${NC}"
+fi
+
+echo ""
+pause
+
+echo -e "  ${BOLD}Test 2: PQC-Aware Client (pki)${NC}"
+echo "    The pki tool verifies BOTH signatures."
+echo ""
+
+echo -e "  ${DIM}$ pki verify --cert output/hybrid-server.crt --ca output/hybrid-ca/ca.crt${NC}"
+if pki verify --cert output/hybrid-server.crt --ca output/hybrid-ca/ca.crt 2>&1; then
     echo ""
-    echo -e "  ${CYAN}Standard : ITU-T X.509 Section 9.8${NC}"
-    echo ""
+    echo -e "    ${GREEN}✓${NC} PQC client: BOTH ECDSA AND ML-DSA verified"
+fi
 
-    local hybrid_ca="$LEVEL_WORKSPACE/hybrid-ca"
+echo ""
+echo "  ┌─────────────────────────────────────────────────────────────────┐"
+echo "  │  INTEROPERABILITY SUMMARY                                       │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo -e "  │  Legacy (OpenSSL)  │ Uses ECDSA, ignores PQC │ ${GREEN}✓ OK${NC}           │"
+echo -e "  │  PQC-Aware (pki)   │ Verifies BOTH           │ ${GREEN}✓ OK${NC}           │"
+echo "  └─────────────────────────────────────────────────────────────────┘"
+echo ""
+echo -e "  ${BOLD}Zero changes for legacy clients. Quantum protection for modern ones.${NC}"
+echo ""
 
-    # Vérifier si déjà créé
-    if [[ -f "$hybrid_ca/ca.crt" ]]; then
-        echo -e "${YELLOW}[INFO]${NC} Ta CA hybride existe déjà !"
-        validate_file "$hybrid_ca/ca.crt" "Certificat CA hybride"
-        echo ""
-        return 0
-    fi
-
-    # L'utilisateur tape la commande
-    teach_cmd "pki init-ca --name \"Hybrid Root CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $hybrid_ca" \
-              "--hybrid-algorithm ajoute la deuxième clé PQC"
-
-    # Validation
-    validate_files "$hybrid_ca" "ca.crt" "ca.key"
-
-    # Afficher les infos
-    echo ""
-    echo -e "  ${BOLD}Détails de ta CA hybride :${NC}"
-    "$PKI_BIN" info "$hybrid_ca/ca.crt" 2>/dev/null | head -15 | sed 's/^/    /'
-
-    mission_complete "CA Hybride créée (ECDSA P-384 + ML-DSA-65)"
-
-    learned "--hybrid-algorithm empile classique + PQC"
-}
+pause
 
 # =============================================================================
-# Mission 2 : Émettre un certificat hybride
+# Step 4: Size Comparison
 # =============================================================================
 
-mission_2_hybrid_cert() {
-    mission_start 2 "Émettre un certificat TLS hybride"
+print_step "Step 4: Size Comparison"
 
-    echo "  Le certificat hérite de la nature hybride de la CA."
-    echo "  Profil utilisé : hybrid/catalyst/tls-server"
+if [[ -f "output/hybrid-ca/ca.crt" ]]; then
+    hybrid_ca_size=$(wc -c < "output/hybrid-ca/ca.crt" | tr -d ' ')
+    hybrid_cert_size=$(wc -c < "output/hybrid-server.crt" | tr -d ' ')
+    hybrid_key_size=$(wc -c < "output/hybrid-server.key" | tr -d ' ')
+
+    echo -e "  ${BOLD}Hybrid certificate sizes:${NC}"
     echo ""
+    echo "  ┌────────────────────────────────────────────────────────────┐"
+    printf "  │  %-25s %10s %18s │\n" "" "Size" "Overhead vs Classical"
+    echo "  ├────────────────────────────────────────────────────────────┤"
+    printf "  │  %-25s %8s B %16s │\n" "Hybrid CA" "$hybrid_ca_size" "~5 KB"
+    printf "  │  %-25s %8s B %16s │\n" "Hybrid TLS Certificate" "$hybrid_cert_size" "~5 KB"
+    printf "  │  %-25s %8s B %16s │\n" "Hybrid Private Key" "$hybrid_key_size" "~2 KB"
+    echo "  └────────────────────────────────────────────────────────────┘"
+    echo ""
+    echo -e "  ${DIM}Overhead comes from ML-DSA key (~1952 B) + signature (~3293 B)${NC}"
+fi
 
-    local hybrid_ca="$LEVEL_WORKSPACE/hybrid-ca"
-    local cert_out="$LEVEL_WORKSPACE/hybrid-server.crt"
-    local key_out="$LEVEL_WORKSPACE/hybrid-server.key"
-
-    # Vérifier si déjà créé
-    if [[ -f "$cert_out" ]]; then
-        echo -e "${YELLOW}[INFO]${NC} Ton certificat hybride existe déjà !"
-        validate_file "$cert_out" "Certificat hybride"
-        echo ""
-        return 0
-    fi
-
-    # L'utilisateur tape la commande
-    teach_cmd "pki issue --ca-dir $hybrid_ca --profile hybrid/catalyst/tls-server --cn \"hybrid.example.com\" --dns \"hybrid.example.com\" --out $cert_out --key-out $key_out" \
-              "Le profil hybrid/catalyst inclut les deux algorithmes"
-
-    # Validation
-    validate_file "$cert_out" "Certificat TLS hybride"
-    validate_file "$key_out" "Clé privée hybride"
-
-    mission_complete "Certificat TLS hybride émis"
-
-    learned "hybrid/catalyst = profil pour certificats hybrides"
-}
+echo ""
 
 # =============================================================================
-# Mission 3 : Test d'interopérabilité
+# Conclusion
 # =============================================================================
 
-mission_3_interop() {
-    mission_start 3 "Test d'interopérabilité"
+print_key_message "You don't choose between classical and PQC. You stack them."
 
-    local hybrid_ca="$LEVEL_WORKSPACE/hybrid-ca"
-    local cert="$LEVEL_WORKSPACE/hybrid-server.crt"
+show_lesson "Hybrid = belt AND suspenders. Legacy clients work unchanged.
+Modern clients get quantum protection. No flag day required."
 
-    echo "  Le pouvoir de l'hybride : ça marche avec TOUT le monde !"
-    echo ""
-
-    echo -e "  ${BOLD}Test 1 : Client Legacy (OpenSSL)${NC}"
-    echo "    OpenSSL ne comprend pas le PQC, mais vérifie quand même."
-    echo ""
-
-    demo_cmd "openssl verify -CAfile $hybrid_ca/ca.crt $cert" \
-             "Vérification avec OpenSSL (classique seulement)..."
-
-    echo ""
-    if openssl verify -CAfile "$hybrid_ca/ca.crt" "$cert" 2>&1 | grep -q "OK"; then
-        echo -e "    ${GREEN}✓${NC} Client legacy : Certificat vérifié via ECDSA"
-        echo -e "    ${DIM}(Les extensions PQC sont ignorées)${NC}"
-    fi
-
-    echo ""
-    wait_enter
-
-    echo -e "  ${BOLD}Test 2 : Client PQC-Aware (pki)${NC}"
-    echo "    L'outil pki vérifie LES DEUX signatures."
-    echo ""
-
-    demo_cmd "$PKI_BIN verify --cert $cert --ca $hybrid_ca/ca.crt" \
-             "Vérification avec pki (classique + PQC)..."
-
-    echo ""
-    if "$PKI_BIN" verify --cert "$cert" --ca "$hybrid_ca/ca.crt" > /dev/null 2>&1; then
-        echo -e "    ${GREEN}✓${NC} Client PQC : ECDSA ET ML-DSA vérifiés"
-    fi
-
-    echo ""
-    echo "  ┌─────────────────────────────────────────────────────────────────┐"
-    echo "  │  RÉSUMÉ INTEROPÉRABILITÉ                                       │"
-    echo "  ├─────────────────────────────────────────────────────────────────┤"
-    echo -e "  │  Client Legacy (OpenSSL)  │ Utilise ECDSA, ignore PQC │ ${GREEN}✓ OK${NC} │"
-    echo -e "  │  Client PQC (pki)         │ Vérifie LES DEUX          │ ${GREEN}✓ OK${NC} │"
-    echo "  └─────────────────────────────────────────────────────────────────┘"
-    echo ""
-    echo -e "  ${BOLD}Zéro changement pour les clients legacy. Protection quantique pour les autres.${NC}"
-    echo ""
-
-    mission_complete "Interopérabilité validée"
-
-    learned "L'hybride fonctionne avec tous les clients"
-}
-
-# =============================================================================
-# Mission 4 : Comparaison des tailles
-# =============================================================================
-
-mission_4_compare() {
-    mission_start 4 "Comparer les tailles"
-
-    local hybrid_ca="$LEVEL_WORKSPACE/hybrid-ca"
-    local hybrid_cert="$LEVEL_WORKSPACE/hybrid-server.crt"
-
-    # Récupérer les tailles
-    local hybrid_ca_size=$(wc -c < "$hybrid_ca/ca.crt" | tr -d ' ')
-    local hybrid_cert_size=$(wc -c < "$hybrid_cert" | tr -d ' ')
-
-    # Comparer avec le Quick Start classique si disponible
-    local classic_ca="$WORKSPACE_ROOT/quickstart/classic-ca"
-    local classic_cert="$WORKSPACE_ROOT/quickstart/server.crt"
-
-    echo -e "  ${BOLD}Tailles des certificats :${NC}"
-    echo ""
-
-    if [[ -f "$classic_ca/ca.crt" ]] && [[ -f "$classic_cert" ]]; then
-        local classic_ca_size=$(wc -c < "$classic_ca/ca.crt" | tr -d ' ')
-        local classic_cert_size=$(wc -c < "$classic_cert" | tr -d ' ')
-
-        local ca_ratio=$(echo "scale=1; $hybrid_ca_size / $classic_ca_size" | bc)
-        local cert_ratio=$(echo "scale=1; $hybrid_cert_size / $classic_cert_size" | bc)
-
-        echo "  ┌──────────────────────────────────────────────────────────────┐"
-        printf "  │  %-20s %12s %12s %10s │\n" "" "Classique" "Hybride" "Ratio"
-        echo "  ├──────────────────────────────────────────────────────────────┤"
-        printf "  │  %-20s %10s B %10s B %9sx │\n" "CA Certificate" "$classic_ca_size" "$hybrid_ca_size" "$ca_ratio"
-        printf "  │  %-20s %10s B %10s B %9sx │\n" "Server Certificate" "$classic_cert_size" "$hybrid_cert_size" "$cert_ratio"
-        echo "  └──────────────────────────────────────────────────────────────┘"
-        echo ""
-        echo -e "  ${CYAN}L'hybride est ~${ca_ratio}x plus grand car il contient :${NC}"
-    else
-        printf "    %-25s %8s\n" "CA Hybride" "$hybrid_ca_size B"
-        printf "    %-25s %8s\n" "Cert TLS Hybride" "$hybrid_cert_size B"
-        echo ""
-        echo -e "  ${CYAN}L'hybride est plus grand car il contient :${NC}"
-    fi
-
-    echo "    - Clé publique ECDSA originale"
-    echo "    - Signature ECDSA"
-    echo "    - Clé publique ML-DSA alternative (~1952 bytes)"
-    echo "    - Signature ML-DSA alternative (~3293 bytes)"
-    echo ""
-
-    mission_complete "Comparaison effectuée"
-
-    learned "L'hybride = sécurité doublée, taille augmentée"
-}
-
-# =============================================================================
-# Récapitulatif
-# =============================================================================
-
-show_recap_final() {
-    echo ""
-    echo -e "${BOLD}${BG_GREEN}${WHITE} MISSION 2 TERMINÉE ! ${NC}"
-    echo ""
-
-    show_recap "Ce que tu as accompli :" \
-        "CA hybride avec ECDSA P-384 + ML-DSA-65" \
-        "Certificat TLS hybride (Catalyst)" \
-        "Interopérabilité validée (legacy + PQC)" \
-        "Comparaison des tailles"
-
-    echo -e "  ${BOLD}Pourquoi choisir l'hybride ?${NC}"
-    echo ""
-    echo "    ${GREEN}✓${NC} Rétro-compatible : Les clients legacy fonctionnent"
-    echo "    ${GREEN}✓${NC} Future-proof : Protection contre les attaques quantiques"
-    echo "    ${GREEN}✓${NC} Défense en profondeur : Si un algo tombe, l'autre protège"
-    echo "    ${GREEN}✓${NC} Migration douce : Pas de \"flag day\" requis"
-    echo ""
-
-    echo -e "  ${BOLD}Quand utiliser l'hybride :${NC}"
-    echo ""
-    echo "    • Pendant la transition PQC (maintenant !)"
-    echo "    • Quand tu ne contrôles pas tous les clients"
-    echo "    • Pour la conformité réglementaire"
-    echo "    • Pour les infrastructures critiques"
-    echo ""
-
-    show_lesson "Tu n'as pas à choisir entre classique et PQC.
-Empile-les. C'est la ceinture ET les bretelles."
-
-    echo ""
-    echo -e "${BOLD}${GREEN}NIVEAU 1 TERMINÉ !${NC}"
-    echo ""
-    echo "  Tu as maintenant dans ton workspace :"
-    echo "    - CA classique (Quick Start)"
-    echo "    - CA full PQC (Mission 1)"
-    echo "    - CA hybride (Mission 2)"
-    echo ""
-    echo "  Prochaine étape : Niveau 2 - Applications"
-    echo "    Utilise tes CA pour des cas réels (mTLS, Code Signing, Timestamping)"
-    echo ""
-    echo -e "    ${CYAN}./journey/03-applications/01-mtls/demo.sh${NC}"
-    echo ""
-}
-
-# =============================================================================
-# Main
-# =============================================================================
-
-main() {
-    check_pki_installed
-
-    # Initialiser le workspace Niveau 1
-    init_workspace "niveau-1"
-
-    show_welcome
-    wait_enter "Appuie sur Entrée pour commencer la mission..."
-
-    mission_1_hybrid_ca
-    wait_enter
-
-    mission_2_hybrid_cert
-    wait_enter
-
-    mission_3_interop
-    wait_enter
-
-    mission_4_compare
-
-    show_recap_final
-}
-
-# Exécution
-main "$@"
+show_footer

@@ -1,0 +1,38 @@
+# Hybrid TLS Server - ECDSA P-384 + ML-DSA-65 (Catalyst)
+# End-entity certificate for server authentication
+# ITU-T X.509 Section 9.8
+
+name: hybrid-tls-server
+description: "Hybrid TLS server ECDSA P-384 + ML-DSA-65 (Catalyst)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+  required:
+    - cn
+
+validity: 365d
+
+signature:
+  algorithms:
+    - ecdsa-p384
+  hybrid:
+    algorithm: ml-dsa-65
+
+extensions:
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+  extKeyUsage:
+    critical: false
+    values:
+      - serverAuth
+  basicConstraints:
+    critical: true
+    ca: false
+  subjectAltName:
+    critical: false
+    dns:
+      - "${DNS}"

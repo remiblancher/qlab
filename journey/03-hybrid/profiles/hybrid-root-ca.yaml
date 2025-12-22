@@ -1,0 +1,30 @@
+# Hybrid Root CA - ECDSA P-384 + ML-DSA-65 (Catalyst)
+# Best of both worlds: classical compatibility + quantum resistance
+# ITU-T X.509 Section 9.8
+
+name: hybrid-root-ca
+description: "Hybrid Root CA ECDSA P-384 + ML-DSA-65 (Catalyst)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+
+validity: 7300d  # 20 years
+
+signature:
+  algorithms:
+    - ecdsa-p384
+  hybrid:
+    algorithm: ml-dsa-65
+
+extensions:
+  basicConstraints:
+    critical: true
+    ca: true
+    pathLen: 0
+  keyUsage:
+    critical: true
+    values:
+      - keyCertSign
+      - cRLSign
