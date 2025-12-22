@@ -178,8 +178,4 @@ NIST finalized 3 post-quantum algorithms:
 
 ---
 
-## Next Step
-
-→ **Level 1: Build Your Quantum-Safe Foundation**
-
-You'll create your first post-quantum CA with ML-DSA.
+← [Quick Start](../00-quickstart/) | [Next: Full Chain →](../02-full-chain/)

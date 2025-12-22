@@ -157,6 +157,4 @@ OCSP Response
 
 ---
 
-## Next Mission
-
-→ **Mission 8: "Rotate Without Breaking"** (Crypto-Agility)
+← [Revocation](../07-revocation/) | [Next: Crypto-Agility →](../09-crypto-agility/)

@@ -105,8 +105,4 @@ A hybrid certificate contains **two keys**:
 
 ---
 
-## Next Step
-
-→ **Level 2: Applications**
-
-You'll use your PKI for real-world use cases.
+← [Full Chain](../02-full-chain/) | [Next: mTLS →](../04-mtls/)

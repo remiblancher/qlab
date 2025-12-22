@@ -191,6 +191,4 @@ For transition, we combine both:
 
 ---
 
-## Next Mission
-
-→ **Mission 11: "Encrypt for Their Eyes Only"** (CMS Encryption)
+← [LTV Signatures](../10-ltv-signatures/) | [Next: CMS Encryption →](../12-cms-encryption/)

@@ -40,38 +40,38 @@ Then start with: `./journey/00-quickstart/demo.sh`
 | 0 | [**Quick Start**](journey/00-quickstart/) — Create your first CA (ECDSA) | 10 min |
 | 1 | [**The Revelation**](journey/01-revelation/) — Why PQC matters (SNDL threat) | 8 min |
 
-### 📚 Level 1: PQC Basics
+### 📚 PQC Basics
 
 | # | Mission | Time |
 |---|---------|------|
-| 2 | [**Full PQC Chain**](journey/02-pqc-basics/01-full-chain/) — Root → Issuing → TLS (ML-DSA) | 10 min |
-| 3 | [**Hybrid Catalyst**](journey/02-pqc-basics/02-hybrid/) — Dual-key certificate (ECDSA + ML-DSA) | 10 min |
+| 2 | [**Full PQC Chain**](journey/02-full-chain/) — Root → Issuing → TLS (ML-DSA) | 10 min |
+| 3 | [**Hybrid Catalyst**](journey/03-hybrid/) — Dual-key certificate (ECDSA + ML-DSA) | 10 min |
 
-### 🔧 Level 2: Applications
-
-| # | Mission | Time |
-|---|---------|------|
-| 4 | [**mTLS**](journey/03-applications/01-mtls/) — Mutual authentication (ML-DSA) | 8 min |
-| 5 | [**Code Signing**](journey/03-applications/02-code-signing/) — Sign your releases (ML-DSA) | 8 min |
-| 6 | [**Timestamping**](journey/03-applications/03-timestamping/) — Proof of existence (ML-DSA) | 8 min |
-
-### ⚙️ Level 3: Ops & Lifecycle
+### 🔧 Applications
 
 | # | Mission | Time |
 |---|---------|------|
-| 7 | [**Revocation**](journey/04-ops-lifecycle/01-revocation/) — CRL generation (Hybrid) | 10 min |
-| 8 | [**OCSP**](journey/04-ops-lifecycle/02-ocsp/) — Real-time status (Hybrid) | 10 min |
-| 9 | [**Crypto-Agility**](journey/04-ops-lifecycle/03-crypto-agility/) — Migrate ECDSA → ML-DSA | 10 min |
+| 4 | [**mTLS**](journey/04-mtls/) — Mutual authentication (ML-DSA) | 8 min |
+| 5 | [**Code Signing**](journey/05-code-signing/) — Sign your releases (ML-DSA) | 8 min |
+| 6 | [**Timestamping**](journey/06-timestamping/) — Proof of existence (ML-DSA) | 8 min |
 
-### 🎯 Level 4: Advanced (Optional)
-
-> These missions are optional and exploratory. You can stop at Level 3 without losing the main thread.
+### ⚙️ Ops & Lifecycle
 
 | # | Mission | Time |
 |---|---------|------|
-| 10 | [**LTV Signatures**](journey/05-advanced/01-ltv-signatures/) — Valid in 30 years (Hybrid) | 8 min |
-| 11 | [**PQC Tunnel**](journey/05-advanced/02-pqc-tunnel/) — Key exchange demo (ML-KEM) | 8 min |
-| 12 | [**CMS Encryption**](journey/05-advanced/03-cms-encryption/) — Encrypt documents (ML-KEM) | 8 min |
+| 7 | [**Revocation**](journey/07-revocation/) — CRL generation (Hybrid) | 10 min |
+| 8 | [**OCSP**](journey/08-ocsp/) — Real-time status (Hybrid) | 10 min |
+| 9 | [**Crypto-Agility**](journey/09-crypto-agility/) — Migrate ECDSA → ML-DSA | 10 min |
+
+### 🎯 Advanced (Optional)
+
+> These missions are optional and exploratory. You can stop at Ops & Lifecycle without losing the main thread.
+
+| # | Mission | Time |
+|---|---------|------|
+| 10 | [**LTV Signatures**](journey/10-ltv-signatures/) — Valid in 30 years (Hybrid) | 8 min |
+| 11 | [**PQC Tunnel**](journey/11-pqc-tunnel/) — Key exchange demo (ML-KEM) | 8 min |
+| 12 | [**CMS Encryption**](journey/12-cms-encryption/) — Encrypt documents (ML-KEM) | 8 min |
 
 ---
 
@@ -79,15 +79,20 @@ Then start with: `./journey/00-quickstart/demo.sh`
 
 ```
 post-quantum-pki-lab/
-├── journey/                    # Guided demos
-│   ├── 00-quickstart/          # Quick Start (10 min)
-│   │   ├── profiles/           # Profiles for this demo
-│   │   └── output/             # Generated artifacts
-│   ├── 01-revelation/          # "Store Now, Decrypt Later"
-│   ├── 02-pqc-basics/          # Full Chain + Hybrid
-│   ├── 03-applications/        # mTLS, Code Signing, Timestamping
-│   ├── 04-ops-lifecycle/       # Revocation, OCSP, Crypto-Agility
-│   └── 05-advanced/            # LTV, PQC Tunnel, CMS
+├── journey/                    # Guided demos (linear progression)
+│   ├── 00-quickstart/          # Quick Start
+│   ├── 01-revelation/          # The Quantum Threat
+│   ├── 02-full-chain/          # Full PQC Chain
+│   ├── 03-hybrid/              # Hybrid Certificates
+│   ├── 04-mtls/                # mTLS
+│   ├── 05-code-signing/        # Code Signing
+│   ├── 06-timestamping/        # Timestamping
+│   ├── 07-revocation/          # Revocation
+│   ├── 08-ocsp/                # OCSP
+│   ├── 09-crypto-agility/      # Crypto-Agility
+│   ├── 10-ltv-signatures/      # LTV Signatures
+│   ├── 11-pqc-tunnel/          # PQC Tunnel
+│   └── 12-cms-encryption/      # CMS Encryption
 ├── reference/usecases/         # Reference documentation
 ├── lib/                        # Shell helpers
 └── bin/pki                     # PKI tool (Go)

@@ -156,6 +156,4 @@ firmware.bin.sig
 
 ---
 
-## Next Mission
-
-→ **Mission 5: "Trust Now, Verify Forever"** (Timestamping)
+← [mTLS](../04-mtls/) | [Next: Timestamping →](../06-timestamping/)

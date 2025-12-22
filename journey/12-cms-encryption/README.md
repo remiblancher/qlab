@@ -192,16 +192,18 @@ CMS (RFC 5652) is the format used by:
 
 ---
 
-## End of Journey
+← [PQC Tunnel](../11-pqc-tunnel/) | [Home →](../../README.md)
+
+---
+
+## Congratulations!
 
 You've completed the Post-Quantum PKI Lab!
 
 You now master:
-- ✓ Classic and post-quantum PKI
-- ✓ ML-DSA signatures
-- ✓ Hybrid certificates
-- ✓ mTLS, Code Signing, Timestamping
-- ✓ Revocation, OCSP, Crypto-Agility
-- ✓ LTV, ML-KEM, CMS Encryption
-
-→ **Next Steps**: How to migrate 10,000 certificates in production?
+- Classic and post-quantum PKI
+- ML-DSA signatures
+- Hybrid certificates
+- mTLS, Code Signing, Timestamping
+- Revocation, OCSP, Crypto-Agility
+- LTV, ML-KEM, CMS Encryption

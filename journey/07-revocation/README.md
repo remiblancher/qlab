@@ -141,6 +141,4 @@ What do you do?
 
 ---
 
-## Next Mission
-
-→ **Mission 7: "Is This Cert Still Good?"** (OCSP)
+← [Timestamping](../06-timestamping/) | [Next: OCSP →](../08-ocsp/)

@@ -181,6 +181,4 @@ PDF Document with LTV
 
 ---
 
-## Next Mission
-
-→ **Mission 10: "Secure the Tunnel"** (ML-KEM)
+← [Crypto-Agility](../09-crypto-agility/) | [Next: PQC Tunnel →](../11-pqc-tunnel/)

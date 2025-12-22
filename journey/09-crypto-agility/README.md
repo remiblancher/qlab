@@ -188,8 +188,4 @@ CURRENT SITUATION
 
 ---
 
-## Next Step
-
-→ **Level 4: Advanced**
-
-You'll master advanced use cases: LTV, PQC tunnels, CMS encryption.
+← [OCSP](../08-ocsp/) | [Next: LTV Signatures →](../10-ltv-signatures/)

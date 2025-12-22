@@ -123,6 +123,4 @@ With mTLS, **BOTH** parties prove their identity:
 
 ---
 
-## Next Mission
-
-→ **Mission 4: "Secure Your Releases"** (Code Signing)
+← [Hybrid](../03-hybrid/) | [Next: Code Signing →](../05-code-signing/)

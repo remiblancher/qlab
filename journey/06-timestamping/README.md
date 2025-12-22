@@ -165,8 +165,4 @@ A trusted authority (TSA) proves when the signature was created:
 
 ---
 
-## Next Step
-
-→ **Level 3: Ops & Lifecycle**
-
-You'll learn to manage the lifecycle: revocation, OCSP, rotation.
+← [Code Signing](../05-code-signing/) | [Next: Revocation →](../07-revocation/)

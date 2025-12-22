@@ -90,6 +90,4 @@ Create a new CA hierarchy with **ML-DSA** (post-quantum).
 
 ---
 
-## Next Mission
-
-→ **Mission 2: "Best of Both Worlds"** (Hybrid Catalyst)
+← [The Revelation](../01-revelation/) | [Next: Hybrid →](../03-hybrid/)
