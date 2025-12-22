@@ -11,9 +11,9 @@
 It's 3 AM. You receive an alert:
 
 ```
-SECURITY ALERT
-The private key for server.example.com
-was detected on GitHub.
+🚨 SECURITY ALERT
+   The private key for server.example.com
+   was detected on GitHub.
 ```
 
 What do you do?
