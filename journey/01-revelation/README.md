@@ -145,9 +145,9 @@ NIST finalized 3 post-quantum algorithms (August 2024):
 
 | Algorithm | Standard | Family | Protects Against | Replaces |
 |-----------|----------|--------|------------------|----------|
-| ML-KEM | [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final) | Module Lattice | SNDL (encryption) | ECDH, RSA-KEM |
-| ML-DSA | [FIPS 204](https://csrc.nist.gov/pubs/fips/204/final) | Module Lattice | TNFL (signatures) | ECDSA, RSA |
-| SLH-DSA | [FIPS 205](https://csrc.nist.gov/pubs/fips/205/final) | Stateless Hash | TNFL (signatures) | Alternative to ML-DSA |
+| ML-KEM | FIPS 203 | Module Lattice | SNDL (encryption) | ECDH, RSA-KEM |
+| ML-DSA | FIPS 204 | Module Lattice | TNFL (signatures) | ECDSA, RSA |
+| SLH-DSA | FIPS 205 | Stateless Hash | TNFL (signatures) | Alternative to ML-DSA |
 
 ### ML-KEM Variants (Key Encapsulation) — *used in this lab*
 
@@ -168,6 +168,21 @@ ML-DSA (Module Lattice Digital Signature Algorithm) provides quantum-resistant d
 | ML-DSA-44 | Level 2 (~128-bit) | 1,312 bytes | 2,420 bytes |
 | ML-DSA-65 | Level 3 (~192-bit) | 1,952 bytes | 3,293 bytes |
 | ML-DSA-87 | Level 5 (~256-bit) | 2,592 bytes | 4,595 bytes |
+
+### SLH-DSA Variants (Stateless Hash-Based Signatures)
+
+SLH-DSA (Stateless Hash-Based Digital Signature Algorithm) is a conservative alternative to ML-DSA. Its security relies solely on hash functions — well-understood primitives with decades of cryptanalysis. The trade-off: significantly larger signatures. Use SLH-DSA when you need maximum confidence in long-term security assumptions.
+
+| Variant | Security | Public Key | Signature |
+|---------|----------|------------|-----------|
+| SLH-DSA-128s | Level 1 (~128-bit) | 32 bytes | 7,856 bytes |
+| SLH-DSA-128f | Level 1 (~128-bit) | 32 bytes | 17,088 bytes |
+| SLH-DSA-192s | Level 3 (~192-bit) | 48 bytes | 16,224 bytes |
+| SLH-DSA-192f | Level 3 (~192-bit) | 48 bytes | 35,664 bytes |
+| SLH-DSA-256s | Level 5 (~256-bit) | 64 bytes | 29,792 bytes |
+| SLH-DSA-256f | Level 5 (~256-bit) | 64 bytes | 49,856 bytes |
+
+*s = small (slower, smaller signatures), f = fast (faster, larger signatures)*
 
 ### Why Hybrid?
 
@@ -206,11 +221,10 @@ PQC algorithms are mathematically sound, but they're new. Classical algorithms l
 
 ## References
 
-- [NIST FIPS 203: ML-KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
-- [NIST FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
+- [FIPS 203: ML-KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
+- [FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
+- [FIPS 205: SLH-DSA Standard](https://csrc.nist.gov/pubs/fips/205/final)
 - [Mosca's Theorem](https://globalriskinstitute.org/publication/quantum-threat-timeline/)
-- [Trust Now, Forge Later (TNFL)](https://postquantum.com/post-quantum/trust-now-forge-later/)
-- [NSA CNSA 2.0 Guidelines](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)
 
 ---
 

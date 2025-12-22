@@ -111,7 +111,6 @@ Only the algorithm (and sizes) change.
 
 - [NIST Post-Quantum Cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
 - [FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
-- [Cloudflare CIRCL Library](https://github.com/cloudflare/circl)
 
 ---
 
