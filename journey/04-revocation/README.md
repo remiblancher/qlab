@@ -8,6 +8,16 @@
 
 ## The Scenario
 
+It's 3 AM. You receive an alert:
+
+```
+SECURITY ALERT
+The private key for server.example.com
+was detected on GitHub.
+```
+
+What do you do?
+
 *"We had a security incident. A private key was compromised. How do we revoke a post-quantum certificate?"*
 
 The same way you revoke any certificate. PKI operations are algorithm-agnostic.
