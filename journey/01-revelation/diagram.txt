@@ -1,0 +1,184 @@
+UC-03: Store Now, Decrypt Later (SNDL)
+======================================
+
+
+THE SNDL ATTACK TIMELINE
+────────────────────────
+
+     TODAY                                        FUTURE
+       │                                            │
+       ▼                                            ▼
+┌──────────────┐                            ┌──────────────┐
+│   Your Data  │                            │   Quantum    │
+│  Encrypted   │                            │   Computer   │
+│   in TLS     │                            │   Available  │
+└──────┬───────┘                            └──────┬───────┘
+       │                                           │
+       │  Captured by adversary                    │
+       │                                           │
+       ▼                                           │
+┌──────────────┐                                   │
+│   Stored     │◄──────────────────────────────────┘
+│   Encrypted  │        Decrypt with Shor's
+│   Traffic    │        algorithm
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│  DECRYPTED!  │
+│  All secrets │
+│   exposed    │
+└──────────────┘
+
+
+TLS KEY EXCHANGE VULNERABILITY
+──────────────────────────────
+
+Classical TLS (ECDHE):
+
+  Client                    Adversary                   Server
+     │                          │                          │
+     │                          │  (passive recording)     │
+     │────── ECDH Public ───────┼──────────────────────────►
+     │◄───── ECDH Public ───────┼───────────────────────────│
+     │                          │                          │
+     │    Shared Secret = ?     │  Captured: Both pubkeys  │
+     │                          │                          │
+     │◄══════ Encrypted ════════┼═══════════════════════════►
+     │         Data             │  Captured: Ciphertext    │
+     │                          │                          │
+
+     FUTURE: Adversary runs Shor's algorithm on captured public keys
+             → Recovers shared secret
+             → Decrypts all stored traffic
+
+
+MOSCA'S INEQUALITY
+──────────────────
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│    If  X + Y > Z  →  START MIGRATION NOW                    │
+│                                                             │
+│    ┌─────┬──────────────────────────────────────────────┐   │
+│    │  X  │  Years until quantum computers exist         │   │
+│    ├─────┼──────────────────────────────────────────────┤   │
+│    │  Y  │  Years to migrate your systems to PQC        │   │
+│    ├─────┼──────────────────────────────────────────────┤   │
+│    │  Z  │  Years your data needs to stay secret        │   │
+│    └─────┴──────────────────────────────────────────────┘   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+Example: Medical Records
+
+    X = 10 years (quantum computer estimate)
+    Y = 5 years (migration time)
+    Z = 50 years (HIPAA requirement)
+
+    X + Y = 15
+    Z = 50
+
+    15 < 50  →  But data captured TODAY will be decrypted in 10 years!
+               The 50-year-old records from today will be only 10 years old.
+
+    CONCLUSION: ACT NOW
+
+
+DATA SENSITIVITY TIMELINE
+─────────────────────────
+
+Years of Secrecy Required:
+│
+│ 75+ ████████████████████████████████████  Government TOP SECRET
+│
+│ 50  ███████████████████████████████       Medical Records (HIPAA)
+│
+│ 25  ████████████████████                  Trade Secrets
+│
+│ 10  ██████████████                        Financial Records
+│
+│ 7   ████████████                          PCI Compliance
+│
+│ 1   ████                                  Session Keys
+│
+└────┼────┼────┼────┼────┼────┼────┼────────►
+     │    │    │    │    │    │    │
+   Now   5   10   15   20   25   30   Years
+
+     ▲                    ▲
+     │                    │
+     │                    └── Quantum computers expected
+     │
+     └── Migration should START here for 25+ year data
+
+
+ML-KEM VS ECDH COMPARISON
+─────────────────────────
+
+                    ECDH P-256                ML-KEM-768
+                    ──────────                ──────────
+
+Public Key         ┌─────────┐           ┌─────────────────────────┐
+                   │ 65 B    │           │        1,184 B          │
+                   └─────────┘           └─────────────────────────┘
+
+Ciphertext         ┌─────────┐           ┌───────────────────────┐
+                   │ 65 B    │           │       1,088 B         │
+                   └─────────┘           └───────────────────────┘
+
+Shared Secret      ┌────────────┐        ┌────────────┐
+                   │   32 B     │        │   32 B     │   (same!)
+                   └────────────┘        └────────────┘
+
+
+Quantum            ┌────────────┐        ┌────────────┐
+Resistance         │    NO      │        │    YES     │
+                   └────────────┘        └────────────┘
+
+
+HYBRID KEY EXCHANGE
+───────────────────
+
+Best of both worlds during transition:
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   Final Key = KDF( ECDH_shared ║ ML-KEM_shared )            │
+│                                                             │
+│   ┌─────────────────┐       ┌─────────────────┐             │
+│   │     ECDH        │       │    ML-KEM       │             │
+│   │   (classical)   │       │   (quantum-safe)│             │
+│   └────────┬────────┘       └────────┬────────┘             │
+│            │                         │                      │
+│            ▼                         ▼                      │
+│   ┌─────────────────────────────────────────┐               │
+│   │          Key Derivation Function        │               │
+│   └────────────────────┬────────────────────┘               │
+│                        │                                    │
+│                        ▼                                    │
+│              ┌──────────────────┐                           │
+│              │   Session Key    │                           │
+│              └──────────────────┘                           │
+│                                                             │
+│   Security:                                                 │
+│   • If ECDH breaks → ML-KEM still protects                  │
+│   • If ML-KEM has flaw → ECDH still protects                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+
+ACTION MATRIX
+─────────────
+
+┌─────────────────┬──────────────────┬─────────────────────────┐
+│ Data Lifetime   │ Urgency          │ Action                  │
+├─────────────────┼──────────────────┼─────────────────────────┤
+│ < 5 years       │ Low              │ Monitor, plan           │
+├─────────────────┼──────────────────┼─────────────────────────┤
+│ 5-15 years      │ Medium           │ Begin hybrid deployment │
+├─────────────────┼──────────────────┼─────────────────────────┤
+│ 15-25 years     │ High             │ Deploy PQC now          │
+├─────────────────┼──────────────────┼─────────────────────────┤
+│ > 25 years      │ CRITICAL         │ Should already have PQC │
+└─────────────────┴──────────────────┴─────────────────────────┘

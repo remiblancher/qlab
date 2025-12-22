@@ -1,63 +1,49 @@
-# The Revelation: "Store Now, Decrypt Later"
+# The Revelation: The Quantum Threat to Your Data Today
 
-## Why change algorithms?
+> **Key Message:** Encrypted data captured today can be decrypted tomorrow. PQC for encryption is urgent.
 
-You just created a classical PKI with ECDSA. It works. So why change?
+> **Visual diagrams:** See [`diagram.txt`](diagram.txt) for detailed ASCII diagrams of the SNDL attack, Mosca's inequality, and ML-KEM comparison.
 
-Because **quantum computers will break everything**.
+## The Scenario
 
----
+*"Our sensitive data is encrypted. Why should I worry about quantum computers that don't exist yet?"*
 
-## The SNDL Threat
-
-**Store Now, Decrypt Later** (SNDL): adversaries capture your encrypted traffic TODAY to decrypt it LATER.
+Because adversaries are **recording your encrypted traffic today**. When quantum computers arrive, they'll decrypt it all. This is called **Store Now, Decrypt Later (SNDL)** — also known as **Harvest Now, Decrypt Later (HNDL)**.
 
 ```
-TODAY                                    IN 10-15 YEARS
-─────                                    ──────────────
+TODAY                           FUTURE (5-15 years?)
+─────                           ────────────────────
 
-   You                                       Adversary
-    │                                           │
-    │  TLS Connection                           │
-    ▼  (RSA/ECDSA)                              │
-┌────────┐          ┌────────┐                  │
-│ Client │◄────────►│ Server │                  │
-└────────┘          └────────┘                  │
-    │                   │                       │
-    │    Adversary      │                       ▼
-    │        │          │              ┌──────────────────┐
-    │        ▼          │              │ Quantum          │
-    │   [Capture]       │              │ Computer         │
-    │   [████████]      │              │                  │
-    │   Stores the      │              │ Shor's           │
-    │   traffic         │              │ Algorithm        │
-    │                   │              │                  │
-    │                   │              │ Breaks RSA/ECDSA │
-    │                   │              │ in hours         │
-    │                   │              └────────┬─────────┘
-    │                   │                       │
-    │                   │                       ▼
-    │                   │              ┌──────────────────┐
-    │                   │              │ ALL your past    │
-    │                   │              │ communications   │
-    │                   │              │ are now          │
-    │                   │              │ readable         │
-    │                   │              └──────────────────┘
+  You                              Adversary
+   │                                  │
+   │ Encrypted data ──────────────►   │ Stored encrypted data
+   │ (ECDH key exchange)              │
+   │                                  │
+   │                                  ▼
+   │                              Quantum
+   │                              Computer
+   │                                  │
+   │                                  ▼
+   │                              Decrypted!
+   │                              All your secrets
 ```
 
 ---
 
-## Who is affected?
+## Who Should Worry?
 
-| Data Type | Confidentiality Duration | SNDL Risk |
-|-----------|--------------------------|-----------|
-| Medical records | 50+ years (patient lifetime) | **CRITICAL** |
-| Government secrets | 25-75 years | **CRITICAL** |
-| Intellectual property | 10-20 years | **HIGH** |
-| Financial data | 7-10 years | MODERATE |
-| Daily communications | < 5 years | LOW |
+| Data Type | Sensitivity Lifetime | SNDL Risk |
+|-----------|---------------------|-----------|
+| TLS session keys* | Minutes | Low |
+| Personal health records | Decades | **Critical** |
+| Government secrets | 25-50 years | **Critical** |
+| Financial records | 7-10 years | High |
+| Trade secrets | Variable | High |
+| Military communications | 50+ years | **Critical** |
 
-**If your data must remain secret for more than 10 years, you're already late.**
+*\*But what about the content? User actions, exchanged data, and browsing patterns may remain sensitive long after the session ends.*
+
+**Rule of thumb:** If your data needs to stay secret for more than 10 years, you need PQC encryption **now**.
 
 ---
 
@@ -68,48 +54,44 @@ Michele Mosca formalized the urgency of migration:
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   If  X + Y > Z  →  You must act NOW                           │
+│   If  X + Y > Z  →  You have time (but start planning)         │
+│   If  X + Y ≤ Z  →  ACT NOW                                    │
 │                                                                 │
-│   X = Years until quantum computer (10-15 years)               │
+│   X = Years until quantum computer (10-15 years estimate)      │
 │   Y = Time to migrate your systems (2-5 years)                 │
 │   Z = Required confidentiality duration of your data           │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Example 1: Medical data
+### Example: Medical Records
 
 ```
-X = 12 years  (quantum computer in 2037)
-Y = 3 years   (infrastructure migration)
-Z = 50 years  (patient records)
+X = 10 years  (quantum computer estimate)
+Y = 5 years   (infrastructure migration)
+Z = 50 years  (patient records - HIPAA)
 
 X + Y = 15 years
 
 15 < 50  →  YOU'RE 35 YEARS LATE!
 ```
 
-### Example 2: Standard e-commerce
+---
 
-```
-X = 12 years  (quantum computer in 2037)
-Y = 2 years   (simple migration)
-Z = 5 years   (payment data)
+## What This Demo Shows
 
-X + Y = 14 years
-
-14 > 5  →  You have time, but start planning
-```
+1. **The SNDL threat** — Visual explanation of the attack
+2. **Mosca's calculator** — Calculate YOUR urgency interactively
 
 ---
 
-## What you'll do
+## Run the Demo
 
-In this mission, you will:
+```bash
+./demo.sh
+```
 
-1. **Understand the PQC context**: NIST standards, new algorithms
-2. **See the SNDL threat**: Attack visualization
-3. **Calculate YOUR urgency**: With your own values
+The demo is an **interactive Mosca calculator** that helps you assess your PQC migration urgency based on your data's sensitivity lifetime.
 
 ---
 
@@ -137,24 +119,25 @@ NIST finalized 3 post-quantum algorithms:
 
 ---
 
-## What you'll have at the end
+## What You Learned
 
-- Understanding of the SNDL threat
-- Your personal Mosca score
-- Motivation to move to PQC
-
----
-
-## Run the mission
-
-```bash
-./demo.sh
-```
+1. **SNDL is real:** Adversaries record encrypted traffic today
+2. **Timing matters:** Your data's sensitivity lifetime determines urgency
+3. **ML-KEM is ready:** NIST FIPS 203 standard is finalized
+4. **Hybrid is safe:** Use both classical and PQC during transition
 
 ---
 
-## Next step
+## References
 
-→ **Level 1: "Build Your Quantum-Safe Foundation"**
+- [NIST FIPS 203: ML-KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
+- [Mosca's Theorem](https://globalriskinstitute.org/publication/quantum-threat-timeline/)
+- [NSA CNSA 2.0 Guidelines](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)
+
+---
+
+## Next Step
+
+→ **Level 1: Build Your Quantum-Safe Foundation**
 
 You'll create your first post-quantum CA with ML-DSA.
