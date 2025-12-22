@@ -1,8 +1,8 @@
 # The Revelation: The Quantum Threat to Your Data Today
 
-> **Key Message:** Encrypted data captured today can be decrypted tomorrow. PQC for encryption is urgent.
+> **Key Message:** Encrypted data captured today can be decrypted tomorrow. Signatures trusted today can be forged tomorrow. PQC is urgent.
 
-> **Visual diagrams:** See [`diagram.txt`](diagram.txt) for detailed ASCII diagrams of the SNDL attack, Mosca's inequality, and ML-KEM comparison.
+> **Visual diagrams:** See [`diagram.txt`](diagram.txt) for detailed ASCII diagrams of SNDL, TNFL, Mosca's inequality, and algorithm comparisons.
 
 ## Why Change Algorithms?
 
@@ -16,7 +16,13 @@ Because **quantum computers will break everything**.
 
 *"Our sensitive data is encrypted. Why should I worry about quantum computers that don't exist yet?"*
 
-Because adversaries are **recording your encrypted traffic today**. When quantum computers arrive, they'll decrypt it all. This is called **Store Now, Decrypt Later (SNDL)** — also known as **Harvest Now, Decrypt Later (HNDL)**.
+## The Twin Threats
+
+Quantum computers will break both **encryption** and **signatures**:
+
+### SNDL: Store Now, Decrypt Later
+
+Adversaries are **recording your encrypted traffic today**. When quantum computers arrive, they'll decrypt it all.
 
 ```
 TODAY                           FUTURE (5-15 years?)
@@ -35,6 +41,32 @@ TODAY                           FUTURE (5-15 years?)
    │                              Decrypted!
    │                              All your secrets
 ```
+
+→ **Solution:** ML-KEM (quantum-resistant key exchange)
+
+### TNFL: Trust Now, Forge Later
+
+Signatures you trust today can be **forged** once quantum computers arrive. A forged signature is instant and undetectable — malicious firmware signed with a forged key installs without question.
+
+```
+TODAY                           FUTURE (5-15 years?)
+─────                           ────────────────────
+
+  Your PKI                         Attacker
+   │                                  │
+   │ Certificates signed ─────────►   │ Captured certificates
+   │ with ECDSA                       │ and public keys
+   │                                  │
+   │                                  ▼
+   │                              Quantum
+   │                              Computer
+   │                                  │
+   │                                  ▼
+   │                              Forged certificates!
+   │                              Impersonation possible
+```
+
+→ **Solution:** ML-DSA (quantum-resistant signatures) — *what this lab teaches*
 
 ---
 
@@ -129,17 +161,19 @@ NIST finalized 3 post-quantum algorithms:
 
 ## What You Learned
 
-1. **SNDL is real:** Adversaries record encrypted traffic today
-2. **Timing matters:** Your data's sensitivity lifetime determines urgency
-3. **ML-KEM is ready:** NIST FIPS 203 standard is finalized
-4. **Hybrid is safe:** Use both classical and PQC during transition
+1. **SNDL is real:** Adversaries record encrypted traffic today → ML-KEM protects
+2. **TNFL is real:** Signatures trusted today can be forged tomorrow → ML-DSA protects
+3. **Timing matters:** Your data's sensitivity lifetime determines urgency
+4. **NIST standards are ready:** ML-KEM (FIPS 203) and ML-DSA (FIPS 204) are finalized
 
 ---
 
 ## References
 
 - [NIST FIPS 203: ML-KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
+- [NIST FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
 - [Mosca's Theorem](https://globalriskinstitute.org/publication/quantum-threat-timeline/)
+- [Trust Now, Forge Later (TNFL)](https://postquantum.com/post-quantum/trust-now-forge-later/)
 - [NSA CNSA 2.0 Guidelines](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)
 
 ---
