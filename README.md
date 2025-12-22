@@ -40,38 +40,38 @@ Then start with: `./journey/00-quickstart/demo.sh`
 | 0 | [**Quick Start**](journey/00-quickstart/) — Create your first CA (ECDSA) | 10 min |
 | 1 | [**The Revelation**](journey/01-revelation/) — Why PQC matters (SNDL threat) | 8 min |
 
-### 📚 PQC Basics
+### 📚 Core PKI
 
 | # | Mission | Time |
 |---|---------|------|
 | 2 | [**Full PQC Chain**](journey/02-full-chain/) — Root → Issuing → TLS (ML-DSA) | 10 min |
 | 3 | [**Hybrid Catalyst**](journey/03-hybrid/) — Dual-key certificate (ECDSA + ML-DSA) | 10 min |
 
+### ⚙️ PKI Lifecycle
+
+| # | Mission | Time |
+|---|---------|------|
+| 4 | [**Revocation**](journey/04-revocation/) — CRL generation | 10 min |
+| 5 | [**OCSP**](journey/05-ocsp/) — Real-time status checking | 10 min |
+
 ### 🔧 Applications
 
 | # | Mission | Time |
 |---|---------|------|
-| 4 | [**mTLS**](journey/04-mtls/) — Mutual authentication (ML-DSA) | 8 min |
-| 5 | [**Code Signing**](journey/05-code-signing/) — Sign your releases (ML-DSA) | 8 min |
-| 6 | [**Timestamping**](journey/06-timestamping/) — Proof of existence (ML-DSA) | 8 min |
+| 6 | [**Code Signing**](journey/06-code-signing/) — Sign your releases (ML-DSA) | 8 min |
+| 7 | [**Timestamping**](journey/07-timestamping/) — Proof of existence (ML-DSA) | 8 min |
+| 8 | [**LTV Signatures**](journey/08-ltv-signatures/) — Valid in 30 years | 8 min |
+| 9 | [**CMS Encryption**](journey/09-cms-encryption/) — Encrypt documents (ML-KEM) | 8 min |
 
-### ⚙️ Ops & Lifecycle
+### 🎯 Advanced
 
-| # | Mission | Time |
-|---|---------|------|
-| 7 | [**Revocation**](journey/07-revocation/) — CRL generation (Hybrid) | 10 min |
-| 8 | [**OCSP**](journey/08-ocsp/) — Real-time status (Hybrid) | 10 min |
-| 9 | [**Crypto-Agility**](journey/09-crypto-agility/) — Migrate ECDSA → ML-DSA | 10 min |
-
-### 🎯 Advanced (Optional)
-
-> These missions are optional and exploratory. You can stop at Ops & Lifecycle without losing the main thread.
+> Requires Docker and server infrastructure.
 
 | # | Mission | Time |
 |---|---------|------|
-| 10 | [**LTV Signatures**](journey/10-ltv-signatures/) — Valid in 30 years (Hybrid) | 8 min |
-| 11 | [**PQC Tunnel**](journey/11-pqc-tunnel/) — Key exchange demo (ML-KEM) | 8 min |
-| 12 | [**CMS Encryption**](journey/12-cms-encryption/) — Encrypt documents (ML-KEM) | 8 min |
+| 10 | [**Crypto-Agility**](journey/10-crypto-agility/) — Migrate ECDSA → ML-DSA | 10 min |
+| 11 | [**mTLS**](journey/11-mtls/) — Mutual authentication with Docker | 10 min |
+| 12 | [**PQC Tunnel**](journey/12-pqc-tunnel/) — Key exchange demo (ML-KEM) | 8 min |
 
 ---
 
@@ -84,15 +84,15 @@ post-quantum-pki-lab/
 │   ├── 01-revelation/          # The Quantum Threat
 │   ├── 02-full-chain/          # Full PQC Chain
 │   ├── 03-hybrid/              # Hybrid Certificates
-│   ├── 04-mtls/                # mTLS
-│   ├── 05-code-signing/        # Code Signing
-│   ├── 06-timestamping/        # Timestamping
-│   ├── 07-revocation/          # Revocation
-│   ├── 08-ocsp/                # OCSP
-│   ├── 09-crypto-agility/      # Crypto-Agility
-│   ├── 10-ltv-signatures/      # LTV Signatures
-│   ├── 11-pqc-tunnel/          # PQC Tunnel
-│   └── 12-cms-encryption/      # CMS Encryption
+│   ├── 04-revocation/          # Revocation (CRL)
+│   ├── 05-ocsp/                # OCSP
+│   ├── 06-code-signing/        # Code Signing
+│   ├── 07-timestamping/        # Timestamping
+│   ├── 08-ltv-signatures/      # LTV Signatures
+│   ├── 09-cms-encryption/      # CMS Encryption
+│   ├── 10-crypto-agility/      # Crypto-Agility
+│   ├── 11-mtls/                # mTLS (Docker)
+│   └── 12-pqc-tunnel/          # PQC Tunnel
 ├── reference/usecases/         # Reference documentation
 ├── lib/                        # Shell helpers
 └── bin/pki                     # PKI tool (Go)
