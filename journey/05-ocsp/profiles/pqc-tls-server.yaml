@@ -1,0 +1,36 @@
+# Post-Quantum TLS Server - ML-DSA-65
+# End-entity certificate for OCSP demo
+# NIST Level 3 (~192-bit classical equivalent)
+
+name: pqc-tls-server
+description: "TLS server ML-DSA-65 (FIPS 204)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+  required:
+    - cn
+
+validity: 365d
+
+signature:
+  algorithms:
+    - ml-dsa-65
+
+extensions:
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+  extKeyUsage:
+    critical: false
+    values:
+      - serverAuth
+  basicConstraints:
+    critical: true
+    ca: false
+  subjectAltName:
+    critical: false
+    dns:
+      - "${DNS}"

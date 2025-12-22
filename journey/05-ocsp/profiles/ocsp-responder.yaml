@@ -1,0 +1,35 @@
+# OCSP Responder Certificate - ML-DSA-65
+# Delegated responder for OCSP signing
+# NIST Level 3 (~192-bit classical equivalent)
+
+name: ocsp-responder
+description: "OCSP Responder ML-DSA-65 (FIPS 204)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+  required:
+    - cn
+
+validity: 365d
+
+signature:
+  algorithms:
+    - ml-dsa-65
+
+extensions:
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+  extKeyUsage:
+    critical: false
+    values:
+      - ocspSigning
+  basicConstraints:
+    critical: true
+    ca: false
+  # OCSP No Check extension prevents infinite verification loop
+  ocspNoCheck:
+    critical: false

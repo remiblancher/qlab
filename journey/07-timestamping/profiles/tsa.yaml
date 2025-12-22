@@ -1,0 +1,32 @@
+# Timestamp Authority Certificate - ML-DSA-65
+# End-entity certificate for timestamping
+# NIST Level 3 (~192-bit classical equivalent)
+
+name: tsa
+description: "Timestamp Authority ML-DSA-65 (FIPS 204)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+  required:
+    - cn
+
+validity: 365d
+
+signature:
+  algorithms:
+    - ml-dsa-65
+
+extensions:
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+  extKeyUsage:
+    critical: true
+    values:
+      - timeStamping
+  basicConstraints:
+    critical: true
+    ca: false

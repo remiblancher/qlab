@@ -1,0 +1,28 @@
+# Post-Quantum CA - ML-DSA-65
+# CA for timestamping demo
+# NIST Level 3 (~192-bit classical equivalent)
+
+name: pqc-ca
+description: "PQC CA ML-DSA-65 (FIPS 204)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+
+validity: 3650d  # 10 years
+
+signature:
+  algorithms:
+    - ml-dsa-65
+
+extensions:
+  basicConstraints:
+    critical: true
+    ca: true
+    pathLen: 0
+  keyUsage:
+    critical: true
+    values:
+      - keyCertSign
+      - cRLSign
