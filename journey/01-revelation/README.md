@@ -129,13 +129,6 @@ X + Y = 15 years
 
 ---
 
-## What This Demo Shows
-
-1. **The SNDL threat** — Visual explanation of the attack
-2. **Mosca's calculator** — Calculate YOUR urgency interactively
-
----
-
 ## Run the Demo
 
 ```bash
@@ -152,11 +145,13 @@ NIST finalized 3 post-quantum algorithms (August 2024):
 
 | Algorithm | Standard | Family | Protects Against | Replaces |
 |-----------|----------|--------|------------------|----------|
-| [ML-KEM](https://csrc.nist.gov/pubs/fips/203/final) | FIPS 203 | Module Lattice | SNDL (encryption) | ECDH, RSA-KEM |
-| [ML-DSA](https://csrc.nist.gov/pubs/fips/204/final) | FIPS 204 | Module Lattice | TNFL (signatures) | ECDSA, RSA |
-| [SLH-DSA](https://csrc.nist.gov/pubs/fips/205/final) | FIPS 205 | Stateless Hash | TNFL (signatures) | Alternative to ML-DSA |
+| ML-KEM | [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final) | Module Lattice | SNDL (encryption) | ECDH, RSA-KEM |
+| ML-DSA | [FIPS 204](https://csrc.nist.gov/pubs/fips/204/final) | Module Lattice | TNFL (signatures) | ECDSA, RSA |
+| SLH-DSA | [FIPS 205](https://csrc.nist.gov/pubs/fips/205/final) | Stateless Hash | TNFL (signatures) | Alternative to ML-DSA |
 
-### ML-KEM Variants (Key Encapsulation)
+### ML-KEM Variants (Key Encapsulation) — *used in this lab*
+
+ML-KEM (Module Lattice Key Encapsulation Mechanism) enables secure key exchange resistant to quantum attacks. Unlike traditional Diffie-Hellman where both parties contribute to the shared secret, ML-KEM uses **encapsulation**: one party generates a random secret and "wraps" it with the recipient's public key. Only the recipient can "unwrap" it with their private key.
 
 | Variant | Security | Public Key | Ciphertext |
 |---------|----------|------------|------------|
@@ -165,6 +160,8 @@ NIST finalized 3 post-quantum algorithms (August 2024):
 | ML-KEM-1024 | Level 5 (~256-bit) | 1,568 bytes | 1,568 bytes |
 
 ### ML-DSA Variants (Signatures) — *used in this lab*
+
+ML-DSA (Module Lattice Digital Signature Algorithm) provides quantum-resistant digital signatures. It replaces ECDSA and RSA signatures in certificates, code signing, and document authentication. The security is based on the hardness of lattice problems that quantum computers cannot efficiently solve.
 
 | Variant | Security | Public Key | Signature |
 |---------|----------|------------|-----------|
