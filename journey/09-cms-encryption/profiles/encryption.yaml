@@ -1,0 +1,50 @@
+# =============================================================================
+# PQC Encryption Certificate Profile (ML-DSA-65 + ML-KEM-768)
+# =============================================================================
+#
+# Usage: Post-quantum encryption certificate for CMS EnvelopedData
+#
+# This profile generates TWO linked certificates:
+#   - Signing certificate: ML-DSA-65 (FIPS 204) for authentication
+#   - Encryption certificate: ML-KEM-768 (FIPS 203) for key encapsulation
+#
+# Example:
+#   pki issue --profile profiles/encryption.yaml --cn "Alice" \
+#       --out alice.crt --key-out alice.key
+#
+# =============================================================================
+
+name: encryption
+description: "PQC Encryption ML-DSA-65 + ML-KEM-768 (FIPS 203/204)"
+
+subject:
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+  required:
+    - cn
+
+validity: 365d
+
+# ML-DSA-65 for signing (authentication)
+signature:
+  algorithms:
+    - ml-dsa-65
+  keyUsage:
+    - digitalSignature
+
+# ML-KEM-768 for encryption (key encapsulation)
+encryption:
+  algorithms:
+    - ml-kem-768
+  keyUsage:
+    - keyEncipherment
+
+extensions:
+  extKeyUsage:
+    critical: false
+    values:
+      - emailProtection
+  basicConstraints:
+    critical: true
+    ca: false

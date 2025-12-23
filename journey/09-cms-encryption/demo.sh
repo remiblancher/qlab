@@ -1,233 +1,256 @@
 #!/bin/bash
 # =============================================================================
-#  NIVEAU 4 - MISSION 11 : CMS Encryption
+#  UC-09: CMS Encryption - For Your Eyes Only
 #
-#  Objectif : Chiffrer des documents avec ML-KEM.
+#  Post-quantum document encryption with ML-KEM
+#  Encrypt confidential documents using CMS EnvelopedData
 #
-#  Algorithme : X25519 + ML-KEM-768
+#  Key Message: Hybrid encryption (AES + ML-KEM) protects documents
+#               from both current and future quantum threats.
+#
+#  Note: This is a conceptual demo. The pki cms encrypt/decrypt commands
+#        are being finalized. This demo explains the architecture and shows
+#        what the workflow will look like.
 # =============================================================================
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAB_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+source "$SCRIPT_DIR/../../lib/common.sh"
 
-source "$LAB_ROOT/lib/colors.sh"
-source "$LAB_ROOT/lib/interactive.sh"
-source "$LAB_ROOT/lib/workspace.sh"
+setup_demo "PQC CMS Encryption"
 
-PKI_BIN="$LAB_ROOT/bin/pki"
+# =============================================================================
+# Step 1: Understand CMS Envelope Structure
+# =============================================================================
 
-show_welcome() {
-    clear
-    echo ""
-    echo -e "${BOLD}${YELLOW}"
-    echo "  ╔═══════════════════════════════════════════════════════════════╗"
-    echo "  ║                                                               ║"
-    echo "  ║   📦  NIVEAU 4 - MISSION 11                                   ║"
-    echo "  ║                                                               ║"
-    echo "  ║   CMS Encryption : Chiffrement de documents                   ║"
-    echo "  ║                                                               ║"
-    echo "  ╚═══════════════════════════════════════════════════════════════╝"
-    echo -e "${NC}"
-    echo ""
-    echo "  CMS = Cryptographic Message Syntax"
-    echo "  Standard pour chiffrer/signer des documents (S/MIME, PKCS#7)"
-    echo ""
-    echo "  Cas d'usage :"
-    echo "    - Emails chiffrés (S/MIME)"
-    echo "    - Documents confidentiels"
-    echo "    - Archives sécurisées"
-    echo ""
-}
+print_step "Step 1: Understand CMS Envelope Structure"
 
-mission_1_envelope() {
-    mission_start 1 "Comprendre l'enveloppe CMS"
+echo "  CMS EnvelopedData is the standard for encrypting documents."
+echo "  Used by S/MIME (secure email), document encryption, and more."
+echo ""
+echo "  ┌─────────────────────────────────────────────────────────────────┐"
+echo "  │  CMS ENVELOPE (EnvelopedData per RFC 5652)                      │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo "  │                                                                 │"
+echo "  │  ┌─────────────────────────────────────────────────────────┐   │"
+echo "  │  │  KEMRecipientInfo (for ML-KEM recipients)               │   │"
+echo "  │  │  → Recipient identity (issuer + serial)                 │   │"
+echo "  │  │  → KEM ciphertext (~1,088 bytes for ML-KEM-768)         │   │"
+echo "  │  │  → Wrapped session key (AES Key Wrap)                   │   │"
+echo "  │  └─────────────────────────────────────────────────────────┘   │"
+echo "  │                                                                 │"
+echo "  │  ┌─────────────────────────────────────────────────────────┐   │"
+echo "  │  │  EncryptedContent                                       │   │"
+echo "  │  │  → Document encrypted with AES-256-GCM                  │   │"
+echo "  │  │  → Fast symmetric encryption (AEAD)                     │   │"
+echo "  │  └─────────────────────────────────────────────────────────┘   │"
+echo "  │                                                                 │"
+echo "  └─────────────────────────────────────────────────────────────────┘"
+echo ""
+echo "  How it works:"
+echo "    1. Generate random AES-256 session key (CEK)"
+echo "    2. Encrypt document with AES-256-GCM (fast, authenticated)"
+echo "    3. Encapsulate CEK with ML-KEM (quantum-safe key transport)"
+echo "    4. Wrap encapsulated key with HKDF + AES Key Wrap"
+echo "    5. Package as CMS EnvelopedData (.p7m)"
+echo ""
 
-    echo "  Une enveloppe CMS chiffrée contient :"
-    echo ""
-    echo "  ┌─────────────────────────────────────────────────────────────────┐"
-    echo "  │  ENVELOPPE CMS (EnvelopedData)                                 │"
-    echo "  ├─────────────────────────────────────────────────────────────────┤"
-    echo "  │                                                                 │"
-    echo "  │  ┌─────────────────────────────────────────────────────────┐   │"
-    echo "  │  │  RecipientInfo (pour chaque destinataire)               │   │"
-    echo "  │  │  → Identité du destinataire                             │   │"
-    echo "  │  │  → Clé de session chiffrée avec ML-KEM                  │   │"
-    echo "  │  └─────────────────────────────────────────────────────────┘   │"
-    echo "  │                                                                 │"
-    echo "  │  ┌─────────────────────────────────────────────────────────┐   │"
-    echo "  │  │  EncryptedContent                                       │   │"
-    echo "  │  │  → Document chiffré avec AES-256-GCM                    │   │"
-    echo "  │  │  → Clé AES = clé de session                             │   │"
-    echo "  │  └─────────────────────────────────────────────────────────┘   │"
-    echo "  │                                                                 │"
-    echo "  └─────────────────────────────────────────────────────────────────┘"
-    echo ""
-    echo "  Fonctionnement :"
-    echo "    1. Générer une clé de session aléatoire (AES)"
-    echo "    2. Chiffrer le document avec cette clé AES"
-    echo "    3. Encapsuler la clé AES avec ML-KEM du destinataire"
-    echo "    4. Empaqueter le tout en CMS"
-    echo ""
+pause
 
-    mission_complete "Structure CMS comprise"
-}
+# =============================================================================
+# Step 2: Create Encryption CA
+# =============================================================================
 
-mission_2_encrypt_cert() {
-    mission_start 2 "Préparer les certificats de chiffrement"
+print_step "Step 2: Create Encryption CA"
 
-    ENC_CA="$LEVEL_WORKSPACE/encryption-ca"
-    if [[ ! -f "$ENC_CA/ca.crt" ]]; then
-        echo "  Création de la CA..."
-        "$PKI_BIN" init-ca --name "Encryption CA" --algorithm ml-dsa-65 \
-            --dir "$ENC_CA" > /dev/null 2>&1
-    fi
+echo "  The CA signs encryption certificates."
+echo "  We use ML-DSA-65 for the CA (quantum-safe signatures)."
+echo ""
 
-    # Certificat Alice (destinataire)
-    ALICE_CERT="$LEVEL_WORKSPACE/alice-encrypt.crt"
-    ALICE_KEY="$LEVEL_WORKSPACE/alice-encrypt.key"
+run_cmd "pki init-ca --name \"Encryption CA\" --algorithm ml-dsa-65 --dir output/encryption-ca"
 
-    if [[ ! -f "$ALICE_CERT" ]]; then
-        echo "  Création du certificat d'Alice (destinataire)..."
-        "$PKI_BIN" issue --ca-dir "$ENC_CA" --profile ml-dsa-kem/encryption \
-            --cn "Alice" --out "$ALICE_CERT" --key-out "$ALICE_KEY" > /dev/null 2>&1
-    fi
+echo ""
 
-    validate_file "$ALICE_CERT" "Certificat Alice (encryption)"
+pause
 
-    echo ""
-    echo "  Le certificat inclut une clé ML-KEM pour le chiffrement."
-    echo ""
+# =============================================================================
+# Step 3: Issue Signing Certificate
+# =============================================================================
 
-    mission_complete "Certificats prêts"
-}
+print_step "Step 3: Issue Certificate for Alice"
 
-mission_3_encrypt() {
-    mission_start 3 "Chiffrer un document pour Alice"
+echo "  Alice needs a certificate to authenticate encrypted documents."
+echo ""
+echo "  In production, encryption profiles issue TWO linked certificates:"
+echo "    - Signing: ML-DSA-65 (for authentication, non-repudiation)"
+echo "    - Encryption: ML-KEM-768 (for key encapsulation)"
+echo ""
+echo "  The certificates are linked via RelatedCertificate extension."
+echo ""
 
-    # Document secret
-    local secret="$LEVEL_WORKSPACE/secret-document.txt"
-    echo "=== DOCUMENT CONFIDENTIEL ===" > "$secret"
-    echo "Projet: Fusion avec ACME Corp" >> "$secret"
-    echo "Date: $(date)" >> "$secret"
-    echo "Montant: 50M EUR" >> "$secret"
-    echo "===========================" >> "$secret"
+run_cmd "pki issue --ca-dir output/encryption-ca --profile profiles/encryption.yaml --cn \"Alice\" --out output/alice.crt --key-out output/alice.key"
 
-    echo "  Document à chiffrer :"
-    echo ""
-    cat "$secret" | sed 's/^/    /'
-    echo ""
+echo ""
 
-    local encrypted="$LEVEL_WORKSPACE/secret-document.p7m"
+# Show certificate info
+if [[ -f "output/alice.crt" ]]; then
+    cert_size=$(wc -c < "output/alice.crt" | tr -d ' ')
+    echo -e "  ${CYAN}Certificate size:${NC} $cert_size bytes"
+    echo -e "  ${DIM}(ML-DSA-65 public key: ~1,952 bytes)${NC}"
+fi
 
-    teach_cmd "pki cms encrypt --data $secret --recipient $ALICE_CERT -o $encrypted" \
-              "Chiffrement CMS avec le certificat d'Alice"
+echo ""
 
-    if [[ -f "$encrypted" ]]; then
-        validate_file "$encrypted" "Document chiffré (.p7m)"
+pause
 
-        local enc_size=$(wc -c < "$encrypted" | tr -d ' ')
-        local orig_size=$(wc -c < "$secret" | tr -d ' ')
-        echo ""
-        echo -e "  ${CYAN}Taille originale :${NC} $orig_size bytes"
-        echo -e "  ${CYAN}Taille chiffrée  :${NC} $enc_size bytes"
-        echo ""
-        echo "  Le fichier .p7m contient :"
-        echo "    - Le document chiffré (AES-256-GCM)"
-        echo "    - La clé AES encapsulée avec ML-KEM"
-    fi
+# =============================================================================
+# Step 4: Encryption Flow (Conceptual)
+# =============================================================================
 
-    mission_complete "Document chiffré"
-}
+print_step "Step 4: How CMS Encryption Works"
 
-mission_4_decrypt() {
-    mission_start 4 "Alice déchiffre le document"
+echo "  Creating a confidential document..."
+echo ""
 
-    local encrypted="$LEVEL_WORKSPACE/secret-document.p7m"
-    local decrypted="$LEVEL_WORKSPACE/secret-decrypted.txt"
+cat > output/secret-document.txt << 'EOF'
+=== CONFIDENTIAL DOCUMENT ===
+Project: Quantum Migration
+Date: 2025-01-15
+Budget: 50M EUR
 
-    echo "  Seule Alice peut déchiffrer (elle a la clé privée ML-KEM)."
-    echo ""
+Key milestones:
+1. Inventory: Q1 2025
+2. Pilot: Q2 2025
+3. Production: Q4 2025
 
-    teach_cmd "pki cms decrypt --data $encrypted --cert $ALICE_CERT --key $ALICE_KEY -o $decrypted" \
-              "Déchiffrement avec la clé privée d'Alice"
+Classification: TOP SECRET
+=============================
+EOF
 
-    if [[ -f "$decrypted" ]]; then
-        echo ""
-        echo -e "  ${GREEN}✓${NC} Document déchiffré avec succès !"
-        echo ""
-        echo "  Contenu récupéré :"
-        echo ""
-        cat "$decrypted" | sed 's/^/    /'
-        echo ""
-    fi
+echo "  Document contents:"
+echo ""
+cat output/secret-document.txt | sed 's/^/    /'
+echo ""
 
-    mission_complete "Document déchiffré"
-}
+orig_size=$(wc -c < "output/secret-document.txt" | tr -d ' ')
+echo -e "  ${CYAN}Original size:${NC} $orig_size bytes"
+echo ""
 
-show_recap_final() {
-    echo ""
-    echo -e "${BOLD}${BG_GREEN}${WHITE} MISSION 11 TERMINÉE ! ${NC}"
-    echo ""
-    echo -e "${BOLD}${GREEN} NIVEAU 4 COMPLET !${NC}"
-    echo ""
-    echo -e "${BOLD}${GREEN} PARCOURS TERMINÉ !${NC}"
-    echo ""
+echo "  ┌─────────────────────────────────────────────────────────────────┐"
+echo "  │  ENCRYPTION COMMAND (coming soon)                               │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo "  │                                                                 │"
+echo -e "  │  ${DIM}pki cms encrypt \\\\${NC}                                           │"
+echo -e "  │  ${DIM}  --recipient output/alice-enc.crt \\\\${NC}                        │"
+echo -e "  │  ${DIM}  --in output/secret-document.txt \\\\${NC}                         │"
+echo -e "  │  ${DIM}  --out output/secret-document.p7m${NC}                           │"
+echo "  │                                                                 │"
+echo "  └─────────────────────────────────────────────────────────────────┘"
+echo ""
 
-    show_recap "Ce que tu as accompli dans le Niveau 4 :" \
-        "LTV Signatures pour archivage 30+ ans" \
-        "ML-KEM pour échange de clés post-quantum" \
-        "Chiffrement CMS de documents"
+echo "  What happens internally:"
+echo ""
+echo "    1. Generate random 32-byte AES-256 key (CEK)"
+echo "    2. Encrypt document with AES-256-GCM:"
+echo "       - 12-byte random nonce"
+echo "       - 16-byte authentication tag"
+echo "    3. ML-KEM encapsulation with Alice's public key:"
+echo "       - Produces ~1,088 byte ciphertext"
+echo "       - Produces 32-byte shared secret"
+echo "    4. Derive KEK from shared secret using HKDF-SHA256"
+echo "    5. Wrap CEK with AES Key Wrap (RFC 3394)"
+echo "    6. Package as CMS EnvelopedData"
+echo ""
 
-    echo ""
-    echo "  ┌─────────────────────────────────────────────────────────────────┐"
-    echo "  │  🎓 RÉCAPITULATIF DU PARCOURS                                  │"
-    echo "  ├─────────────────────────────────────────────────────────────────┤"
-    echo "  │                                                                 │"
-    echo "  │  Quick Start    : Première PKI (ECDSA)                         │"
-    echo "  │  Révélation     : Pourquoi PQC ? SNDL + Mosca                  │"
-    echo "  │  Niveau 1       : Full PQC + Hybrid (ML-DSA)                   │"
-    echo "  │  Niveau 2       : mTLS, Code Signing, Timestamping             │"
-    echo "  │  Niveau 3       : Revocation, OCSP, Crypto-Agility             │"
-    echo "  │  Niveau 4       : LTV, ML-KEM, CMS Encryption                  │"
-    echo "  │                                                                 │"
-    echo "  └─────────────────────────────────────────────────────────────────┘"
-    echo ""
+pause
 
-    show_lesson "Tu maîtrises maintenant la PKI post-quantique.
-ML-DSA pour les signatures, ML-KEM pour le chiffrement.
-L'hybride pour la transition. LTV pour l'archivage.
-Tu es prêt pour la migration PQC."
+# =============================================================================
+# Step 5: Decryption Flow (Conceptual)
+# =============================================================================
 
-    echo ""
-    echo -e "${BOLD}Et maintenant ?${NC}"
-    echo ""
-    echo "  En production, tu as des milliers de certificats."
-    echo "  Pour inventorier, prioriser et planifier ta migration :"
-    echo ""
-    echo -e "    ${CYAN}https://qentriq.com${NC}"
-    echo ""
-    echo "  Merci d'avoir suivi ce parcours !"
-    echo ""
-}
+print_step "Step 5: How CMS Decryption Works"
 
-main() {
-    [[ -x "$PKI_BIN" ]] || { echo "PKI non installé"; exit 1; }
-    init_workspace "niveau-4"
+echo "  Only Alice can decrypt (she has the ML-KEM private key)."
+echo ""
 
-    show_welcome
-    wait_enter "Appuie sur Entrée pour commencer..."
+echo "  ┌─────────────────────────────────────────────────────────────────┐"
+echo "  │  DECRYPTION COMMAND (coming soon)                               │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo "  │                                                                 │"
+echo -e "  │  ${DIM}pki cms decrypt \\\\${NC}                                           │"
+echo -e "  │  ${DIM}  --key output/alice-enc.key \\\\${NC}                              │"
+echo -e "  │  ${DIM}  --in output/secret-document.p7m \\\\${NC}                         │"
+echo -e "  │  ${DIM}  --out output/secret-decrypted.txt${NC}                          │"
+echo "  │                                                                 │"
+echo "  └─────────────────────────────────────────────────────────────────┘"
+echo ""
 
-    mission_1_envelope
-    wait_enter
-    mission_2_encrypt_cert
-    wait_enter
-    mission_3_encrypt
-    wait_enter
-    mission_4_decrypt
+echo "  Decryption flow:"
+echo ""
+echo "    1. Parse CMS EnvelopedData structure"
+echo "    2. Find KEMRecipientInfo matching Alice's certificate"
+echo "    3. ML-KEM decapsulation with Alice's private key:"
+echo "       - Input: KEM ciphertext"
+echo "       - Output: 32-byte shared secret"
+echo "    4. Derive KEK from shared secret using HKDF-SHA256"
+echo "    5. Unwrap CEK with AES Key Unwrap"
+echo "    6. Decrypt content with AES-256-GCM"
+echo "    7. Verify authentication tag (integrity check)"
+echo ""
 
-    show_recap_final
-}
+pause
 
-main "$@"
+# =============================================================================
+# Why Hybrid Encryption?
+# =============================================================================
+
+print_step "Step 6: Why Hybrid Encryption?"
+
+echo "  ┌─────────────────────────────────────────────────────────────────┐"
+echo "  │  WHY AES + ML-KEM?                                              │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo "  │                                                                 │"
+echo "  │  ML-KEM alone:                                                  │"
+echo "  │    ✗ Slow for large files (public-key operations)              │"
+echo "  │    ✗ Large ciphertexts (~1 KB overhead per recipient)          │"
+echo "  │    ✗ Not designed for bulk encryption                          │"
+echo "  │                                                                 │"
+echo "  │  AES alone:                                                     │"
+echo "  │    ✓ Fast (hardware acceleration: AES-NI)                       │"
+echo "  │    ✓ Small overhead (16 bytes + nonce)                          │"
+echo "  │    ✗ Symmetric: how to share the key securely?                 │"
+echo "  │                                                                 │"
+echo "  │  Hybrid (AES + ML-KEM):                                         │"
+echo "  │    ✓ AES for content (fast, efficient, authenticated)          │"
+echo "  │    ✓ ML-KEM for key transport (quantum-safe)                   │"
+echo "  │    ✓ Industry standard (CMS EnvelopedData)                     │"
+echo "  │    ✓ Best of both worlds!                                       │"
+echo "  │                                                                 │"
+echo "  └─────────────────────────────────────────────────────────────────┘"
+echo ""
+
+echo "  Size comparison for a 1 MB document:"
+echo ""
+echo "  ┌──────────────────────────────────────────────────────────────────┐"
+echo "  │  Component           │  RSA-2048  │  ML-KEM-768  │  Notes       │"
+echo "  ├──────────────────────┼────────────┼──────────────┼──────────────┤"
+echo "  │  Encapsulated key    │  ~256 B    │  ~1,088 B    │  Per recip.  │"
+echo "  │  AES-GCM overhead    │  ~28 B     │  ~28 B       │  Same        │"
+echo "  │  Total overhead      │  ~284 B    │  ~1,116 B    │  < 0.1%      │"
+echo "  └──────────────────────────────────────────────────────────────────┘"
+echo ""
+
+# =============================================================================
+# Conclusion
+# =============================================================================
+
+print_key_message "Hybrid encryption (AES + ML-KEM) protects documents from both current and future quantum threats."
+
+show_lesson "CMS EnvelopedData is the standard for document encryption (RFC 5652).
+ML-KEM-768 provides quantum-safe key encapsulation (FIPS 203).
+AES-256-GCM encrypts the content with authenticated encryption.
+The KEMRecipientInfo structure is defined in draft-ietf-lamps-cms-kemri.
+This is the same pattern used by S/MIME for secure email."
+
+show_footer
