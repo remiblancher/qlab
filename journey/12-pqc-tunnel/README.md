@@ -1,8 +1,12 @@
-# Mission 10: "Secure the Tunnel"
+# PQC Tunnel: Secure the Tunnel
 
 ## ML-KEM: Post-Quantum Key Exchange
 
-### The Problem
+> **Key Message:** ML-KEM provides quantum-resistant key exchange. Combined with ML-DSA, you get full PQC tunnel protection.
+
+---
+
+## The Problem
 
 You want to establish a secure connection with Bob.
 You need a **shared secret** to encrypt the communication.
@@ -30,7 +34,9 @@ PROBLEM: A quantum computer can calculate 'a' from g^a
          → The secret is retroactively compromised (SNDL)
 ```
 
-### The Threat
+---
+
+## The Threat
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -58,7 +64,9 @@ PROBLEM: A quantum computer can calculate 'a' from g^a
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-### The Solution: ML-KEM (Key Encapsulation Mechanism)
+---
+
+## The Solution: ML-KEM (Key Encapsulation Mechanism)
 
 ML-KEM works differently: **encapsulation** instead of exchange.
 
@@ -114,11 +122,25 @@ ML-KEM works differently: **encapsulation** instead of exchange.
 
 | Aspect | ML-DSA | ML-KEM |
 |--------|--------|--------|
+| **Standard** | FIPS 204 | FIPS 203 |
 | **Usage** | Signatures | Key exchange |
 | **Goal** | AUTHENTICITY | CONFIDENTIALITY |
 | **Operations** | Sign / Verify | Encaps / Decaps |
 | **TLS** | Server authentication | Session establishment |
 | **Certificate** | keyUsage: digitalSignature | keyUsage: keyEncipherment |
+
+---
+
+## What This Demo Shows
+
+| Step | What Happens | Key Concept |
+|------|--------------|-------------|
+| 1 | Explain ML-DSA vs ML-KEM | Different purposes |
+| 2 | KEM workflow | Encapsulate / Decapsulate |
+| 3 | Create KEM CA | ML-DSA-65 for signing |
+| 4 | Create tunnel endpoint certificate | ML-DSA + ML-KEM |
+| 5 | Explain hybrid KEM | X25519 + ML-KEM-768 |
+| 6 | Size comparison | Key and ciphertext sizes |
 
 ---
 
@@ -152,38 +174,7 @@ For transition, we combine both:
 
 ---
 
-## What You'll Do
-
-1. **Generate an ML-KEM-768 pair** for Bob
-2. **Create a KEM certificate** (keyUsage: keyEncipherment)
-3. **Encapsulate a secret** with Bob's public key
-4. **Decapsulate** and verify the secret is identical
-5. **Compare sizes**: X25519 vs ML-KEM-768
-
----
-
-## ML-KEM Sizes
-
-| Level | Public key | Private key | Ciphertext | Secret |
-|-------|------------|-------------|------------|--------|
-| ML-KEM-512 | 800 bytes | 1632 bytes | 768 bytes | 32 bytes |
-| ML-KEM-768 | 1184 bytes | 2400 bytes | 1088 bytes | 32 bytes |
-| ML-KEM-1024 | 1568 bytes | 3168 bytes | 1568 bytes | 32 bytes |
-
-**Comparison**: X25519 = 32 bytes public key, 32 bytes ciphertext
-
----
-
-## What You'll Have at the End
-
-- ML-KEM-768 key pair
-- KEM certificate
-- Successful encapsulation / decapsulation
-- Quantum-safe shared secret
-
----
-
-## Run the Mission
+## Run the Demo
 
 ```bash
 ./demo.sh
@@ -191,4 +182,72 @@ For transition, we combine both:
 
 ---
 
-← [LTV Signatures](../10-ltv-signatures/) | [Next: CMS Encryption →](../12-cms-encryption/)
+## The Commands
+
+### Step 1: Create KEM Demo CA
+
+```bash
+# Create CA with ML-DSA-65 for signing
+pki init-ca --name "KEM Demo CA" \
+    --algorithm ml-dsa-65 \
+    --dir output/kem-ca
+```
+
+### Step 2: Create Tunnel Endpoint Certificate
+
+```bash
+# Certificate with ML-DSA + ML-KEM
+pki issue --ca-dir output/kem-ca \
+    --profile ml-dsa-kem/tls-server \
+    --cn "tunnel.example.com" \
+    --dns tunnel.example.com \
+    --out output/tunnel.crt \
+    --key-out output/tunnel.key
+```
+
+---
+
+## ML-KEM Sizes
+
+| Level | Public key | Private key | Ciphertext | Secret |
+|-------|------------|-------------|------------|--------|
+| ML-KEM-512 | 800 bytes | 1,632 bytes | 768 bytes | 32 bytes |
+| ML-KEM-768 | 1,184 bytes | 2,400 bytes | 1,088 bytes | 32 bytes |
+| ML-KEM-1024 | 1,568 bytes | 3,168 bytes | 1,568 bytes | 32 bytes |
+
+**Comparison**: X25519 = 32 bytes public key, 32 bytes ciphertext
+
+---
+
+## Real-World Deployments
+
+| Platform | Status |
+|----------|--------|
+| Chrome/Firefox | Hybrid KEM in TLS 1.3 |
+| OpenSSH 9.0+ | sntrup761x25519-sha512 |
+| Signal Protocol | PQXDH with ML-KEM |
+| Cloudflare | Hybrid KEM enabled |
+| AWS/Google Cloud | PQC key exchange available |
+
+---
+
+## What You Learned
+
+1. **ML-KEM** protects confidentiality (key exchange)
+2. **ML-DSA** protects authenticity (signatures)
+3. For a secure tunnel, you need **BOTH** algorithms
+4. **Hybrid KEM** (X25519 + ML-KEM) provides defense in depth
+5. Already deployed in major browsers and protocols
+
+---
+
+## References
+
+- [NIST FIPS 203: ML-KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
+- [NIST FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
+- [RFC 9180: Hybrid Public Key Encryption](https://tools.ietf.org/html/rfc9180)
+- [Cloudflare Post-Quantum](https://blog.cloudflare.com/post-quantum-for-all/)
+
+---
+
+← [mTLS](../11-mtls/) | Journey Complete!

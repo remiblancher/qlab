@@ -1,0 +1,40 @@
+# Tunnel Endpoint Certificate Profile
+# ML-DSA for authentication + ML-KEM for key exchange
+# For PQC tunnel/TLS endpoints
+
+name: tunnel-endpoint
+description: "Tunnel Endpoint ML-DSA-65 + ML-KEM-768"
+
+subject:
+  required:
+    - cn
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+
+validity: 365d  # 1 year
+
+signature:
+  algorithms:
+    - ml-dsa-65
+
+key:
+  algorithm: ml-kem-768  # Key encapsulation
+
+extensions:
+  basicConstraints:
+    critical: true
+    ca: false
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+      - keyEncipherment
+      - keyAgreement
+  extendedKeyUsage:
+    critical: false
+    values:
+      - serverAuth
+  subjectAltName:
+    critical: false
+    dns: []  # Populated at issuance

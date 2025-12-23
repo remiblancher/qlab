@@ -1,222 +1,207 @@
 #!/bin/bash
 # =============================================================================
-#  NIVEAU 4 - MISSION 10 : PQC Tunnel
+#  UC-12: PQC Tunnel - Secure the Tunnel
 #
-#  Objectif : Comprendre ML-KEM pour l'échange de clés post-quantique.
+#  Post-quantum key exchange with ML-KEM
+#  Key encapsulation for establishing shared secrets
 #
-#  Algorithme : X25519 + ML-KEM-768 (Key Encapsulation)
+#  Key Message: ML-KEM provides quantum-resistant key exchange.
+#               Combined with ML-DSA, you get full PQC tunnel protection.
 # =============================================================================
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAB_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+source "$SCRIPT_DIR/../../lib/common.sh"
 
-source "$LAB_ROOT/lib/colors.sh"
-source "$LAB_ROOT/lib/interactive.sh"
-source "$LAB_ROOT/lib/workspace.sh"
+setup_demo "PQC Tunnel: ML-KEM Key Exchange"
 
-PKI_BIN="$LAB_ROOT/bin/pki"
+# =============================================================================
+# Step 1: ML-DSA vs ML-KEM
+# =============================================================================
 
-show_welcome() {
-    clear
-    echo ""
-    echo -e "${BOLD}${BLUE}"
-    echo "  ╔═══════════════════════════════════════════════════════════════╗"
-    echo "  ║                                                               ║"
-    echo "  ║   🔒  NIVEAU 4 - MISSION 10                                   ║"
-    echo "  ║                                                               ║"
-    echo "  ║   PQC Tunnel : Key Encapsulation avec ML-KEM                  ║"
-    echo "  ║                                                               ║"
-    echo "  ╚═══════════════════════════════════════════════════════════════╝"
-    echo -e "${NC}"
-    echo ""
-    echo "  ML-KEM = Module Lattice Key Encapsulation Mechanism"
-    echo "  (ex-Kyber, maintenant NIST FIPS 203)"
-    echo ""
-    echo "  Utilisé pour :"
-    echo "    - TLS 1.3 handshake (échange de clés)"
-    echo "    - VPN (tunnel sécurisé)"
-    echo "    - Chiffrement hybride de documents"
-    echo ""
-}
+print_step "Step 1: ML-DSA vs ML-KEM - Two Different Purposes"
 
-mission_1_kem_vs_dsa() {
-    mission_start 1 "Comprendre ML-KEM vs ML-DSA"
+echo "  ┌─────────────────────────────────────────────────────────────────┐"
+echo "  │  ML-DSA vs ML-KEM                                              │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo "  │                                                                 │"
+echo "  │  ML-DSA (FIPS 204)                                             │"
+echo "  │  ─────────────────                                             │"
+echo "  │  Purpose : Digital Signatures                                  │"
+echo "  │  Goal    : AUTHENTICITY (who signed this?)                     │"
+echo "  │  Ops     : Sign / Verify                                       │"
+echo "  │  Example : Sign certificates, code, documents                  │"
+echo "  │                                                                 │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo "  │                                                                 │"
+echo "  │  ML-KEM (FIPS 203)                                             │"
+echo "  │  ─────────────────                                             │"
+echo "  │  Purpose : Key Encapsulation                                   │"
+echo "  │  Goal    : CONFIDENTIALITY (establish shared secret)           │"
+echo "  │  Ops     : Encapsulate / Decapsulate                           │"
+echo "  │  Example : TLS handshake, VPN tunnel, hybrid encryption        │"
+echo "  │                                                                 │"
+echo "  └─────────────────────────────────────────────────────────────────┘"
+echo ""
+echo "  For a secure tunnel, you need BOTH:"
+echo "    - ML-DSA for authentication (who am I talking to?)"
+echo "    - ML-KEM for confidentiality (session key)"
+echo ""
 
-    echo "  ┌─────────────────────────────────────────────────────────────────┐"
-    echo "  │  ML-DSA vs ML-KEM : Deux usages différents                     │"
-    echo "  ├─────────────────────────────────────────────────────────────────┤"
-    echo "  │                                                                 │"
-    echo "  │  ML-DSA (Dilithium)                                            │"
-    echo "  │  ───────────────────                                           │"
-    echo "  │  Usage : Signatures numériques                                 │"
-    echo "  │  Exemple : Signer un certificat, un binaire                    │"
-    echo "  │  Clé publique : ~1.9 KB                                        │"
-    echo "  │  Signature : ~3.3 KB                                           │"
-    echo "  │                                                                 │"
-    echo "  ├─────────────────────────────────────────────────────────────────┤"
-    echo "  │                                                                 │"
-    echo "  │  ML-KEM (Kyber)                                                │"
-    echo "  │  ─────────────────                                             │"
-    echo "  │  Usage : Échange de clés (Key Encapsulation)                   │"
-    echo "  │  Exemple : TLS handshake, chiffrement                          │"
-    echo "  │  Clé publique : ~1.1 KB                                        │"
-    echo "  │  Ciphertext : ~1.1 KB                                          │"
-    echo "  │                                                                 │"
-    echo "  └─────────────────────────────────────────────────────────────────┘"
-    echo ""
+pause
 
-    echo "  Pour un tunnel sécurisé, on a besoin des DEUX :"
-    echo "    - ML-DSA pour l'authentification (qui parle à qui)"
-    echo "    - ML-KEM pour la confidentialité (clé de session)"
-    echo ""
+# =============================================================================
+# Step 2: KEM Workflow
+# =============================================================================
 
-    mission_complete "Différence ML-DSA/ML-KEM comprise"
-}
+print_step "Step 2: Key Encapsulation Workflow"
 
-mission_2_kem_workflow() {
-    mission_start 2 "Workflow Key Encapsulation"
+echo "  How ML-KEM works:"
+echo ""
+echo "  ┌─────────────┐                         ┌─────────────┐"
+echo "  │   ALICE     │                         │    BOB      │"
+echo "  │  (client)   │                         │  (server)   │"
+echo "  └──────┬──────┘                         └──────┬──────┘"
+echo "         │                                       │"
+echo "         │  1. Bob generates ML-KEM key pair     │"
+echo "         │     pk_bob, sk_bob                    │"
+echo "         │                                       │"
+echo "         │◄─────── 2. Bob sends pk_bob ──────────│"
+echo "         │         (in certificate)              │"
+echo "         │                                       │"
+echo "         │  3. Alice encapsulates:               │"
+echo "         │     (ciphertext, shared_key)          │"
+echo "         │     = Encaps(pk_bob)                  │"
+echo "         │                                       │"
+echo "         │──────── 4. Alice sends ciphertext ───►│"
+echo "         │                                       │"
+echo "         │  5. Bob decapsulates:                 │"
+echo "         │     shared_key = Decaps(sk_bob, ct)   │"
+echo "         │                                       │"
+echo "         │  ═══ SAME shared_key ═══              │"
+echo "         │                                       │"
+echo "  └──────┴───────────────────────────────────────┘"
+echo ""
+echo "  → Alice and Bob now have an identical shared secret"
+echo "  → This secret is used to encrypt the rest of the communication"
+echo ""
 
-    echo "  Comment fonctionne ML-KEM :"
-    echo ""
-    echo "  ┌─────────────┐                         ┌─────────────┐"
-    echo "  │   ALICE     │                         │    BOB      │"
-    echo "  │  (client)   │                         │  (server)   │"
-    echo "  └──────┬──────┘                         └──────┬──────┘"
-    echo "         │                                       │"
-    echo "         │  1. Bob génère paire de clés ML-KEM   │"
-    echo "         │     pk_bob, sk_bob                    │"
-    echo "         │                                       │"
-    echo "         │◄─────── 2. Bob envoie pk_bob ─────────│"
-    echo "         │                                       │"
-    echo "         │  3. Alice encapsule :                 │"
-    echo "         │     (ciphertext, shared_key)          │"
-    echo "         │     = Encaps(pk_bob)                  │"
-    echo "         │                                       │"
-    echo "         │──────── 4. Alice envoie ciphertext ──►│"
-    echo "         │                                       │"
-    echo "         │  5. Bob décapsule :                   │"
-    echo "         │     shared_key = Decaps(sk_bob, ct)   │"
-    echo "         │                                       │"
-    echo "         │  ════ shared_key identique ════       │"
-    echo "         │                                       │"
-    echo "  └──────┴───────────────────────────────────────┘"
-    echo ""
-    echo "  → Alice et Bob ont maintenant une clé secrète partagée"
-    echo "  → Cette clé sert à chiffrer le reste de la communication"
-    echo ""
+pause
 
-    mission_complete "Workflow KEM compris"
-}
+# =============================================================================
+# Step 3: Create KEM CA
+# =============================================================================
 
-mission_3_create_kem_cert() {
-    mission_start 3 "Créer un certificat avec ML-KEM"
+print_step "Step 3: Create KEM Demo CA"
 
-    KEM_CA="$LEVEL_WORKSPACE/kem-ca"
-    if [[ ! -f "$KEM_CA/ca.crt" ]]; then
-        echo "  Création de la CA..."
-        "$PKI_BIN" init-ca --name "KEM Demo CA" --algorithm ml-dsa-65 \
-            --dir "$KEM_CA" > /dev/null 2>&1
-    fi
+echo "  Creating a CA for tunnel endpoint certificates..."
+echo "  CA uses ML-DSA-65 to sign endpoint certificates."
+echo ""
 
-    local cert="$LEVEL_WORKSPACE/tunnel-endpoint.crt"
-    local key="$LEVEL_WORKSPACE/tunnel-endpoint.key"
+run_cmd "pki init-ca --name \"KEM Demo CA\" --algorithm ml-dsa-65 --dir output/kem-ca"
 
-    echo "  Le profil ml-dsa-kem/tls-server inclut :"
-    echo "    - Clé ML-DSA-65 pour l'authentification"
-    echo "    - Clé ML-KEM-768 pour l'échange de clés"
-    echo ""
+echo ""
 
-    if [[ ! -f "$cert" ]]; then
-        teach_cmd "pki issue --ca-dir $KEM_CA --profile ml-dsa-kem/tls-server --cn \"tunnel.example.com\" --dns \"tunnel.example.com\" --out $cert --key-out $key" \
-                  "Certificat avec ML-DSA + ML-KEM"
-    else
-        echo -e "  ${YELLOW}[INFO]${NC} Certificat déjà créé"
-    fi
+pause
 
-    validate_file "$cert" "Certificat tunnel (ML-DSA + ML-KEM)"
+# =============================================================================
+# Step 4: Create Tunnel Endpoint Certificate
+# =============================================================================
 
-    # Afficher les infos
-    echo ""
-    echo -e "  ${BOLD}Algorithmes dans le certificat :${NC}"
-    "$PKI_BIN" info "$cert" 2>/dev/null | grep -i "algorithm\|key" | head -5 | sed 's/^/    /'
+print_step "Step 4: Create Tunnel Endpoint Certificate"
 
-    mission_complete "Certificat ML-KEM créé"
-}
+echo "  The tunnel endpoint certificate includes:"
+echo "    - ML-DSA-65 key for authentication (digitalSignature)"
+echo "    - ML-KEM-768 key for key exchange (keyEncipherment)"
+echo ""
 
-mission_4_hybrid_kem() {
-    mission_start 4 "KEM Hybride pour la transition"
+run_cmd "pki issue --ca-dir output/kem-ca --profile ml-dsa-kem/tls-server --cn \"tunnel.example.com\" --dns tunnel.example.com --out output/tunnel.crt --key-out output/tunnel.key"
 
-    echo "  Pour la transition, on combine :"
-    echo ""
-    echo "  ┌─────────────────────────────────────────────────────────────────┐"
-    echo "  │  X25519 + ML-KEM-768                                           │"
-    echo "  ├─────────────────────────────────────────────────────────────────┤"
-    echo "  │                                                                 │"
-    echo "  │  X25519 (classique)                                            │"
-    echo "  │  → ECDH sur Curve25519                                         │"
-    echo "  │  → Sécurité classique éprouvée                                 │"
-    echo "  │  → Compatible avec tout                                        │"
-    echo "  │                                                                 │"
-    echo "  │  ML-KEM-768 (post-quantum)                                     │"
-    echo "  │  → NIST FIPS 203                                               │"
-    echo "  │  → Résistant aux ordinateurs quantiques                        │"
-    echo "  │  → Nouveau, moins de recul                                     │"
-    echo "  │                                                                 │"
-    echo "  │  COMBINAISON                                                   │"
-    echo "  │  → shared_key = KDF(X25519_secret || ML-KEM_secret)            │"
-    echo "  │  → Si l'un est cassé, l'autre protège                          │"
-    echo "  │                                                                 │"
-    echo "  └─────────────────────────────────────────────────────────────────┘"
-    echo ""
+echo ""
 
-    echo "  Déjà supporté par :"
-    echo "    - Chrome/Firefox (TLS 1.3)"
-    echo "    - OpenSSH 9.0+"
-    echo "    - Signal Protocol"
-    echo ""
+if [[ -f "output/tunnel.crt" ]]; then
+    cert_size=$(wc -c < "output/tunnel.crt" | tr -d ' ')
+    echo -e "  ${CYAN}Certificate size:${NC} $cert_size bytes"
+    echo -e "  ${DIM}(Contains both ML-DSA and ML-KEM public keys)${NC}"
+fi
 
-    mission_complete "KEM Hybride compris"
-}
+echo ""
 
-show_recap_final() {
-    echo ""
-    echo -e "${BOLD}${BG_GREEN}${WHITE} MISSION 10 TERMINÉE ! ${NC}"
-    echo ""
+pause
 
-    show_recap "Ce que tu as appris :" \
-        "ML-KEM = échange de clés (pas signatures)" \
-        "Workflow Encaps/Decaps" \
-        "Certificat dual ML-DSA + ML-KEM" \
-        "KEM hybride X25519 + ML-KEM"
+# =============================================================================
+# Step 5: Hybrid KEM for Transition
+# =============================================================================
 
-    show_lesson "ML-KEM protège la CONFIDENTIALITÉ des échanges.
-ML-DSA protège l'AUTHENTICITÉ des signatures.
-Pour un tunnel sécurisé, tu as besoin des deux."
+print_step "Step 5: Hybrid KEM for Transition"
 
-    echo ""
-    echo -e "${BOLD}Prochaine mission :${NC} CMS Encryption"
-    echo -e "    ${CYAN}./journey/05-advanced/03-cms-encryption/demo.sh${NC}"
-    echo ""
-}
+echo "  For the transition period, we combine classical and PQC:"
+echo ""
+echo "  ┌─────────────────────────────────────────────────────────────────┐"
+echo "  │  HYBRID KEM = X25519 + ML-KEM-768                              │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo "  │                                                                 │"
+echo "  │  1. X25519 exchange (classical ECDH)                           │"
+echo "  │     └── secret_1 = ECDH(x25519_alice, x25519_bob)              │"
+echo "  │                                                                 │"
+echo "  │  2. ML-KEM-768 encapsulation (post-quantum)                    │"
+echo "  │     └── secret_2, ciphertext = Encaps(mlkem_bob_pk)            │"
+echo "  │                                                                 │"
+echo "  │  3. Combined derivation                                         │"
+echo "  │     └── final_secret = KDF(secret_1 || secret_2)               │"
+echo "  │                                                                 │"
+echo "  │  Security:                                                      │"
+echo "  │  - If X25519 is broken → ML-KEM protects                       │"
+echo "  │  - If ML-KEM is broken → X25519 protects                       │"
+echo "  │  - Both must be broken simultaneously to compromise             │"
+echo "  │                                                                 │"
+echo "  └─────────────────────────────────────────────────────────────────┘"
+echo ""
 
-main() {
-    [[ -x "$PKI_BIN" ]] || { echo "PKI non installé"; exit 1; }
-    init_workspace "niveau-4"
+echo "  Already supported by:"
+echo "    - Chrome/Firefox (TLS 1.3 with hybrid KEM)"
+echo "    - OpenSSH 9.0+ (sntrup761x25519-sha512)"
+echo "    - Signal Protocol"
+echo "    - Cloudflare, AWS, Google"
+echo ""
 
-    show_welcome
-    wait_enter "Appuie sur Entrée pour commencer..."
+pause
 
-    mission_1_kem_vs_dsa
-    wait_enter
-    mission_2_kem_workflow
-    wait_enter
-    mission_3_create_kem_cert
-    wait_enter
-    mission_4_hybrid_kem
+# =============================================================================
+# Step 6: Size Comparison
+# =============================================================================
 
-    show_recap_final
-}
+print_step "Step 6: Size Comparison"
 
-main "$@"
+echo "  ML-KEM Key Sizes:"
+echo ""
+echo "  ┌──────────────────────────────────────────────────────────────────┐"
+echo "  │  Level       │  Public Key  │  Private Key  │  Ciphertext       │"
+echo "  ├──────────────────────────────────────────────────────────────────┤"
+echo "  │  ML-KEM-512  │  800 bytes   │  1,632 bytes  │  768 bytes        │"
+echo "  │  ML-KEM-768  │  1,184 bytes │  2,400 bytes  │  1,088 bytes      │"
+echo "  │  ML-KEM-1024 │  1,568 bytes │  3,168 bytes  │  1,568 bytes      │"
+echo "  ├──────────────────────────────────────────────────────────────────┤"
+echo "  │  X25519      │  32 bytes    │  32 bytes     │  32 bytes         │"
+echo "  └──────────────────────────────────────────────────────────────────┘"
+echo ""
+echo "  Size increase is significant but acceptable:"
+echo "    - TLS handshake adds ~2 KB (one-time per connection)"
+echo "    - Session key is still 32 bytes (AES-256)"
+echo "    - After handshake, performance is identical"
+echo ""
+
+# =============================================================================
+# Conclusion
+# =============================================================================
+
+print_key_message "ML-KEM provides quantum-resistant key exchange. Combined with ML-DSA, you get full PQC tunnel protection."
+
+show_lesson "ML-KEM protects CONFIDENTIALITY (key exchange).
+ML-DSA protects AUTHENTICITY (signatures).
+For a secure tunnel, you need BOTH algorithms.
+Hybrid KEM (X25519 + ML-KEM) provides defense in depth.
+Already deployed in major browsers and protocols."
+
+show_footer
