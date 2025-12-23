@@ -4,8 +4,6 @@
 
 > **Key Message:** The PKI doesn't change. Only the algorithm changes.
 
-> **Visual diagrams:** See [`diagram.txt`](diagram.txt) for ASCII diagrams.
-
 ## The Scenario
 
 *"I want to issue post-quantum certificates. Does it change my PKI workflow?"*
@@ -106,6 +104,42 @@ pki info pq-server.crt
 
 The workflow stays identical: `init-ca` → `issue` → X.509 certificates.
 Only the algorithm (and sizes) change.
+
+---
+
+## Security Timeline
+
+```
+         Today                2030              2040              2050
+           │                   │                 │                 │
+ECDSA      ├───────────────────┼─────────────────┼─────────────────┤
+           │     SECURE        │   AT RISK       │   BROKEN        │
+           │                   │                 │                 │
+ML-DSA     ├───────────────────┼─────────────────┼─────────────────┤
+           │     SECURE        │   SECURE        │   SECURE        │
+           │                   │                 │                 │
+```
+
+---
+
+## Migration Path
+
+```
+    TODAY                    TRANSITION                  FUTURE
+      │                          │                         │
+      ▼                          ▼                         ▼
+
+┌──────────┐              ┌──────────────┐           ┌──────────┐
+│ Classical│              │   Hybrid     │           │   PQC    │
+│   PKI    │  ────────►   │    PKI       │  ──────►  │   PKI    │
+│ (ECDSA)  │              │(ECDSA+ML-DSA)│           │ (ML-DSA) │
+└──────────┘              └──────────────┘           └──────────┘
+
+    100%                    Compatible                   100%
+ Compatible                with both                  Quantum-Safe
+```
+
+---
 
 ## References
 

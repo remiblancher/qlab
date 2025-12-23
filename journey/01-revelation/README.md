@@ -2,8 +2,6 @@
 
 > **Key Message:** Encrypted data captured today can be decrypted tomorrow. Signatures trusted today can be forged tomorrow. PQC is urgent.
 
-> **Visual diagrams:** See [`diagram.txt`](diagram.txt) for detailed ASCII diagrams of SNDL, TNFL, Mosca's inequality, and algorithm comparisons.
-
 ## Why Change Algorithms?
 
 You just created a classical PKI with ECDSA. It works. So why change?

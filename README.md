@@ -38,7 +38,7 @@ Then start with: `./journey/00-quickstart/demo.sh`
 | # | Mission | Time |
 |---|---------|------|
 | 0 | [**Quick Start**](journey/00-quickstart/) — Create your first CA (ECDSA) | 10 min |
-| 1 | [**The Revelation**](journey/01-revelation/) — Why PQC matters (SNDL threat) | 8 min |
+| 1 | [**The Revelation**](journey/01-revelation/) — Why PQC matters? | 8 min |
 
 ### 📚 Core PKI
 
