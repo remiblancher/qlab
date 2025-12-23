@@ -1,0 +1,32 @@
+# TLS Client Certificate Profile
+# Extended Key Usage: clientAuth
+# For mTLS client authentication
+
+name: tls-client
+description: "TLS Client Certificate ML-DSA-65"
+
+subject:
+  required:
+    - cn
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+
+validity: 365d  # 1 year
+
+signature:
+  algorithms:
+    - ml-dsa-65
+
+extensions:
+  basicConstraints:
+    critical: true
+    ca: false
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+  extendedKeyUsage:
+    critical: false
+    values:
+      - clientAuth

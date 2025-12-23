@@ -1,0 +1,36 @@
+# TLS Server Certificate Profile
+# Extended Key Usage: serverAuth
+# For mTLS server authentication
+
+name: tls-server
+description: "TLS Server Certificate ML-DSA-65"
+
+subject:
+  required:
+    - cn
+  fixed:
+    c: "FR"
+    o: "Demo Organization"
+
+validity: 365d  # 1 year
+
+signature:
+  algorithms:
+    - ml-dsa-65
+
+extensions:
+  basicConstraints:
+    critical: true
+    ca: false
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+      - keyEncipherment
+  extendedKeyUsage:
+    critical: false
+    values:
+      - serverAuth
+  subjectAltName:
+    critical: false
+    dns: []  # Populated at issuance

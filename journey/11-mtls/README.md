@@ -1,15 +1,16 @@
-# Mission 3: "Show Me Your Badge"
+# PQC mTLS: Show Me Your Badge
 
-## mTLS Authentication with ML-DSA
+## Mutual TLS Authentication with ML-DSA
 
-### The Problem
+> **Key Message:** mTLS = mutual authentication. No passwords. Just certificates. With PQC, it's quantum-resistant.
 
-You have a server. Clients want to connect to it.
-How do you know it's really Alice and not an impostor?
+---
+
+## The Problem
 
 ```
-Classic HTTPS = One-way verification
-────────────────────────────────────
+CLASSIC HTTPS = One-way verification
+──────────────────────────────────────
 
    Client                              Server
      │                                    │
@@ -24,7 +25,9 @@ Classic HTTPS = One-way verification
      But the client? Anyone can connect.
 ```
 
-### The Threat
+---
+
+## The Threat
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -51,7 +54,9 @@ Classic HTTPS = One-way verification
 - Unauthorized API access
 - Man-in-the-middle attack
 
-### The Solution: mTLS (mutual TLS)
+---
+
+## The Solution: mTLS (Mutual TLS)
 
 With mTLS, **BOTH** parties prove their identity:
 
@@ -86,12 +91,16 @@ With mTLS, **BOTH** parties prove their identity:
 
 ---
 
-## What You'll Do
+## What This Demo Shows
 
-1. **Create a server certificate** with ML-DSA-65 and SAN
-2. **Create client certificates** for Alice and Bob
-3. **Verify authentication**: Alice OK, unknown rejected
-4. **Test the chain of trust**: all signed by the same CA
+| Step | What Happens | Key Concept |
+|------|--------------|-------------|
+| 1 | Explain mTLS vs HTTPS | Client authentication |
+| 2 | Create mTLS CA | Dedicated trust anchor |
+| 3 | Issue server certificate | serverAuth EKU |
+| 4 | Issue client certificates | clientAuth EKU |
+| 5 | Simulate authentication | Alice OK, Bob OK, Mallory rejected |
+| 6 | Show summary | Files created |
 
 ---
 
@@ -106,16 +115,7 @@ With mTLS, **BOTH** parties prove their identity:
 
 ---
 
-## What You'll Have at the End
-
-- Server certificate ML-DSA with SAN
-- 2 client certificates (Alice, Bob)
-- Proof that mTLS works with PQC
-- Successful cross-verification
-
----
-
-## Run the Mission
+## Run the Demo
 
 ```bash
 ./demo.sh
@@ -123,4 +123,84 @@ With mTLS, **BOTH** parties prove their identity:
 
 ---
 
-← [Hybrid](../03-hybrid/) | [Next: Code Signing →](../05-code-signing/)
+## The Commands
+
+### Step 1: Create mTLS CA
+
+```bash
+# Create dedicated CA for mTLS
+pki init-ca --name "mTLS Demo CA" \
+    --algorithm ml-dsa-65 \
+    --dir output/mtls-ca
+```
+
+### Step 2: Issue Server Certificate
+
+```bash
+# Server certificate with serverAuth EKU
+pki issue --ca-dir output/mtls-ca \
+    --profile ml-dsa/tls-server \
+    --cn "api.example.com" \
+    --dns api.example.com \
+    --out output/server.crt \
+    --key-out output/server.key
+```
+
+### Step 3: Issue Client Certificates
+
+```bash
+# Client certificate for Alice
+pki issue --ca-dir output/mtls-ca \
+    --profile ml-dsa/tls-client \
+    --cn "Alice" \
+    --out output/alice.crt \
+    --key-out output/alice.key
+
+# Client certificate for Bob
+pki issue --ca-dir output/mtls-ca \
+    --profile ml-dsa/tls-client \
+    --cn "Bob" \
+    --out output/bob.crt \
+    --key-out output/bob.key
+```
+
+### Step 4: Verify Client Certificates
+
+```bash
+# Verify Alice's certificate
+pki verify --ca output/mtls-ca/ca.crt --cert output/alice.crt
+
+# Verify Bob's certificate
+pki verify --ca output/mtls-ca/ca.crt --cert output/bob.crt
+```
+
+---
+
+## Certificate Profiles
+
+| Profile | EKU | Purpose |
+|---------|-----|---------|
+| `ml-dsa/tls-server` | serverAuth | Server proves identity to client |
+| `ml-dsa/tls-client` | clientAuth | Client proves identity to server |
+
+---
+
+## What You Learned
+
+1. **mTLS** requires both parties to present certificates
+2. **serverAuth** EKU = server proves identity to client
+3. **clientAuth** EKU = client proves identity to server
+4. **No passwords** - cryptographic proof only
+5. **ML-DSA-65** ensures authentication survives quantum computers
+
+---
+
+## References
+
+- [RFC 8446: TLS 1.3](https://tools.ietf.org/html/rfc8446)
+- [NIST FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
+- [Zero Trust Architecture (NIST SP 800-207)](https://csrc.nist.gov/publications/detail/sp/800-207/final)
+
+---
+
+← [Crypto-Agility](../10-crypto-agility/) | [Next: PQC Tunnel →](../12-pqc-tunnel/)
