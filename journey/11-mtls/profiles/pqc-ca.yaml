@@ -1,26 +1,55 @@
-# Post-Quantum CA - ML-DSA-65
-# For mTLS authentication demo
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Post-Quantum CA Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: CA for mTLS (mutual TLS) authentication demo
+#
+# This CA issues both server and client certificates for mutual
+# authentication scenarios where both parties prove identity.
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509), RFC 8446 (TLS 1.3)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki init-ca --profile profiles/pqc-ca.yaml \
+#       --name "mTLS Demo CA" --dir ./mtls-ca
+#
+# =============================================================================
 
 name: pqc-ca
 description: "PQC CA ML-DSA-65 for mTLS"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 3650d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
     o: "Demo Organization"
 
-validity: 3650d  # 10 years
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
   basicConstraints:
     critical: true
     ca: true
     pathLen: 0
+
+  # Key Usage
   keyUsage:
     critical: true
     values:

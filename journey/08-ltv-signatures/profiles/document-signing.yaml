@@ -1,10 +1,40 @@
-# Document Signing Certificate - ML-DSA-65
-# End-entity certificate for document signing
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Document Signing Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: Sign documents for long-term validation (LTV)
+#
+# This certificate includes nonRepudiation for legal signatures.
+# Combined with timestamps, signatures remain valid for decades.
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509), PAdES/CAdES
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki issue --ca-dir ./ltv-ca \
+#       --profile profiles/document-signing.yaml \
+#       --cn "Legal Department" \
+#       --out doc-signer.crt --key-out doc-signer.key
+#
+# =============================================================================
 
 name: document-signing
-description: "Document Signing ML-DSA-65 (FIPS 204)"
+description: "Document Signing ML-DSA-65 (LTV-ready)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -12,23 +42,26 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage (nonRepudiation for legal binding)
   keyUsage:
     critical: true
     values:
       - digitalSignature
       - nonRepudiation
+
+  # Extended Key Usage
   extKeyUsage:
     critical: false
     values:
       - emailProtection
       - codeSigning
-  basicConstraints:
-    critical: true
-    ca: false

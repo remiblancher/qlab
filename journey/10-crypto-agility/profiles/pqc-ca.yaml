@@ -1,26 +1,57 @@
-# Post-Quantum CA - ML-DSA-65
-# Full PQC CA for Phase 3
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Post-Quantum CA Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: Phase 3 of crypto-agility - Full PQC PKI
+#
+# This CA represents the end state of PQC migration.
+# It uses pure ML-DSA with no classical algorithms.
+#
+# Migration Path: Classic CA → Hybrid CA → **PQC CA**
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki init-ca --profile profiles/pqc-ca.yaml \
+#       --name "PQC CA" --dir ./pqc-ca
+#
+# =============================================================================
 
 name: pqc-ca
-description: "PQC CA ML-DSA-65 (FIPS 204)"
+description: "PQC CA ML-DSA-65 (Phase 3: quantum-safe)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 3650d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
     o: "Demo Organization"
 
-validity: 3650d  # 10 years
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
   basicConstraints:
     critical: true
     ca: true
     pathLen: 0
+
+  # Key Usage
   keyUsage:
     critical: true
     values:

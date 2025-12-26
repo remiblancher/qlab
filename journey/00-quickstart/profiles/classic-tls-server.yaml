@@ -1,9 +1,41 @@
-# Classic TLS Server - ECDSA P-384 with SHA-384
-# Simplified profile for quickstart demo
+# =============================================================================
+# Classical TLS Server Certificate Profile (ECDSA P-384)
+# =============================================================================
+#
+# Usage: TLS server certificate for HTTPS demonstration
+#
+# This certificate allows a server to prove its identity using
+# classical ECDSA cryptography.
+#
+# Standards: RFC 5280 (X.509), RFC 8446 (TLS 1.3)
+# Security Level: ~192-bit (ECDSA P-384)
+# Quantum Safety: VULNERABLE
+#   ECDSA is vulnerable to quantum computers (Shor's algorithm).
+#
+# Example:
+#   pki issue --ca-dir ./classic-ca \
+#       --profile profiles/classic-tls-server.yaml \
+#       --cn classic.example.com --dns classic.example.com \
+#       --out classic-server.crt --key-out classic-server.key
+#
+# =============================================================================
 
 name: classic-tls-server
-description: "TLS server ECDSA P-384"
+description: "TLS server ECDSA P-384 (classical, quantum-vulnerable)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ecdsa-p384
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -11,27 +43,29 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-signature:
-  algorithms:
-    - ec-p384
-  algo_config:
-    - scheme: ecdsa
-      hash: sha384
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints (RFC 5280 Section 4.2.1.9)
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage (RFC 5280 Section 4.2.1.3)
   keyUsage:
     critical: true
     values:
       - digitalSignature
+
+  # Extended Key Usage (RFC 5280 Section 4.2.1.12)
   extKeyUsage:
     critical: false
     values:
       - serverAuth
-  basicConstraints:
-    critical: true
-    ca: false
+
+  # Subject Alternative Name (RFC 5280 Section 4.2.1.6)
   subjectAltName:
     critical: false
     dns:

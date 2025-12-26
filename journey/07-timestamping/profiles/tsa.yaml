@@ -1,10 +1,41 @@
-# Timestamp Authority Certificate - ML-DSA-65
-# End-entity certificate for timestamping
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Timestamp Authority Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: Issue trusted timestamps for digital signatures
+#
+# This certificate allows a TSA to sign RFC 3161 timestamps, proving
+# that data existed at a specific time. PQC timestamps remain valid
+# even after quantum computers arrive.
+#
+# Standards: FIPS 204 (ML-DSA), RFC 3161 (TSP), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki issue --ca-dir ./tsa-ca \
+#       --profile profiles/tsa.yaml \
+#       --cn "Demo TSA" \
+#       --out tsa.crt --key-out tsa.key
+#
+# =============================================================================
 
 name: tsa
-description: "Timestamp Authority ML-DSA-65 (FIPS 204)"
+description: "Timestamp Authority ML-DSA-65 (RFC 3161)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -12,21 +43,25 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage
   keyUsage:
     critical: true
     values:
       - digitalSignature
+
+  # Extended Key Usage (RFC 3161 Section 2.3)
+  # MUST be critical for TSA certificates
   extKeyUsage:
     critical: true
     values:
       - timeStamping
-  basicConstraints:
-    critical: true
-    ca: false

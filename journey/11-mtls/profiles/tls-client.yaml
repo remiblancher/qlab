@@ -1,32 +1,65 @@
-# TLS Client Certificate Profile
-# Extended Key Usage: clientAuth
-# For mTLS client authentication
+# =============================================================================
+# TLS Client Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: Client certificate for mutual TLS authentication
+#
+# This certificate authenticates the client to servers. In mTLS scenarios,
+# the server requires clients to present valid certificates.
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509), RFC 8446 (TLS 1.3)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki issue --ca-dir ./mtls-ca \
+#       --profile profiles/tls-client.yaml \
+#       --cn "alice@example.com" \
+#       --out client.crt --key-out client.key
+#
+# =============================================================================
 
 name: tls-client
 description: "TLS Client Certificate ML-DSA-65"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
-  required:
-    - cn
   fixed:
     c: "FR"
     o: "Demo Organization"
+  required:
+    - cn
 
-validity: 365d  # 1 year
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
   basicConstraints:
     critical: true
     ca: false
+
+  # Key Usage
   keyUsage:
     critical: true
     values:
       - digitalSignature
-  extendedKeyUsage:
+
+  # Extended Key Usage
+  extKeyUsage:
     critical: false
     values:
       - clientAuth

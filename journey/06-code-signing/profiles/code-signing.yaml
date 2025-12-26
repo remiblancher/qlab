@@ -1,10 +1,41 @@
-# Code Signing Certificate - ML-DSA-65
-# End-entity certificate for code signing
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Code Signing Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: Sign executables, scripts, and software packages
+#
+# This certificate allows signing code that will be trusted by systems
+# verifying the signature. PQC signatures protect against future
+# quantum attacks on signed software.
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki issue --ca-dir ./code-signing-ca \
+#       --profile profiles/code-signing.yaml \
+#       --cn "Developer" \
+#       --out developer.crt --key-out developer.key
+#
+# =============================================================================
 
 name: code-signing
 description: "Code Signing ML-DSA-65 (FIPS 204)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -12,21 +43,24 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage
   keyUsage:
     critical: true
     values:
       - digitalSignature
+
+  # Extended Key Usage
   extKeyUsage:
     critical: false
     values:
       - codeSigning
-  basicConstraints:
-    critical: true
-    ca: false

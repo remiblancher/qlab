@@ -1,10 +1,39 @@
-# Post-Quantum TLS Server - ML-DSA-65
-# End-entity certificate for revocation demo
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Post-Quantum TLS Server Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: TLS server certificate for revocation demonstration
+#
+# This certificate will be revoked to demonstrate CRL generation.
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki issue --ca-dir ./revocation-ca \
+#       --profile profiles/pqc-tls-server.yaml \
+#       --cn server.example.com --dns server.example.com \
+#       --out server.crt --key-out server.key
+#
+# =============================================================================
 
 name: pqc-tls-server
-description: "TLS server ML-DSA-65 (FIPS 204)"
+description: "TLS server ML-DSA-65 for revocation demo"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -12,24 +41,29 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage
   keyUsage:
     critical: true
     values:
       - digitalSignature
+
+  # Extended Key Usage
   extKeyUsage:
     critical: false
     values:
       - serverAuth
-  basicConstraints:
-    critical: true
-    ca: false
+
+  # Subject Alternative Name
   subjectAltName:
     critical: false
     dns:

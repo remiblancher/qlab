@@ -1,26 +1,66 @@
-# Post-Quantum Issuing CA - ML-DSA-65
-# Subordinate CA for daily operations
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Post-Quantum Issuing CA Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: Issuing CA (subordinate CA) for daily certificate operations
+#
+# This CA is signed by the Root CA and issues end-entity certificates.
+# It's the operational CA that stays online for certificate issuance.
+#
+# Hierarchy: Root CA (ML-DSA-87) → **Issuing CA (ML-DSA-65)** → End-entity
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki issue --ca-dir ./root-ca \
+#       --profile profiles/pqc-issuing-ca.yaml \
+#       --cn "PQ Issuing CA" \
+#       --out issuing-ca.crt --key-out issuing-ca.key
+#
+# =============================================================================
 
 name: pqc-issuing-ca
-description: "Issuing CA ML-DSA-65 (FIPS 204)"
+description: "Issuing CA ML-DSA-65 (post-quantum, subordinate CA)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+# ML-DSA-65 (FIPS 204) - Balanced security and performance
+#   - NIST Level 3 security (~192-bit equivalent)
+#   - Smaller signatures than ML-DSA-87 for faster operations
+#
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+# 10 years for Issuing CA (shorter than Root CA).
+#
+validity: 3650d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
     o: "Demo Organization"
 
-validity: 3650d  # 10 years
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints (RFC 5280 Section 4.2.1.9)
+  # pathLen: 0 - Cannot sign other CAs, only end-entity certificates
   basicConstraints:
     critical: true
     ca: true
     pathLen: 0
+
+  # Key Usage (RFC 5280 Section 4.2.1.3)
   keyUsage:
     critical: true
     values:

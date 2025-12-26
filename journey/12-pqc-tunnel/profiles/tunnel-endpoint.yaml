@@ -1,40 +1,84 @@
-# Tunnel Endpoint Certificate Profile
-# ML-DSA for authentication + ML-KEM for key exchange
-# For PQC tunnel/TLS endpoints
+# =============================================================================
+# Tunnel Endpoint Certificate Profile (ML-DSA-65 + ML-KEM-768)
+# =============================================================================
+#
+# Usage: Tunnel endpoint with dual-key capability
+#
+# This profile generates a certificate for tunnel endpoints that need:
+#   - ML-DSA-65 for authentication (signing)
+#   - ML-KEM-768 for key encapsulation (encryption key exchange)
+#
+# The certificate supports both authentication and quantum-safe key
+# establishment for secure tunnel setup.
+#
+# Standards: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki issue --ca-dir ./tunnel-ca \
+#       --profile profiles/tunnel-endpoint.yaml \
+#       --cn "tunnel.example.com" \
+#       --san "DNS:tunnel.example.com" \
+#       --out endpoint.crt --key-out endpoint.key
+#
+# =============================================================================
 
 name: tunnel-endpoint
 description: "Tunnel Endpoint ML-DSA-65 + ML-KEM-768"
 
+# -----------------------------------------------------------------------------
+# Algorithm (for signature/authentication)
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Key Algorithm (for key encapsulation)
+# -----------------------------------------------------------------------------
+# Separate key algorithm for KEM operations
+key:
+  algorithm: ml-kem-768
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
-  required:
-    - cn
   fixed:
     c: "FR"
     o: "Demo Organization"
+  required:
+    - cn
 
-validity: 365d  # 1 year
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
-key:
-  algorithm: ml-kem-768  # Key encapsulation
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
   basicConstraints:
     critical: true
     ca: false
+
+  # Key Usage
   keyUsage:
     critical: true
     values:
       - digitalSignature
       - keyEncipherment
       - keyAgreement
-  extendedKeyUsage:
+
+  # Extended Key Usage
+  extKeyUsage:
     critical: false
     values:
       - serverAuth
+
+  # Subject Alternative Name
   subjectAltName:
     critical: false
-    dns: []  # Populated at issuance
+    dns: []

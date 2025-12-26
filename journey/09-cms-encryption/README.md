@@ -1,10 +1,8 @@
 # PQC CMS Encryption: For Your Eyes Only
 
-## Post-Quantum Document Encryption with ML-KEM
+## Post-Quantum Document Encryption with ML-KEM + CSR Attestation
 
-> **Key Message:** Hybrid encryption (AES + ML-KEM) protects documents from both current and future quantum threats.
-
-> **Note:** This is a conceptual demo. The `pki cms encrypt/decrypt` commands are being finalized. The demo explains the architecture and shows what the workflow will look like.
+> **Key Message:** You cannot prove possession of a KEM key by signing! Use a signing certificate to attest for encryption keys (RFC 9883).
 
 ---
 
@@ -23,84 +21,150 @@ Classical encryption (RSA, ECDH) will be broken by quantum computers. We need qu
 
 ---
 
-## The Problem
+## The KEM Key Problem (RFC 9883)
 
-```
-UNENCRYPTED DOCUMENT TRANSMISSION
-─────────────────────────────────
-
-   Sender                    Attacker                    Recipient
-      │                          │                           │
-      │  secret.doc              │                           │
-      │  ─────────────────────────────────────────────────►  │
-      │                          │                           │
-      │                          │  ◄── Intercept & Copy     │
-      │                          │                           │
-      │                          ▼                           │
-      │                    ┌──────────┐                      │
-      │                    │  Attacker │                     │
-      │                    │  has full │                     │
-      │                    │  access!  │                     │
-      │                    └──────────┘                      │
-```
-
----
-
-## The Threat
+Traditional CSR workflow:
+1. Generate key pair
+2. Create CSR and **sign it** with the private key
+3. CA verifies signature = proof of possession
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│  STORE NOW, DECRYPT LATER (SNDL)                                │
+│  THE PROBLEM WITH KEM KEYS                                       │
 │                                                                  │
+│  ML-KEM keys can only:                                           │
+│    ✓ Encapsulate (encrypt a shared secret)                       │
+│    ✓ Decapsulate (decrypt a shared secret)                       │
 │                                                                  │
-│    TODAY                         FUTURE (5-15 years?)           │
-│      │                                    │                     │
-│      │  Document encrypted                │  Quantum computer   │
-│      │  with RSA/ECDH                     │  breaks RSA/ECDH    │
-│      │                                    │                     │
-│      ▼                                    ▼                     │
-│  ┌──────────────┐                  ┌──────────────┐             │
-│  │   Attacker   │                  │   Attacker   │             │
-│  │   stores     │  ─────────────►  │   decrypts   │             │
-│  │   encrypted  │                  │   everything │             │
-│  │   traffic    │                  │              │             │
-│  └──────────────┘                  └──────────────┘             │
+│  ML-KEM keys CANNOT:                                             │
+│    ✗ Sign data                                                   │
+│    ✗ Create digital signatures                                   │
+│    ✗ Prove possession via CSR signature!                         │
 │                                                                  │
-│  Medical records, trade secrets, personal data                   │
-│  → All exposed retroactively                                     │
+│  Solution: Use a SIGNING certificate to attest for the KEM key   │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## The Solution: CMS Encryption with ML-KEM
-
-CMS (Cryptographic Message Syntax) EnvelopedData provides hybrid encryption:
+## The Solution: CSR Attestation (RFC 9883)
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│  ENCRYPTION PROCESS                                              │
+│  CSR ATTESTATION WORKFLOW                                        │
 │                                                                  │
-│    1. Generate random AES-256 key (Content Encryption Key)       │
+│    Step 1: Alice gets SIGNING certificate (ML-DSA-65)            │
 │                                                                  │
-│    2. Encrypt document with AES-256-GCM                          │
-│       ┌────────────────┐    AES-256-GCM    ┌────────────────┐   │
-│       │  secret.doc    │ ────────────────► │  encrypted     │   │
-│       │  (plaintext)   │                   │  content       │   │
-│       └────────────────┘                   └────────────────┘   │
+│    Step 2: Alice generates ML-KEM key pair locally               │
 │                                                                  │
-│    3. Encapsulate AES key with ML-KEM (recipient's public key)   │
-│       ┌────────────────┐    ML-KEM-768    ┌────────────────┐    │
-│       │  AES-256 key   │ ────────────────► │  encapsulated  │   │
-│       │  (32 bytes)    │                   │  key           │   │
-│       └────────────────┘                   └────────────────┘   │
+│    Step 3: Alice creates CSR for encryption key                  │
+│            → CSR is signed by her SIGNING key (attestation)      │
 │                                                                  │
-│    4. Package as CMS EnvelopedData (.p7m)                        │
+│    Step 4: CA verifies:                                          │
+│            → CSR signature is valid                              │
+│            → Signing certificate is trusted                      │
+│            → Issues encryption cert with RelatedCertificate      │
+│                                                                  │
+│    Result: Alice has TWO linked certificates                     │
+│            → Signing: ML-DSA-65 (for authentication)             │
+│            → Encryption: ML-KEM-768 (for key encapsulation)      │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## What This Demo Shows
+
+| Step | What Happens | Key Concept |
+|------|--------------|-------------|
+| 1 | Explain KEM key problem | Why KEM keys can't sign CSRs |
+| 2 | Create Encryption CA | ML-DSA-65 for signing |
+| 3 | Issue signing certificate | ML-DSA-65 for attestation |
+| 4 | Create CSR for encryption key | Signed by signing key (RFC 9883) |
+| 5 | CA issues encryption certificate | ML-KEM-768 + RelatedCertificate |
+| 6 | Show certificate pair | Two linked certificates |
+| 7 | CMS encryption flow | Hybrid encryption (AES + ML-KEM) |
+
+---
+
+## Run the Demo
+
+```bash
+./demo.sh
+```
+
+---
+
+## The Commands
+
+### Step 1: Create Encryption CA
+
+```bash
+pki init-ca --name "Encryption CA" \
+    --algorithm ml-dsa-65 \
+    --dir output/encryption-ca
+```
+
+### Step 2: Issue Signing Certificate (ML-DSA-65)
+
+```bash
+pki issue --ca-dir output/encryption-ca \
+    --profile profiles/signing.yaml \
+    --cn "Alice" \
+    --out output/alice-sign.crt \
+    --key-out output/alice-sign.key
+```
+
+### Step 3: Create CSR for Encryption Key (RFC 9883 Attestation)
+
+```bash
+# Generate ML-KEM key and create CSR
+# CSR is signed by Alice's SIGNING key (attestation)
+pki csr --algorithm ml-kem-768 \
+    --keyout output/alice-enc.key \
+    --cn "Alice" \
+    --attest-cert output/alice-sign.crt \
+    --attest-key output/alice-sign.key \
+    -o output/alice-enc.csr
+```
+
+### Step 4: CA Issues Encryption Certificate
+
+```bash
+# CA verifies attestation and issues certificate
+# Certificate includes RelatedCertificate extension
+pki issue --ca-dir output/encryption-ca \
+    --csr output/alice-enc.csr \
+    --profile profiles/encryption.yaml \
+    --out output/alice-enc.crt
+```
+
+---
+
+## Alice's Certificate Pair
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  ALICE'S CERTIFICATE PAIR                                           │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────────────────────┐   ┌─────────────────────────────┐ │
+│  │  SIGNING CERTIFICATE        │   │  ENCRYPTION CERTIFICATE     │ │
+│  ├─────────────────────────────┤   ├─────────────────────────────┤ │
+│  │  Algorithm: ML-DSA-65       │   │  Algorithm: ML-KEM-768      │ │
+│  │  Key Usage: digitalSignature│   │  Key Usage: keyEncipherment │ │
+│  │  File: alice-sign.crt       │   │  File: alice-enc.crt        │ │
+│  │  Purpose: Sign, Attest      │   │  Purpose: Receive encrypted │ │
+│  └─────────────────────────────┘   └─────────────────────────────┘ │
+│            │                                      ▲                 │
+│            │         RelatedCertificate           │                 │
+│            └──────────────────────────────────────┘                 │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -136,74 +200,6 @@ CMS (Cryptographic Message Syntax) EnvelopedData provides hybrid encryption:
 
 ---
 
-## What This Demo Shows
-
-| Step | What Happens | Key Concept |
-|------|--------------|-------------|
-| 1 | Explain CMS envelope | Hybrid encryption architecture |
-| 2 | Create Encryption CA | ML-DSA-65 for signing |
-| 3 | Issue encryption certificate | ML-KEM-768 for key encapsulation |
-| 4 | Encrypt document | AES-256-GCM + ML-KEM encapsulation |
-| 5 | Decrypt document | ML-KEM decapsulation + AES decryption |
-
----
-
-## Run the Demo
-
-```bash
-./demo.sh
-```
-
----
-
-## The Commands
-
-### Step 1: Create Encryption CA
-
-```bash
-# Create a PQC CA for encryption certificates
-pki init-ca --name "Encryption CA" \
-    --algorithm ml-dsa-65 \
-    --dir output/encryption-ca
-```
-
-### Step 2: Issue Encryption Certificate
-
-```bash
-# Issue certificate with ML-KEM encryption key
-pki issue --ca-dir output/encryption-ca \
-    --profile ml-dsa-kem/email \
-    --cn "Alice" \
-    --out output/alice.crt \
-    --key-out output/alice.key
-```
-
-The `ml-dsa-kem/email` profile issues:
-- **Signing certificate**: ML-DSA-65 (for authentication)
-- **Encryption certificate**: ML-KEM-768 (for key encapsulation)
-
-### Step 3: Encrypt Document
-
-```bash
-# Encrypt for Alice using her ML-KEM certificate
-pki cms encrypt \
-    --recipient output/alice.crt \
-    --in secret-document.txt \
-    --out secret-document.p7m
-```
-
-### Step 4: Decrypt Document
-
-```bash
-# Alice decrypts with her ML-KEM private key
-pki cms decrypt \
-    --key output/alice.key \
-    --in secret-document.p7m \
-    --out secret-decrypted.txt
-```
-
----
-
 ## Why Hybrid Encryption?
 
 | Approach | Speed | Ciphertext Size | Quantum-Safe | Verdict |
@@ -228,19 +224,17 @@ pki cms decrypt \
 
 ---
 
-## Size Comparison
-
-| Component | Classical (RSA-2048) | Post-Quantum (ML-KEM-768) | Notes |
-|-----------|---------------------|---------------------------|-------|
-| Public key | ~256 bytes | ~1,184 bytes | In certificate |
-| Encapsulated key | ~256 bytes | ~1,088 bytes | Per recipient |
-| Overhead per file | ~300 bytes | ~1,200 bytes | Negligible for docs |
-
-*For a 1 MB document, the overhead is < 0.1%*
-
----
-
 ## Algorithm Details
+
+### ML-DSA-65 (Signing)
+
+| Property | Value |
+|----------|-------|
+| NIST Standard | FIPS 204 |
+| Security Level | NIST Level 3 (~192-bit classical) |
+| Public Key | ~1,952 bytes |
+| Signature | ~3,309 bytes |
+| Purpose | CSR attestation, message signing |
 
 ### ML-KEM-768 (Key Encapsulation)
 
@@ -266,18 +260,20 @@ pki cms decrypt \
 
 ## What You Learned
 
-1. **CMS EnvelopedData** is the standard for document encryption (RFC 5652)
-2. **Hybrid encryption** combines AES (fast) with ML-KEM (quantum-safe)
-3. **ML-KEM-768** provides NIST Level 3 security for key encapsulation
-4. **Only the recipient** with the ML-KEM private key can decrypt
-5. **S/MIME** uses this exact pattern for secure email
-6. **SNDL threat** makes PQC encryption essential today
+1. **KEM keys cannot sign** - ML-KEM can only encapsulate/decapsulate
+2. **CSR attestation** - Use a signing certificate to attest for KEM keys (RFC 9883)
+3. **RelatedCertificate** - Links encryption and signing certificates
+4. **Hybrid encryption** - AES (fast) + ML-KEM (quantum-safe)
+5. **CMS EnvelopedData** - Industry standard for document encryption
+6. **S/MIME pattern** - Separate signing and encryption certificates
 
 ---
 
 ## References
 
+- [RFC 9883: Use of Post-Quantum KEM in CMS](https://datatracker.ietf.org/doc/html/rfc9883)
 - [NIST FIPS 203: ML-KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
+- [NIST FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
 - [RFC 5652: Cryptographic Message Syntax (CMS)](https://datatracker.ietf.org/doc/html/rfc5652)
 - [RFC 5751: S/MIME Version 3.2](https://datatracker.ietf.org/doc/html/rfc5751)
 

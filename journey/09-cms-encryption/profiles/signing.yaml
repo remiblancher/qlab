@@ -1,36 +1,42 @@
 # =============================================================================
-# Classical CA Certificate Profile (ECDSA P-256)
+# Signing Certificate Profile (ML-DSA-65)
 # =============================================================================
 #
-# Usage: Phase 1 of crypto-agility - Classical PKI (current state)
+# Usage: Authentication certificate for CMS encryption workflows
 #
-# This CA represents the starting point before PQC migration.
-# It uses classical ECDSA which is vulnerable to quantum computers.
+# This certificate provides identity authentication. It is used to:
+#   - Sign CMS SignedData (message authentication)
+#   - Attest CSR requests for encryption certificates (RFC 9883)
 #
-# Migration Path: Classic CA → Hybrid CA → PQC CA
+# Why separate signing and encryption?
+#   - Different key usage: signing vs key encapsulation
+#   - RFC 9883: Cannot prove possession of KEM key by signing
+#   - Best practice: Separate keys for different purposes
 #
-# Standards: RFC 5280 (X.509)
-# Security Level: ~128-bit (ECDSA P-256)
-# Quantum Safety: VULNERABLE
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509), RFC 9883
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki init-ca --profile profiles/classic-ca.yaml \
-#       --name "Classic CA" --dir ./classic-ca
+#   pki issue --ca-dir ./encryption-ca \
+#       --profile profiles/signing.yaml \
+#       --cn "Alice" \
+#       --out alice-sign.crt --key-out alice-sign.key
 #
 # =============================================================================
 
-name: classic-ca
-description: "Classic CA ECDSA P-256 (Phase 1: quantum-vulnerable)"
+name: signing
+description: "Signing Certificate ML-DSA-65 (for CSR attestation)"
 
 # -----------------------------------------------------------------------------
 # Algorithm
 # -----------------------------------------------------------------------------
-algorithm: ecdsa-p256
+algorithm: ml-dsa-65
 
 # -----------------------------------------------------------------------------
 # Validity
 # -----------------------------------------------------------------------------
-validity: 3650d
+validity: 365d
 
 # -----------------------------------------------------------------------------
 # Subject DN
@@ -39,6 +45,8 @@ subject:
   fixed:
     c: "FR"
     o: "Demo Organization"
+  required:
+    - cn
 
 # -----------------------------------------------------------------------------
 # X.509 Extensions
@@ -48,12 +56,17 @@ extensions:
   # Basic Constraints
   basicConstraints:
     critical: true
-    ca: true
-    pathLen: 0
+    ca: false
 
-  # Key Usage
+  # Key Usage (signing only)
   keyUsage:
     critical: true
     values:
-      - keyCertSign
-      - cRLSign
+      - digitalSignature
+      - nonRepudiation
+
+  # Extended Key Usage
+  extKeyUsage:
+    critical: false
+    values:
+      - emailProtection

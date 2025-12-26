@@ -1,10 +1,45 @@
-# Post-Quantum TLS Server - ML-DSA-65
-# Simplified profile for quickstart demo
-# ML-DSA uses integrated SHAKE-256 hash
+# =============================================================================
+# Post-Quantum TLS Server Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: TLS server certificate for quantum-resistant HTTPS demonstration
+#
+# This certificate allows a server to prove its identity using ML-DSA,
+# providing protection against future quantum computer attacks.
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509), RFC 8446 (TLS 1.3)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#   ML-DSA is resistant to both classical and quantum computer attacks.
+#
+# Example:
+#   pki issue --ca-dir ./pqc-ca \
+#       --profile profiles/pqc-tls-server.yaml \
+#       --cn pq.example.com --dns pq.example.com \
+#       --out pq-server.crt --key-out pq-server.key
+#
+# =============================================================================
 
 name: pqc-tls-server
-description: "TLS server ML-DSA-65 (FIPS 204)"
+description: "TLS server ML-DSA-65 (post-quantum, FIPS 204)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+# ML-DSA-65 (FIPS 204) - Module-Lattice Digital Signature Algorithm
+#   - NIST Level 3 security (~192-bit equivalent)
+#   - Matches the CA algorithm for consistency
+#
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -12,24 +47,29 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints (RFC 5280 Section 4.2.1.9)
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage (RFC 5280 Section 4.2.1.3)
   keyUsage:
     critical: true
     values:
       - digitalSignature
+
+  # Extended Key Usage (RFC 5280 Section 4.2.1.12)
   extKeyUsage:
     critical: false
     values:
       - serverAuth
-  basicConstraints:
-    critical: true
-    ca: false
+
+  # Subject Alternative Name (RFC 5280 Section 4.2.1.6)
   subjectAltName:
     critical: false
     dns:

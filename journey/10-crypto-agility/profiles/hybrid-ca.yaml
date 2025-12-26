@@ -1,28 +1,69 @@
-# Hybrid CA - ECDSA P-256 + ML-DSA-65
-# Phase 2: Transition (both algorithms)
-# Provides backward compatibility + PQC protection
+# =============================================================================
+# Hybrid Catalyst CA Certificate Profile (ECDSA P-256 + ML-DSA-65)
+# =============================================================================
+#
+# Usage: Phase 2 of crypto-agility - Transition PKI
+#
+# This CA provides both backward compatibility (ECDSA) and
+# quantum protection (ML-DSA). It's the bridge during migration.
+#
+# Migration Path: Classic CA → **Hybrid CA** → PQC CA
+#
+# Standards: ITU-T X.509 Section 9.8 (Catalyst), FIPS 204 (ML-DSA)
+# Security Level:
+#   - Classical: ~128-bit (ECDSA P-256)
+#   - PQC: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: PROTECTED (Hybrid)
+#
+# Example:
+#   pki init-ca --profile profiles/hybrid-ca.yaml \
+#       --name "Hybrid CA" --dir ./hybrid-ca
+#
+# =============================================================================
 
 name: hybrid-ca
-description: "Hybrid CA ECDSA P-256 + ML-DSA-65 (Catalyst)"
+description: "Hybrid CA ECDSA P-256 + ML-DSA-65 (Phase 2: transition)"
 
+# -----------------------------------------------------------------------------
+# Hybrid Mode: Catalyst (ITU-T X.509 Section 9.8)
+# -----------------------------------------------------------------------------
+mode: catalyst
+
+# -----------------------------------------------------------------------------
+# Algorithms
+# -----------------------------------------------------------------------------
+# First: ECDSA P-256 (classical, backward compatible)
+# Second: ML-DSA-65 (PQC, quantum protection)
+#
+algorithms:
+  - ecdsa-p256
+  - ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 3650d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
     o: "Demo Organization"
 
-validity: 3650d  # 10 years
-
-signature:
-  mode: hybrid-combined
-  algorithms:
-    - ec-p256
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
   basicConstraints:
     critical: true
     ca: true
     pathLen: 0
+
+  # Key Usage
   keyUsage:
     critical: true
     values:

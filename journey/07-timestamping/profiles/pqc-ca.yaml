@@ -1,26 +1,52 @@
-# Post-Quantum CA - ML-DSA-65
-# CA for timestamping demo
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Post-Quantum CA Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: CA for timestamping demonstration
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509), RFC 3161 (TSP)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki init-ca --profile profiles/pqc-ca.yaml \
+#       --name "TSA CA" --dir ./tsa-ca
+#
+# =============================================================================
 
 name: pqc-ca
-description: "PQC CA ML-DSA-65 (FIPS 204)"
+description: "CA ML-DSA-65 for timestamping demo"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 3650d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
     o: "Demo Organization"
 
-validity: 3650d  # 10 years
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
   basicConstraints:
     critical: true
     ca: true
     pathLen: 0
+
+  # Key Usage
   keyUsage:
     critical: true
     values:

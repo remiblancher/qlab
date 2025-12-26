@@ -1,27 +1,62 @@
-# Post-Quantum Root CA - ML-DSA-65
-# Simplified profile for quickstart demo
-# Uses ML-DSA-65 (NIST Level 3) for consistency with TLS certificates
-# ML-DSA uses integrated SHAKE-256 hash
+# =============================================================================
+# Post-Quantum Root CA Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: Root CA for post-quantum PKI demonstration
+#
+# This certificate demonstrates a quantum-resistant PKI setup using ML-DSA,
+# the NIST standardized post-quantum signature algorithm (FIPS 204).
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#   ML-DSA is resistant to both classical and quantum computer attacks.
+#
+# Example:
+#   pki init-ca --profile profiles/pqc-root-ca.yaml \
+#       --name "PQ Root CA" --dir ./pqc-ca
+#
+# =============================================================================
 
 name: pqc-root-ca
-description: "Root CA ML-DSA-65 (FIPS 204)"
+description: "Root CA ML-DSA-65 (post-quantum, FIPS 204)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+# ML-DSA-65 (FIPS 204) - Module-Lattice Digital Signature Algorithm
+#   - NIST Level 3 security (~192-bit equivalent)
+#   - Public key: ~1,952 bytes, Signature: ~3,293 bytes
+#
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+# 20 years for Root CA (demo purposes).
+#
+validity: 7300d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
     o: "Demo Organization"
 
-validity: 7300d  # 20 years
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints (RFC 5280 Section 4.2.1.9)
   basicConstraints:
     critical: true
     ca: true
     pathLen: 1
+
+  # Key Usage (RFC 5280 Section 4.2.1.3)
   keyUsage:
     critical: true
     values:

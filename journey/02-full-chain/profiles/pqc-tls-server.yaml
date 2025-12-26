@@ -1,10 +1,46 @@
-# Post-Quantum TLS Server - ML-DSA-65
-# End-entity certificate for server authentication
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Post-Quantum TLS Server Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: TLS server certificate issued by the Issuing CA
+#
+# This end-entity certificate is issued by the Issuing CA for HTTPS servers.
+#
+# Hierarchy: Root CA → Issuing CA → **TLS Server (ML-DSA-65)**
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509), RFC 8446 (TLS 1.3)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki issue --ca-dir ./issuing-ca \
+#       --profile profiles/pqc-tls-server.yaml \
+#       --cn server.example.com --dns server.example.com \
+#       --out server.crt --key-out server.key
+#
+# =============================================================================
 
 name: pqc-tls-server
-description: "TLS server ML-DSA-65 (FIPS 204)"
+description: "TLS server ML-DSA-65 (post-quantum end-entity)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+# ML-DSA-65 (FIPS 204) - Matches the Issuing CA
+#   - NIST Level 3 security (~192-bit equivalent)
+#
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+# 1 year for end-entity certificates.
+#
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -12,24 +48,29 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints (RFC 5280 Section 4.2.1.9)
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage (RFC 5280 Section 4.2.1.3)
   keyUsage:
     critical: true
     values:
       - digitalSignature
+
+  # Extended Key Usage (RFC 5280 Section 4.2.1.12)
   extKeyUsage:
     critical: false
     values:
       - serverAuth
-  basicConstraints:
-    critical: true
-    ca: false
+
+  # Subject Alternative Name (RFC 5280 Section 4.2.1.6)
   subjectAltName:
     critical: false
     dns:

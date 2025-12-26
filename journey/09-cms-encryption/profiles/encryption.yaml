@@ -1,22 +1,60 @@
 # =============================================================================
-# PQC Encryption Certificate Profile (ML-DSA-65 + ML-KEM-768)
+# Encryption Certificate Profile (ML-KEM-768)
 # =============================================================================
 #
-# Usage: Post-quantum encryption certificate for CMS EnvelopedData
+# Usage: Key encapsulation certificate for CMS EnvelopedData
 #
-# This profile generates TWO linked certificates:
-#   - Signing certificate: ML-DSA-65 (FIPS 204) for authentication
-#   - Encryption certificate: ML-KEM-768 (FIPS 203) for key encapsulation
+# This certificate contains an ML-KEM public key for quantum-safe
+# key encapsulation. Used to encrypt session keys in CMS EnvelopedData.
 #
-# Example:
-#   pki issue --profile profiles/encryption.yaml --cn "Alice" \
-#       --out alice.crt --key-out alice.key
+# IMPORTANT - RFC 9883 CSR Attestation:
+#   You cannot prove possession of a KEM key by signing a CSR!
+#   KEM keys encapsulate, they don't sign.
+#
+#   Workflow:
+#   1. First obtain a SIGNING certificate (signing.yaml profile)
+#   2. Generate ML-KEM key pair locally
+#   3. Create CSR signed by your SIGNING key (attestation)
+#   4. CA verifies CSR signature and issues encryption certificate
+#   5. Encryption cert includes RelatedCertificate pointing to signing cert
+#
+# Standards: FIPS 203 (ML-KEM), RFC 5280 (X.509), RFC 9883 (CSR Attestation)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example (CSR workflow):
+#   # Step 1: Generate CSR (signed by signing key)
+#   pki csr --algorithm ml-kem-768 \
+#       --keyout alice-enc.key \
+#       --cn "Alice" \
+#       --attest-cert alice-sign.crt \
+#       --attest-key alice-sign.key \
+#       -o alice-enc.csr
+#
+#   # Step 2: CA signs the CSR
+#   pki issue --ca-dir ./encryption-ca \
+#       --csr alice-enc.csr \
+#       --profile profiles/encryption.yaml \
+#       --out alice-enc.crt
 #
 # =============================================================================
 
 name: encryption
-description: "PQC Encryption ML-DSA-65 + ML-KEM-768 (FIPS 203/204)"
+description: "Encryption Certificate ML-KEM-768 (FIPS 203)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-kem-768
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -24,27 +62,24 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-# ML-DSA-65 for signing (authentication)
-signature:
-  algorithms:
-    - ml-dsa-65
-  keyUsage:
-    - digitalSignature
-
-# ML-KEM-768 for encryption (key encapsulation)
-encryption:
-  algorithms:
-    - ml-kem-768
-  keyUsage:
-    - keyEncipherment
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage (key encapsulation only)
+  keyUsage:
+    critical: true
+    values:
+      - keyEncipherment
+
+  # Extended Key Usage
   extKeyUsage:
     critical: false
     values:
       - emailProtection
-  basicConstraints:
-    critical: true
-    ca: false

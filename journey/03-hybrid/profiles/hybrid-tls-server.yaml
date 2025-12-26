@@ -1,10 +1,53 @@
-# Hybrid TLS Server - ECDSA P-384 + ML-DSA-65 (Catalyst)
-# End-entity certificate for server authentication
-# ITU-T X.509 Section 9.8
+# =============================================================================
+# Hybrid Catalyst TLS Server Certificate Profile (ECDSA P-384 + ML-DSA-65)
+# =============================================================================
+#
+# Usage: TLS server with dual classical + PQC signatures
+#
+# This certificate allows servers to work with:
+#   - Legacy clients: Verify ECDSA signature (existing PKI)
+#   - PQC-aware clients: Verify BOTH signatures (full protection)
+#
+# Standards: ITU-T X.509 Section 9.8 (Catalyst), FIPS 204 (ML-DSA)
+# Security Level:
+#   - Classical: ~192-bit (ECDSA P-384)
+#   - PQC: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: PROTECTED (Hybrid)
+#
+# Example:
+#   pki issue --ca-dir ./hybrid-ca \
+#       --profile profiles/hybrid-tls-server.yaml \
+#       --cn hybrid.example.com --dns hybrid.example.com \
+#       --out hybrid-server.crt --key-out hybrid-server.key
+#
+# =============================================================================
 
 name: hybrid-tls-server
 description: "Hybrid TLS server ECDSA P-384 + ML-DSA-65 (Catalyst)"
 
+# -----------------------------------------------------------------------------
+# Hybrid Mode: Catalyst (ITU-T X.509 Section 9.8)
+# -----------------------------------------------------------------------------
+mode: catalyst
+
+# -----------------------------------------------------------------------------
+# Algorithms
+# -----------------------------------------------------------------------------
+# First: ECDSA P-384 (classical, backward compatible)
+# Second: ML-DSA-65 (PQC, quantum protection)
+#
+algorithms:
+  - ecdsa-p384
+  - ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -12,26 +55,29 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-signature:
-  algorithms:
-    - ecdsa-p384
-  hybrid:
-    algorithm: ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints (RFC 5280 Section 4.2.1.9)
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage (RFC 5280 Section 4.2.1.3)
   keyUsage:
     critical: true
     values:
       - digitalSignature
+
+  # Extended Key Usage (RFC 5280 Section 4.2.1.12)
   extKeyUsage:
     critical: false
     values:
       - serverAuth
-  basicConstraints:
-    critical: true
-    ca: false
+
+  # Subject Alternative Name (RFC 5280 Section 4.2.1.6)
   subjectAltName:
     critical: false
     dns:

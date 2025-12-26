@@ -1,26 +1,55 @@
-# Post-Quantum CA - ML-DSA-65
-# CA for LTV signatures demo
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# Post-Quantum CA Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: CA for LTV (Long-Term Validation) signatures demonstration
+#
+# This CA issues code signing and TSA certificates for creating
+# signatures that remain valid for decades.
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki init-ca --profile profiles/pqc-ca.yaml \
+#       --name "LTV Demo CA" --dir ./ltv-ca
+#
+# =============================================================================
 
 name: pqc-ca
-description: "PQC CA ML-DSA-65 (FIPS 204)"
+description: "CA ML-DSA-65 for LTV demo"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 3650d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
     o: "Demo Organization"
 
-validity: 3650d  # 10 years
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
   basicConstraints:
     critical: true
     ca: true
     pathLen: 0
+
+  # Key Usage
   keyUsage:
     critical: true
     values:

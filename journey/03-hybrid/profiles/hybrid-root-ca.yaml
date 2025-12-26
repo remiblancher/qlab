@@ -1,28 +1,75 @@
-# Hybrid Root CA - ECDSA P-384 + ML-DSA-65 (Catalyst)
-# Best of both worlds: classical compatibility + quantum resistance
-# ITU-T X.509 Section 9.8
+# =============================================================================
+# Hybrid Catalyst Root CA Certificate Profile (ECDSA P-384 + ML-DSA-65)
+# =============================================================================
+#
+# Usage: Root CA with quantum-safe transition capability
+#
+# This certificate contains TWO key pairs and signatures:
+#   - Primary: ECDSA P-384 (classical, for backward compatibility)
+#   - Alternative: ML-DSA-65 (PQC, for quantum protection)
+#
+# Standards: ITU-T X.509 Section 9.8 (Catalyst), FIPS 204 (ML-DSA)
+# Security Level:
+#   - Classical: ~192-bit (ECDSA P-384)
+#   - PQC: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: PROTECTED (Hybrid)
+#   - Classical clients verify ECDSA only
+#   - PQC-aware clients verify BOTH signatures
+#
+# Example:
+#   pki init-ca --profile profiles/hybrid-root-ca.yaml \
+#       --name "Hybrid Root CA" --dir ./hybrid-ca
+#
+# =============================================================================
 
 name: hybrid-root-ca
 description: "Hybrid Root CA ECDSA P-384 + ML-DSA-65 (Catalyst)"
 
+# -----------------------------------------------------------------------------
+# Hybrid Mode: Catalyst (ITU-T X.509 Section 9.8)
+# -----------------------------------------------------------------------------
+# Catalyst certificates contain two independent key pairs:
+#   - Classical key: Standard X.509 signature (verified by all clients)
+#   - PQC key: Alternative signature in extension (verified by PQC clients)
+#
+mode: catalyst
+
+# -----------------------------------------------------------------------------
+# Algorithms
+# -----------------------------------------------------------------------------
+# First: ECDSA P-384 (classical, backward compatible)
+# Second: ML-DSA-65 (PQC, quantum protection)
+#
+algorithms:
+  - ecdsa-p384
+  - ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 7300d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
     o: "Demo Organization"
 
-validity: 7300d  # 20 years
-
-signature:
-  algorithms:
-    - ecdsa-p384
-  hybrid:
-    algorithm: ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints (RFC 5280 Section 4.2.1.9)
+  # pathLen: 0 - Issues end-entity certificates only (flat hierarchy for demo)
   basicConstraints:
     critical: true
     ca: true
     pathLen: 0
+
+  # Key Usage (RFC 5280 Section 4.2.1.3)
   keyUsage:
     critical: true
     values:

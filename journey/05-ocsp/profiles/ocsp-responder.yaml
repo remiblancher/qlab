@@ -1,10 +1,41 @@
-# OCSP Responder Certificate - ML-DSA-65
-# Delegated responder for OCSP signing
-# NIST Level 3 (~192-bit classical equivalent)
+# =============================================================================
+# OCSP Responder Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: Delegated OCSP responder for real-time certificate status
+#
+# This certificate allows the OCSP responder to sign OCSP responses
+# on behalf of the CA. The ocspNoCheck extension prevents infinite
+# verification loops.
+#
+# Standards: FIPS 204 (ML-DSA), RFC 6960 (OCSP), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki issue --ca-dir ./ocsp-ca \
+#       --profile profiles/ocsp-responder.yaml \
+#       --cn "OCSP Responder" \
+#       --out ocsp-responder.crt --key-out ocsp-responder.key
+#
+# =============================================================================
 
 name: ocsp-responder
-description: "OCSP Responder ML-DSA-65 (FIPS 204)"
+description: "OCSP Responder ML-DSA-65 (RFC 6960)"
 
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
 subject:
   fixed:
     c: "FR"
@@ -12,24 +43,28 @@ subject:
   required:
     - cn
 
-validity: 365d
-
-signature:
-  algorithms:
-    - ml-dsa-65
-
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
 extensions:
+
+  # Basic Constraints
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage
   keyUsage:
     critical: true
     values:
       - digitalSignature
+
+  # Extended Key Usage (RFC 6960 Section 4.2.2.2)
   extKeyUsage:
     critical: false
     values:
       - ocspSigning
-  basicConstraints:
-    critical: true
-    ca: false
-  # OCSP No Check extension prevents infinite verification loop
+
+  # OCSP No Check (RFC 6960 Section 4.2.2.2.1)
   ocspNoCheck:
     critical: false
