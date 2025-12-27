@@ -128,7 +128,7 @@ Certificates have expiration dates, but sometimes you need to invalidate them **
    └─► pki cert revoke --ca-dir <ca> --cert <cert> --reason keyCompromise
 
 4. PUBLISH
-   └─► pki crl --ca-dir <ca>  (generates updated CRL)
+   └─► pki ca crl gen --ca-dir <ca>  (generates updated CRL)
 
 5. NOTIFY
    └─► Inform relying parties

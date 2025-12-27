@@ -94,7 +94,7 @@ openssl x509 -in output/server.crt -noout -serial
 pki cert revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
 
 # Generate updated CRL
-pki crl generate --ca-dir output/pqc-ca
+pki ca crl gen --ca-dir output/pqc-ca
 ```
 
 ### Step 3: Verify Revocation
@@ -134,7 +134,7 @@ pki verify --cert output/server.crt \
    └─► pki cert revoke <serial> --ca-dir <ca> --reason keyCompromise
 
 4. PUBLISH
-   └─► pki crl generate --ca-dir <ca>
+   └─► pki ca crl gen --ca-dir <ca>
 
 5. NOTIFY
    └─► Inform relying parties, update distribution points

@@ -180,7 +180,7 @@ pki cert issue --ca-dir ./pqc-ca --profile ml-kem/encryption --cn sensitive-data
 pki cert revoke --ca-dir ./pqc-ca --serial 0x42 --reason algorithm-compromise
 
 # Générer CRL
-pki crl --ca-dir ./pqc-ca --out revoked.crl
+pki ca crl gen --ca-dir ./pqc-ca --out revoked.crl
 
 # Voir le statut
 pki verify --cert ./compromised.crt --ca-dir ./pqc-ca

@@ -95,7 +95,7 @@ echo "  The CRL is a signed list of all revoked certificates."
 echo "  Clients download it to check certificate validity."
 echo ""
 
-run_cmd "pki crl generate --ca-dir output/pqc-ca"
+run_cmd "pki ca crl gen --ca-dir output/pqc-ca"
 
 if [[ -f "output/pqc-ca/crl/ca.crl" ]]; then
     crl_size=$(wc -c < "output/pqc-ca/crl/ca.crl" | tr -d ' ')
