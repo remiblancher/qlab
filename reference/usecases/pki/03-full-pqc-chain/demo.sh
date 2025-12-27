@@ -53,7 +53,7 @@ echo "  - Recommended for long-lived root CAs"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"PQC Root CA\" --algorithm ml-dsa-87 --dir $ROOT_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQC Root CA\" --algorithm ml-dsa-87 --dir $ROOT_CA${NC}"
 echo ""
 
 ROOT_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -67,7 +67,7 @@ print_success "Root CA created in ${YELLOW}${ROOT_CA_TIME}ms${NC}"
 show_cert_brief "$ROOT_CA/ca.crt" "PQC Root CA"
 
 echo ""
-echo -e "  ${CYAN}Inspect certificate:${NC} pki info $ROOT_CA/ca.crt"
+echo -e "  ${CYAN}Inspect certificate:${NC} pki inspect $ROOT_CA/ca.crt"
 
 # =============================================================================
 # Step 2: Create Issuing CA (ML-DSA-65)
@@ -82,7 +82,7 @@ echo "  - Used to issue end-entity certificates"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"PQC Issuing CA\" --algorithm ml-dsa-65 --parent $ROOT_CA --dir $ISSUING_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQC Issuing CA\" --algorithm ml-dsa-65 --parent $ROOT_CA --dir $ISSUING_CA${NC}"
 echo ""
 
 ISSUING_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -97,7 +97,7 @@ print_success "Issuing CA created in ${YELLOW}${ISSUING_CA_TIME}ms${NC}"
 show_cert_brief "$ISSUING_CA/ca.crt" "PQC Issuing CA"
 
 echo ""
-echo -e "  ${CYAN}Inspect certificate:${NC} pki info $ISSUING_CA/ca.crt"
+echo -e "  ${CYAN}Inspect certificate:${NC} pki inspect $ISSUING_CA/ca.crt"
 
 # =============================================================================
 # Step 3: Issue TLS Server Certificate
@@ -111,7 +111,7 @@ echo "  - ML-KEM-768 for key encapsulation (TLS handshake)"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki issue --ca-dir $ISSUING_CA --profile ml-dsa-kem/tls-server --cn server.example.com${NC}"
+echo -e "  ${CYAN}pki cert issue --ca-dir $ISSUING_CA --profile ml-dsa-kem/tls-server --cn server.example.com${NC}"
 echo ""
 
 SERVER_CERT_TIME=$(time_cmd "$PKI_BIN" issue \
@@ -127,7 +127,7 @@ print_success "TLS Server certificate issued in ${YELLOW}${SERVER_CERT_TIME}ms${
 show_cert_brief "$DEMO_TMP/server.crt" "TLS Server Certificate"
 
 echo ""
-echo -e "  ${CYAN}Inspect certificate:${NC} pki info $DEMO_TMP/server.crt"
+echo -e "  ${CYAN}Inspect certificate:${NC} pki inspect $DEMO_TMP/server.crt"
 
 # =============================================================================
 # Step 4: Examine Chain of Trust

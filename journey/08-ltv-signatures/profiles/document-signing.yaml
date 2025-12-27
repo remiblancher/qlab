@@ -12,7 +12,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki issue --ca-dir ./ltv-ca \
+#   pki cert issue --ca-dir ./ltv-ca \
 #       --profile profiles/document-signing.yaml \
 #       --cn "Legal Department" \
 #       --out doc-signer.crt --key-out doc-signer.key

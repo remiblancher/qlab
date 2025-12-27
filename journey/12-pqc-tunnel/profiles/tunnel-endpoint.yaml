@@ -16,7 +16,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki issue --ca-dir ./tunnel-ca \
+#   pki cert issue --ca-dir ./tunnel-ca \
 #       --profile profiles/tunnel-endpoint.yaml \
 #       --cn "tunnel.example.com" \
 #       --san "DNS:tunnel.example.com" \

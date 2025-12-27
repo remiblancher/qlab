@@ -56,7 +56,7 @@ echo "  - PQC signature in extension for future security"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"Hybrid Root CA\" --algorithm ecdsa-p384 \\"
+echo -e "  ${CYAN}pki ca init --name \"Hybrid Root CA\" --algorithm ecdsa-p384 \\"
 echo -e "      --hybrid-algorithm ml-dsa-65 --dir $HYBRID_CA${NC}"
 echo ""
 
@@ -76,7 +76,7 @@ print_success "Hybrid CA created in ${YELLOW}${HYBRID_CA_TIME}ms${NC}"
 print_step "Step 2: Issue Hybrid TLS Server Certificate"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki issue --ca-dir $HYBRID_CA \\"
+echo -e "  ${CYAN}pki cert issue --ca-dir $HYBRID_CA \\"
 echo -e "      --profile hybrid/catalyst/tls-server \\"
 echo -e "      --cn hybrid.example.com${NC}"
 echo ""
@@ -94,7 +94,7 @@ print_success "Hybrid certificate issued in ${YELLOW}${HYBRID_CERT_TIME}ms${NC}"
 show_cert_brief "$DEMO_TMP/hybrid-server.crt" "Hybrid TLS Certificate"
 
 echo ""
-echo -e "  ${CYAN}Inspect certificate:${NC} pki info $DEMO_TMP/hybrid-server.crt"
+echo -e "  ${CYAN}Inspect certificate:${NC} pki inspect $DEMO_TMP/hybrid-server.crt"
 
 # =============================================================================
 # Step 3: Examine Certificate Structure

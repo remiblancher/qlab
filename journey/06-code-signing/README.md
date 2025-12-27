@@ -162,7 +162,7 @@ Sign the code BEFORE distributing it:
 
 ```bash
 # Create a PQC CA for code signing
-pki init-ca --name "Code Signing CA" \
+pki ca init --name "Code Signing CA" \
     --algorithm ml-dsa-65 \
     --dir output/code-ca
 ```
@@ -171,7 +171,7 @@ pki init-ca --name "Code Signing CA" \
 
 ```bash
 # Issue code signing certificate
-pki issue --ca-dir output/code-ca \
+pki cert issue --ca-dir output/code-ca \
     --profile ml-dsa-kem/code-signing \
     --cn "ACME Software" \
     --out output/code-signing.crt \

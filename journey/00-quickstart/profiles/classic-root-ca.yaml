@@ -14,7 +14,7 @@
 #   For quantum-resistant PKI, see journey/02-full-chain (ML-DSA).
 #
 # Example:
-#   pki init-ca --profile profiles/classic-root-ca.yaml \
+#   pki ca init --profile profiles/classic-root-ca.yaml \
 #       --name "Classic Root CA" --dir ./classic-ca
 #
 # =============================================================================

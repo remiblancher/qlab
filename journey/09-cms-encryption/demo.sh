@@ -62,7 +62,7 @@ echo "  The CA signs both signing and encryption certificates."
 echo "  We use ML-DSA-65 for the CA (quantum-safe signatures)."
 echo ""
 
-run_cmd "pki init-ca --name \"Encryption CA\" --algorithm ml-dsa-65 --dir output/encryption-ca"
+run_cmd "pki ca init --name \"Encryption CA\" --algorithm ml-dsa-65 --dir output/encryption-ca"
 
 echo ""
 
@@ -93,7 +93,7 @@ echo "  │                                                                 │"
 echo "  └─────────────────────────────────────────────────────────────────┘"
 echo ""
 
-run_cmd "pki issue --ca-dir output/encryption-ca --profile profiles/signing.yaml --cn \"Alice\" --out output/alice-sign.crt --key-out output/alice-sign.key"
+run_cmd "pki cert issue --ca-dir output/encryption-ca --profile profiles/signing.yaml --cn \"Alice\" --out output/alice-sign.crt --key-out output/alice-sign.key"
 
 echo ""
 
@@ -143,7 +143,7 @@ echo "  │                                                                 │"
 echo "  └─────────────────────────────────────────────────────────────────┘"
 echo ""
 
-run_cmd "pki csr --algorithm ml-kem-768 --keyout output/alice-enc.key --cn \"Alice\" --attest-cert output/alice-sign.crt --attest-key output/alice-sign.key -o output/alice-enc.csr"
+run_cmd "pki cert csr --algorithm ml-kem-768 --keyout output/alice-enc.key --cn \"Alice\" --attest-cert output/alice-sign.crt --attest-key output/alice-sign.key -o output/alice-enc.csr"
 
 echo ""
 
@@ -187,7 +187,7 @@ echo "  │                                                                 │"
 echo "  └─────────────────────────────────────────────────────────────────┘"
 echo ""
 
-run_cmd "pki issue --ca-dir output/encryption-ca --csr output/alice-enc.csr --profile profiles/encryption.yaml --out output/alice-enc.crt"
+run_cmd "pki cert issue --ca-dir output/encryption-ca --csr output/alice-enc.csr --profile profiles/encryption.yaml --out output/alice-enc.crt"
 
 echo ""
 

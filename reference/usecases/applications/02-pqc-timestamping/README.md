@@ -52,26 +52,26 @@ TODAY                           FUTURE (10-30 years)
 
 ```bash
 # Create a PQC CA for timestamp authority
-pki init-ca --name "PQC Timestamp Authority" \
+pki ca init --name "PQC Timestamp Authority" \
     --algorithm ml-dsa-65 \
     --dir ./tsa-ca
 
 # Inspect
-pki info ./tsa-ca/ca.crt
+pki inspect ./tsa-ca/ca.crt
 ```
 
 ### Step 2: Issue TSA Certificate
 
 ```bash
 # Issue timestamp authority certificate
-pki issue --ca-dir ./tsa-ca \
+pki cert issue --ca-dir ./tsa-ca \
     --profile ml-dsa-kem/timestamping \
     --cn "ACME Timestamp Service" \
     --out tsa.crt \
     --key-out tsa.key
 
 # Inspect
-pki info tsa.crt
+pki inspect tsa.crt
 ```
 
 ### Step 3: Create a Timestamp Token
@@ -86,7 +86,7 @@ pki tsa sign --data document.txt \
     -o document.tsr
 
 # Inspect the token
-pki info document.tsr
+pki inspect document.tsr
 ```
 
 ### Step 4: Verify the Timestamp

@@ -145,19 +145,19 @@ Embed EVERYTHING needed in a self-sufficient bundle:
 
 ```bash
 # Create PQC CA
-pki init-ca --name "LTV Demo CA" \
+pki ca init --name "LTV Demo CA" \
     --algorithm ml-dsa-65 \
     --dir output/ltv-ca
 
 # Issue document signing certificate
-pki issue --ca-dir output/ltv-ca \
+pki cert issue --ca-dir output/ltv-ca \
     --profile ml-dsa-kem/code-signing \
     --cn "Alice (Legal Counsel)" \
     --out output/alice.crt \
     --key-out output/alice.key
 
 # Issue TSA certificate
-pki issue --ca-dir output/ltv-ca \
+pki cert issue --ca-dir output/ltv-ca \
     --profile ml-dsa-kem/timestamping \
     --cn "LTV Timestamp Authority" \
     --out output/tsa.crt \

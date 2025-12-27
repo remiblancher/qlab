@@ -36,11 +36,11 @@ After running the demo, artifacts are in `output/`.
 
 ```bash
 # Create CA
-pki init-ca --profile profiles/classic-root-ca.yaml \
+pki ca init --profile profiles/classic-root-ca.yaml \
     --name "Classic Root CA" --dir ./classic-ca
 
 # Issue TLS certificate
-pki issue --ca-dir ./classic-ca \
+pki cert issue --ca-dir ./classic-ca \
     --profile profiles/classic-tls-server.yaml \
     --cn classic.example.com \
     --dns classic.example.com \
@@ -48,18 +48,18 @@ pki issue --ca-dir ./classic-ca \
     --key-out classic-server.key
 
 # Inspect
-pki info classic-server.crt
+pki inspect classic-server.crt
 ```
 
 ### Step 2: Post-Quantum (ML-DSA-65)
 
 ```bash
 # Create CA
-pki init-ca --profile profiles/pqc-root-ca.yaml \
+pki ca init --profile profiles/pqc-root-ca.yaml \
     --name "PQ Root CA" --dir ./pqc-ca
 
 # Issue TLS certificate
-pki issue --ca-dir ./pqc-ca \
+pki cert issue --ca-dir ./pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
     --cn pq.example.com \
     --dns pq.example.com \
@@ -67,7 +67,7 @@ pki issue --ca-dir ./pqc-ca \
     --key-out pq-server.key
 
 # Inspect
-pki info pq-server.crt
+pki inspect pq-server.crt
 ```
 
 **Notice anything?** The workflow is identical. Only the algorithm name changes.

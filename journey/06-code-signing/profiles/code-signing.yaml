@@ -13,7 +13,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki issue --ca-dir ./code-signing-ca \
+#   pki cert issue --ca-dir ./code-signing-ca \
 #       --profile profiles/code-signing.yaml \
 #       --cn "Developer" \
 #       --out developer.crt --key-out developer.key

@@ -36,19 +36,19 @@ print_step "Step 1: Create CA and Certificates"
 echo "  First, we create a PQC CA and issue certificates."
 echo ""
 
-run_cmd "pki init-ca --name \"PQC CA\" --algorithm ml-dsa-65 --dir output/pqc-ca"
+run_cmd "pki ca init --name \"PQC CA\" --algorithm ml-dsa-65 --dir output/pqc-ca"
 
 echo ""
 echo "  Issue delegated OCSP responder certificate (best practice: CA key stays offline)..."
 echo ""
 
-run_cmd "pki issue --ca-dir output/pqc-ca --profile ml-dsa-kem/ocsp-responder --cn \"OCSP Responder\" --out output/ocsp-responder.crt --key-out output/ocsp-responder.key"
+run_cmd "pki cert issue --ca-dir output/pqc-ca --profile ml-dsa-kem/ocsp-responder --cn \"OCSP Responder\" --out output/ocsp-responder.crt --key-out output/ocsp-responder.key"
 
 echo ""
 echo "  Issue TLS server certificate to verify..."
 echo ""
 
-run_cmd "pki issue --ca-dir output/pqc-ca --profile ml-dsa-kem/tls-server --cn server.example.com --dns server.example.com --out output/server.crt --key-out output/server.key"
+run_cmd "pki cert issue --ca-dir output/pqc-ca --profile ml-dsa-kem/tls-server --cn server.example.com --dns server.example.com --out output/server.crt --key-out output/server.key"
 
 # Get serial number
 SERIAL=$(openssl x509 -in output/server.crt -noout -serial 2>/dev/null | cut -d= -f2)
@@ -137,7 +137,7 @@ print_step "Step 4: Revoke and Re-query"
 echo -e "  ${RED}Simulating key compromise...${NC}"
 echo ""
 
-run_cmd "pki revoke $SERIAL --ca-dir output/pqc-ca --reason keyCompromise"
+run_cmd "pki cert revoke $SERIAL --ca-dir output/pqc-ca --reason keyCompromise"
 
 echo ""
 echo "  Query again - status should change immediately!"

@@ -14,7 +14,7 @@
 # Quantum Safety: VULNERABLE
 #
 # Example:
-#   pki init-ca --profile profiles/classic-ca.yaml \
+#   pki ca init --profile profiles/classic-ca.yaml \
 #       --name "Classic CA" --dir ./classic-ca
 #
 # =============================================================================

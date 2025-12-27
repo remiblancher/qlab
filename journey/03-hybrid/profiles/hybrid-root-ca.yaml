@@ -17,7 +17,7 @@
 #   - PQC-aware clients verify BOTH signatures
 #
 # Example:
-#   pki init-ca --profile profiles/hybrid-root-ca.yaml \
+#   pki ca init --profile profiles/hybrid-root-ca.yaml \
 #       --name "Hybrid Root CA" --dir ./hybrid-ca
 #
 # =============================================================================

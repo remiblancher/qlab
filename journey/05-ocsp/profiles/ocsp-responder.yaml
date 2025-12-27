@@ -13,7 +13,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki issue --ca-dir ./ocsp-ca \
+#   pki cert issue --ca-dir ./ocsp-ca \
 #       --profile profiles/ocsp-responder.yaml \
 #       --cn "OCSP Responder" \
 #       --out ocsp-responder.crt --key-out ocsp-responder.key

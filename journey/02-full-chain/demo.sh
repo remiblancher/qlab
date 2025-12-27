@@ -25,11 +25,11 @@ echo "  The Root CA is the trust anchor of your PKI."
 echo "  It uses ML-DSA-87 (NIST Level 5) for maximum security."
 echo ""
 
-run_cmd "pki init-ca --profile profiles/pqc-root-ca.yaml --name \"PQC Root CA\" --dir output/pqc-root-ca"
+run_cmd "pki ca init --profile profiles/pqc-root-ca.yaml --name \"PQC Root CA\" --dir output/pqc-root-ca"
 
 echo ""
 echo -e "  ${BOLD}Root CA details:${NC}"
-pki info output/pqc-root-ca/ca.crt 2>/dev/null | head -8 | sed 's/^/    /'
+pki inspect output/pqc-root-ca/ca.crt 2>/dev/null | head -8 | sed 's/^/    /'
 echo ""
 
 pause
@@ -44,7 +44,7 @@ echo "  The Issuing CA issues end-entity certificates."
 echo "  It uses ML-DSA-65 (NIST Level 3) - good balance of security/performance."
 echo ""
 
-run_cmd "pki init-ca --profile profiles/pqc-issuing-ca.yaml --name \"PQC Issuing CA\" --parent output/pqc-root-ca --dir output/pqc-issuing-ca"
+run_cmd "pki ca init --profile profiles/pqc-issuing-ca.yaml --name \"PQC Issuing CA\" --parent output/pqc-root-ca --dir output/pqc-issuing-ca"
 
 echo ""
 echo -e "  ${BOLD}Chain visualization:${NC}"
@@ -68,11 +68,11 @@ print_step "Step 3: Issue TLS Server Certificate"
 echo "  The TLS server certificate uses ML-DSA-65 for authentication."
 echo ""
 
-run_cmd "pki issue --ca-dir output/pqc-issuing-ca --profile profiles/pqc-tls-server.yaml --cn server.example.com --dns server.example.com --out output/server.crt --key-out output/server.key"
+run_cmd "pki cert issue --ca-dir output/pqc-issuing-ca --profile profiles/pqc-tls-server.yaml --cn server.example.com --dns server.example.com --out output/server.crt --key-out output/server.key"
 
 echo ""
 echo -e "  ${BOLD}Certificate details:${NC}"
-pki info output/server.crt 2>/dev/null | head -10 | sed 's/^/    /'
+pki inspect output/server.crt 2>/dev/null | head -10 | sed 's/^/    /'
 echo ""
 
 pause

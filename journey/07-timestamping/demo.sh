@@ -26,13 +26,13 @@ echo "  A Timestamp Authority (TSA) issues cryptographic proofs of time."
 echo "  The TSA certificate has Extended Key Usage: timeStamping."
 echo ""
 
-run_cmd "pki init-ca --name \"TSA Root CA\" --algorithm ml-dsa-65 --dir output/tsa-ca"
+run_cmd "pki ca init --name \"TSA Root CA\" --algorithm ml-dsa-65 --dir output/tsa-ca"
 
 echo ""
 echo "  Issue TSA certificate..."
 echo ""
 
-run_cmd "pki issue --ca-dir output/tsa-ca --profile ml-dsa-kem/timestamping --cn \"PQC Timestamp Authority\" --out output/tsa.crt --key-out output/tsa.key"
+run_cmd "pki cert issue --ca-dir output/tsa-ca --profile ml-dsa-kem/timestamping --cn \"PQC Timestamp Authority\" --out output/tsa.crt --key-out output/tsa.key"
 
 echo ""
 

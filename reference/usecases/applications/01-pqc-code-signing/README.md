@@ -52,26 +52,26 @@ TODAY                           FUTURE (5-15 years?)
 
 ```bash
 # Create a PQC CA for code signing
-pki init-ca --name "PQC Code Signing CA" \
+pki ca init --name "PQC Code Signing CA" \
     --algorithm ml-dsa-65 \
     --dir ./code-signing-ca
 
 # Inspect
-pki info ./code-signing-ca/ca.crt
+pki inspect ./code-signing-ca/ca.crt
 ```
 
 ### Step 2: Issue Code Signing Certificate
 
 ```bash
 # Issue code signing certificate
-pki issue --ca-dir ./code-signing-ca \
+pki cert issue --ca-dir ./code-signing-ca \
     --profile ml-dsa-kem/code-signing \
     --cn "ACME Software Signing" \
     --out code-signing.crt \
     --key-out code-signing.key
 
 # Inspect
-pki info code-signing.crt
+pki inspect code-signing.crt
 ```
 
 ### Step 3: Sign a Binary
@@ -87,7 +87,7 @@ pki cms sign --data myapp.sh \
     -o myapp.sh.p7s
 
 # Inspect the signature
-pki info myapp.sh.p7s
+pki inspect myapp.sh.p7s
 ```
 
 ### Step 4: Verify the Signature

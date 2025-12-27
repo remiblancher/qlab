@@ -32,13 +32,13 @@ Short answer: **No.** The PKI workflow is identical. Only the algorithm name cha
 
 ```bash
 # Create CA
-pki init-ca --profile ec/root-ca --name "Classic Root CA" --dir ./classic-ca
+pki ca init --profile ec/root-ca --name "Classic Root CA" --dir ./classic-ca
 
 # Inspect CA certificate
-pki info ./classic-ca/ca.crt
+pki inspect ./classic-ca/ca.crt
 
 # Issue TLS certificate
-pki issue --ca-dir ./classic-ca \
+pki cert issue --ca-dir ./classic-ca \
     --profile ec/tls-server \
     --cn classic.example.com \
     --dns classic.example.com \
@@ -46,20 +46,20 @@ pki issue --ca-dir ./classic-ca \
     --key-out classic-server.key
 
 # Inspect
-pki info classic-server.crt
+pki inspect classic-server.crt
 ```
 
 ### Step 2: Post-Quantum (ML-DSA-65)
 
 ```bash
 # Create CA
-pki init-ca --profile ml-dsa-kem/root-ca --name "PQ Root CA" --dir ./pqc-ca
+pki ca init --profile ml-dsa-kem/root-ca --name "PQ Root CA" --dir ./pqc-ca
 
 # Inspect CA certificate
-pki info ./pqc-ca/ca.crt
+pki inspect ./pqc-ca/ca.crt
 
 # Issue TLS certificate
-pki issue --ca-dir ./pqc-ca \
+pki cert issue --ca-dir ./pqc-ca \
     --profile ml-dsa-kem/tls-server \
     --cn pq.example.com \
     --dns pq.example.com \
@@ -67,7 +67,7 @@ pki issue --ca-dir ./pqc-ca \
     --key-out pq-server.key
 
 # Inspect
-pki info pq-server.crt
+pki inspect pq-server.crt
 ```
 
 **Notice anything?** The workflow is identical. Only the algorithm name changes.

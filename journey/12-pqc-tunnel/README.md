@@ -188,7 +188,7 @@ For transition, we combine both:
 
 ```bash
 # Create CA with ML-DSA-65 for signing
-pki init-ca --name "KEM Demo CA" \
+pki ca init --name "KEM Demo CA" \
     --algorithm ml-dsa-65 \
     --dir output/kem-ca
 ```
@@ -197,7 +197,7 @@ pki init-ca --name "KEM Demo CA" \
 
 ```bash
 # Certificate with ML-DSA + ML-KEM
-pki issue --ca-dir output/kem-ca \
+pki cert issue --ca-dir output/kem-ca \
     --profile ml-dsa-kem/tls-server \
     --cn "tunnel.example.com" \
     --dns tunnel.example.com \

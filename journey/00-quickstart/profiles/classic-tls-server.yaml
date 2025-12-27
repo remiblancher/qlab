@@ -13,7 +13,7 @@
 #   ECDSA is vulnerable to quantum computers (Shor's algorithm).
 #
 # Example:
-#   pki issue --ca-dir ./classic-ca \
+#   pki cert issue --ca-dir ./classic-ca \
 #       --profile profiles/classic-tls-server.yaml \
 #       --cn classic.example.com --dns classic.example.com \
 #       --out classic-server.crt --key-out classic-server.key

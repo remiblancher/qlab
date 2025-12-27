@@ -53,7 +53,7 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Classical Code Signing CA (ECDSA P-384)"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"Classic Code Signing CA\" --algorithm ecdsa-p384 --dir $CLASSIC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Classic Code Signing CA\" --algorithm ecdsa-p384 --dir $CLASSIC_CA${NC}"
 echo ""
 
 CLASSIC_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -77,7 +77,7 @@ echo "  - NIST Level 3 security (~192-bit equivalent)"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"PQC Code Signing CA\" --algorithm ml-dsa-65 --dir $PQC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQC Code Signing CA\" --algorithm ml-dsa-65 --dir $PQC_CA${NC}"
 echo ""
 
 PQC_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -119,8 +119,8 @@ print_success "PQC certificate issued in ${YELLOW}${PQC_CERT_TIME}ms${NC}"
 
 echo ""
 echo -e "  ${CYAN}Inspect certificates:${NC}"
-echo -e "    pki info $DEMO_TMP/classic-code.crt"
-echo -e "    pki info $DEMO_TMP/pqc-code.crt"
+echo -e "    pki inspect $DEMO_TMP/classic-code.crt"
+echo -e "    pki inspect $DEMO_TMP/pqc-code.crt"
 
 # =============================================================================
 # Step 4: Sign a Binary

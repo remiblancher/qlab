@@ -24,7 +24,7 @@
 #
 # Example (CSR workflow):
 #   # Step 1: Generate CSR (signed by signing key)
-#   pki csr --algorithm ml-kem-768 \
+#   pki cert csr --algorithm ml-kem-768 \
 #       --keyout alice-enc.key \
 #       --cn "Alice" \
 #       --attest-cert alice-sign.crt \
@@ -32,7 +32,7 @@
 #       -o alice-enc.csr
 #
 #   # Step 2: CA signs the CSR
-#   pki issue --ca-dir ./encryption-ca \
+#   pki cert issue --ca-dir ./encryption-ca \
 #       --csr alice-enc.csr \
 #       --profile profiles/encryption.yaml \
 #       --out alice-enc.crt

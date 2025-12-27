@@ -26,7 +26,7 @@ echo "  A code signing CA issues certificates for software publishers."
 echo "  We use ML-DSA-65 for quantum-resistant signatures."
 echo ""
 
-run_cmd "pki init-ca --name \"Code Signing CA\" --algorithm ml-dsa-65 --dir output/code-ca"
+run_cmd "pki ca init --name \"Code Signing CA\" --algorithm ml-dsa-65 --dir output/code-ca"
 
 echo ""
 
@@ -43,7 +43,7 @@ echo "    - Extended Key Usage: codeSigning"
 echo "    - Key Usage: digitalSignature"
 echo ""
 
-run_cmd "pki issue --ca-dir output/code-ca --profile ml-dsa-kem/code-signing --cn \"ACME Software\" --out output/code-signing.crt --key-out output/code-signing.key"
+run_cmd "pki cert issue --ca-dir output/code-ca --profile ml-dsa-kem/code-signing --cn \"ACME Software\" --out output/code-signing.crt --key-out output/code-signing.key"
 
 echo ""
 

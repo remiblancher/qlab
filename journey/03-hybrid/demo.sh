@@ -29,11 +29,11 @@ echo ""
 echo "  Standard: ITU-T X.509 Section 9.8 (Catalyst)"
 echo ""
 
-run_cmd "pki init-ca --profile profiles/hybrid-root-ca.yaml --name \"Hybrid Root CA\" --dir output/hybrid-ca"
+run_cmd "pki ca init --profile profiles/hybrid-root-ca.yaml --name \"Hybrid Root CA\" --dir output/hybrid-ca"
 
 echo ""
 echo -e "  ${BOLD}Hybrid CA details:${NC}"
-pki info output/hybrid-ca/ca.crt 2>/dev/null | head -10 | sed 's/^/    /'
+pki inspect output/hybrid-ca/ca.crt 2>/dev/null | head -10 | sed 's/^/    /'
 echo ""
 
 pause
@@ -48,11 +48,11 @@ echo "  The certificate inherits the hybrid nature from the CA."
 echo "  It will contain both ECDSA and ML-DSA keys/signatures."
 echo ""
 
-run_cmd "pki issue --ca-dir output/hybrid-ca --profile profiles/hybrid-tls-server.yaml --cn hybrid.example.com --dns hybrid.example.com --out output/hybrid-server.crt --key-out output/hybrid-server.key"
+run_cmd "pki cert issue --ca-dir output/hybrid-ca --profile profiles/hybrid-tls-server.yaml --cn hybrid.example.com --dns hybrid.example.com --out output/hybrid-server.crt --key-out output/hybrid-server.key"
 
 echo ""
 echo -e "  ${BOLD}Hybrid certificate details:${NC}"
-pki info output/hybrid-server.crt 2>/dev/null | head -12 | sed 's/^/    /'
+pki inspect output/hybrid-server.crt 2>/dev/null | head -12 | sed 's/^/    /'
 echo ""
 
 pause

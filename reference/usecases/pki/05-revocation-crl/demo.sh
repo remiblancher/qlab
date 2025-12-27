@@ -45,7 +45,7 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Hybrid CA and Issue Certificate"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"Hybrid Root CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $PQC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Hybrid Root CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $PQC_CA${NC}"
 echo ""
 
 "$PKI_BIN" init-ca \
@@ -55,7 +55,7 @@ echo ""
     --hybrid-algorithm ml-dsa-65 \
     --dir "$PQC_CA" > /dev/null 2>&1
 
-echo -e "  ${CYAN}pki issue --ca-dir $PQC_CA --profile hybrid/catalyst/tls-server --cn server.example.com${NC}"
+echo -e "  ${CYAN}pki cert issue --ca-dir $PQC_CA --profile hybrid/catalyst/tls-server --cn server.example.com${NC}"
 echo ""
 
 "$PKI_BIN" issue \
@@ -72,7 +72,7 @@ SERIAL=$(openssl x509 -in "$DEMO_TMP/server.crt" -noout -serial 2>/dev/null | cu
 print_success "Certificate issued with serial: ${YELLOW}$SERIAL${NC}"
 
 echo ""
-echo -e "  ${CYAN}Inspect certificate:${NC} pki info $DEMO_TMP/server.crt"
+echo -e "  ${CYAN}Inspect certificate:${NC} pki inspect $DEMO_TMP/server.crt"
 
 # =============================================================================
 # Step 2: Incident - Key Compromise
@@ -99,7 +99,7 @@ pause_for_explanation "Press Enter to revoke the certificate..."
 print_step "Step 3: Revoke Certificate"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki revoke $SERIAL --ca-dir $PQC_CA --reason keyCompromise --gen-crl${NC}"
+echo -e "  ${CYAN}pki cert revoke $SERIAL --ca-dir $PQC_CA --reason keyCompromise --gen-crl${NC}"
 echo ""
 
 "$PKI_BIN" revoke "$SERIAL" \
@@ -111,7 +111,7 @@ echo ""
 print_success "Certificate revoked and CRL generated"
 
 echo ""
-echo -e "  ${CYAN}Inspect CRL:${NC} pki info $PQC_CA/crl/ca.crl"
+echo -e "  ${CYAN}Inspect CRL:${NC} pki inspect $PQC_CA/crl/ca.crl"
 
 # =============================================================================
 # Step 4: Compare CRL Sizes

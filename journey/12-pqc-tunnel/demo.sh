@@ -99,7 +99,7 @@ echo "  Creating a CA for tunnel endpoint certificates..."
 echo "  CA uses ML-DSA-65 to sign endpoint certificates."
 echo ""
 
-run_cmd "pki init-ca --name \"KEM Demo CA\" --algorithm ml-dsa-65 --dir output/kem-ca"
+run_cmd "pki ca init --name \"KEM Demo CA\" --algorithm ml-dsa-65 --dir output/kem-ca"
 
 echo ""
 
@@ -116,7 +116,7 @@ echo "    - ML-DSA-65 key for authentication (digitalSignature)"
 echo "    - ML-KEM-768 key for key exchange (keyEncipherment)"
 echo ""
 
-run_cmd "pki issue --ca-dir output/kem-ca --profile ml-dsa-kem/tls-server --cn \"tunnel.example.com\" --dns tunnel.example.com --out output/tunnel.crt --key-out output/tunnel.key"
+run_cmd "pki cert issue --ca-dir output/kem-ca --profile ml-dsa-kem/tls-server --cn \"tunnel.example.com\" --dns tunnel.example.com --out output/tunnel.crt --key-out output/tunnel.key"
 
 echo ""
 

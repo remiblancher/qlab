@@ -60,7 +60,7 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Classical and PQC CAs"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"Classic Root CA\" --algorithm ecdsa-p384 --dir $CLASSIC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Classic Root CA\" --algorithm ecdsa-p384 --dir $CLASSIC_CA${NC}"
 echo ""
 
 "$PKI_BIN" init-ca \
@@ -72,7 +72,7 @@ echo ""
 print_success "Classical CA created (ECDSA P-384)"
 
 echo ""
-echo -e "  ${CYAN}pki init-ca --name \"PQC Root CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $PQC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQC Root CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $PQC_CA${NC}"
 echo ""
 
 "$PKI_BIN" init-ca \
@@ -97,7 +97,7 @@ echo "  - Certificate has id-kp-OCSPSigning extended key usage"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki issue --ca-dir $CLASSIC_CA --profile ec/ocsp-responder --cn \"Classic OCSP Responder\"${NC}"
+echo -e "  ${CYAN}pki cert issue --ca-dir $CLASSIC_CA --profile ec/ocsp-responder --cn \"Classic OCSP Responder\"${NC}"
 echo ""
 
 "$PKI_BIN" issue \
@@ -110,7 +110,7 @@ echo ""
 print_success "Classical OCSP responder certificate issued"
 
 echo ""
-echo -e "  ${CYAN}pki issue --ca-dir $PQC_CA --profile hybrid/catalyst/ocsp-responder --cn \"PQC OCSP Responder\"${NC}"
+echo -e "  ${CYAN}pki cert issue --ca-dir $PQC_CA --profile hybrid/catalyst/ocsp-responder --cn \"PQC OCSP Responder\"${NC}"
 echo ""
 
 "$PKI_BIN" issue \

@@ -11,7 +11,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki init-ca --profile profiles/pqc-ca.yaml \
+#   pki ca init --profile profiles/pqc-ca.yaml \
 #       --name "OCSP Demo CA" --dir ./ocsp-ca
 #
 # =============================================================================

@@ -15,7 +15,7 @@
 # Quantum Safety: PROTECTED (Hybrid)
 #
 # Example:
-#   pki issue --ca-dir ./hybrid-ca \
+#   pki cert issue --ca-dir ./hybrid-ca \
 #       --profile profiles/hybrid-tls-server.yaml \
 #       --cn hybrid.example.com --dns hybrid.example.com \
 #       --out hybrid-server.crt --key-out hybrid-server.key

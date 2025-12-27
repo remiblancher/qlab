@@ -57,7 +57,7 @@ echo "  Creating a dedicated CA for mTLS authentication..."
 echo "  Algorithm: ML-DSA-65 (quantum-resistant)"
 echo ""
 
-run_cmd "pki init-ca --name \"mTLS Demo CA\" --algorithm ml-dsa-65 --dir output/mtls-ca"
+run_cmd "pki ca init --name \"mTLS Demo CA\" --algorithm ml-dsa-65 --dir output/mtls-ca"
 
 echo ""
 
@@ -74,7 +74,7 @@ echo "    - Extended Key Usage: serverAuth"
 echo "    - DNS SAN: api.example.com"
 echo ""
 
-run_cmd "pki issue --ca-dir output/mtls-ca --profile ml-dsa/tls-server --cn \"api.example.com\" --dns api.example.com --out output/server.crt --key-out output/server.key"
+run_cmd "pki cert issue --ca-dir output/mtls-ca --profile ml-dsa/tls-server --cn \"api.example.com\" --dns api.example.com --out output/server.crt --key-out output/server.key"
 
 echo ""
 
@@ -100,14 +100,14 @@ echo ""
 echo -e "  ${BOLD}Issuing certificate for Alice:${NC}"
 echo ""
 
-run_cmd "pki issue --ca-dir output/mtls-ca --profile ml-dsa/tls-client --cn \"Alice\" --out output/alice.crt --key-out output/alice.key"
+run_cmd "pki cert issue --ca-dir output/mtls-ca --profile ml-dsa/tls-client --cn \"Alice\" --out output/alice.crt --key-out output/alice.key"
 
 echo ""
 
 echo -e "  ${BOLD}Issuing certificate for Bob:${NC}"
 echo ""
 
-run_cmd "pki issue --ca-dir output/mtls-ca --profile ml-dsa/tls-client --cn \"Bob\" --out output/bob.crt --key-out output/bob.key"
+run_cmd "pki cert issue --ca-dir output/mtls-ca --profile ml-dsa/tls-client --cn \"Bob\" --out output/bob.crt --key-out output/bob.key"
 
 echo ""
 

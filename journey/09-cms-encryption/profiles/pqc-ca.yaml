@@ -12,7 +12,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki init-ca --profile profiles/pqc-ca.yaml \
+#   pki ca init --profile profiles/pqc-ca.yaml \
 #       --name "Encryption Demo CA" --dir ./encryption-ca
 #
 # =============================================================================

@@ -129,7 +129,7 @@ With mTLS, **BOTH** parties prove their identity:
 
 ```bash
 # Create dedicated CA for mTLS
-pki init-ca --name "mTLS Demo CA" \
+pki ca init --name "mTLS Demo CA" \
     --algorithm ml-dsa-65 \
     --dir output/mtls-ca
 ```
@@ -138,7 +138,7 @@ pki init-ca --name "mTLS Demo CA" \
 
 ```bash
 # Server certificate with serverAuth EKU
-pki issue --ca-dir output/mtls-ca \
+pki cert issue --ca-dir output/mtls-ca \
     --profile ml-dsa/tls-server \
     --cn "api.example.com" \
     --dns api.example.com \
@@ -150,14 +150,14 @@ pki issue --ca-dir output/mtls-ca \
 
 ```bash
 # Client certificate for Alice
-pki issue --ca-dir output/mtls-ca \
+pki cert issue --ca-dir output/mtls-ca \
     --profile ml-dsa/tls-client \
     --cn "Alice" \
     --out output/alice.crt \
     --key-out output/alice.key
 
 # Client certificate for Bob
-pki issue --ca-dir output/mtls-ca \
+pki cert issue --ca-dir output/mtls-ca \
     --profile ml-dsa/tls-client \
     --cn "Bob" \
     --out output/bob.crt \

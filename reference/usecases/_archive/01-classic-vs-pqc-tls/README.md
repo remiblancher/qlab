@@ -36,10 +36,10 @@ Short answer: **No.** The PKI workflow is identical. Only the algorithm name cha
 
 ```bash
 # Create CA
-pki init-ca --name "Classic Root CA" --algorithm ecdsa-p384 --dir ./classic-ca
+pki ca init --name "Classic Root CA" --algorithm ecdsa-p384 --dir ./classic-ca
 
 # Issue TLS certificate
-pki issue --ca-dir ./classic-ca \
+pki cert issue --ca-dir ./classic-ca \
     --profile ec/tls-server \
     --cn classic.example.com \
     --dns classic.example.com \
@@ -47,17 +47,17 @@ pki issue --ca-dir ./classic-ca \
     --key-out classic-server.key
 
 # Inspect
-pki info classic-server.crt
+pki inspect classic-server.crt
 ```
 
 ### Step 2: Post-Quantum (ML-DSA-65)
 
 ```bash
 # Create CA
-pki init-ca --name "PQ Root CA" --algorithm ml-dsa-65 --dir ./pqc-ca
+pki ca init --name "PQ Root CA" --algorithm ml-dsa-65 --dir ./pqc-ca
 
 # Issue TLS certificate
-pki issue --ca-dir ./pqc-ca \
+pki cert issue --ca-dir ./pqc-ca \
     --profile ml-dsa-kem/tls-server \
     --cn pq.example.com \
     --dns pq.example.com \
@@ -65,7 +65,7 @@ pki issue --ca-dir ./pqc-ca \
     --key-out pq-server.key
 
 # Inspect
-pki info pq-server.crt
+pki inspect pq-server.crt
 ```
 
 **Notice anything?** The workflow is identical. Only the algorithm name changes.

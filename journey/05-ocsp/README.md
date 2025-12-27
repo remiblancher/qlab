@@ -58,20 +58,20 @@ Yes. Same HTTP protocol, same request/response format. Only signature sizes chan
 
 ```bash
 # Create PQC CA with ML-DSA-65
-pki init-ca --name "PQC CA" \
+pki ca init --name "PQC CA" \
     --algorithm ml-dsa-65 \
     --dir output/pqc-ca
 
 # Issue delegated OCSP responder certificate
 # Best practice: CA key stays offline
-pki issue --ca-dir output/pqc-ca \
+pki cert issue --ca-dir output/pqc-ca \
     --profile ml-dsa-kem/ocsp-responder \
     --cn "OCSP Responder" \
     --out output/ocsp-responder.crt \
     --key-out output/ocsp-responder.key
 
 # Issue TLS certificate to verify
-pki issue --ca-dir output/pqc-ca \
+pki cert issue --ca-dir output/pqc-ca \
     --profile ml-dsa-kem/tls-server \
     --cn server.example.com \
     --dns server.example.com \
@@ -111,7 +111,7 @@ pki ocsp info output/response.ocsp
 
 ```bash
 # Revoke certificate
-pki revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
+pki cert revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
 
 # Query again - status changes immediately!
 curl -s -X POST \

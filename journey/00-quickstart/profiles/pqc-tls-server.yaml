@@ -13,7 +13,7 @@
 #   ML-DSA is resistant to both classical and quantum computer attacks.
 #
 # Example:
-#   pki issue --ca-dir ./pqc-ca \
+#   pki cert issue --ca-dir ./pqc-ca \
 #       --profile profiles/pqc-tls-server.yaml \
 #       --cn pq.example.com --dns pq.example.com \
 #       --out pq-server.crt --key-out pq-server.key

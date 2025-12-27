@@ -59,7 +59,7 @@ print_step "Step 2: Phase 1 - Classic CA (ECDSA)"
 echo "  Creating a classic ECDSA CA (current state)..."
 echo ""
 
-run_cmd "pki init-ca --name \"Classic CA\" --algorithm ec-p256 --dir output/classic-ca"
+run_cmd "pki ca init --name \"Classic CA\" --algorithm ec-p256 --dir output/classic-ca"
 
 echo ""
 
@@ -74,7 +74,7 @@ echo ""
 echo "  Issue a server certificate with ECDSA..."
 echo ""
 
-run_cmd "pki issue --ca-dir output/classic-ca --profile ec/tls-server --cn \"server.example.com\" --dns server.example.com --out output/classic-server.crt --key-out output/classic-server.key"
+run_cmd "pki cert issue --ca-dir output/classic-ca --profile ec/tls-server --cn \"server.example.com\" --dns server.example.com --out output/classic-server.crt --key-out output/classic-server.key"
 
 echo ""
 
@@ -90,7 +90,7 @@ echo "  Creating a hybrid CA with Catalyst mode..."
 echo "  Both ECDSA and ML-DSA signatures in one certificate."
 echo ""
 
-run_cmd "pki init-ca --name \"Hybrid CA\" --algorithm ec-p256 --hybrid-algorithm ml-dsa-65 --dir output/hybrid-ca"
+run_cmd "pki ca init --name \"Hybrid CA\" --algorithm ec-p256 --hybrid-algorithm ml-dsa-65 --dir output/hybrid-ca"
 
 echo ""
 
@@ -104,7 +104,7 @@ echo ""
 echo "  Issue a hybrid server certificate..."
 echo ""
 
-run_cmd "pki issue --ca-dir output/hybrid-ca --profile hybrid/catalyst/tls-server --cn \"server.example.com\" --dns server.example.com --out output/hybrid-server.crt --key-out output/hybrid-server.key"
+run_cmd "pki cert issue --ca-dir output/hybrid-ca --profile hybrid/catalyst/tls-server --cn \"server.example.com\" --dns server.example.com --out output/hybrid-server.crt --key-out output/hybrid-server.key"
 
 echo ""
 
@@ -120,7 +120,7 @@ echo "  Creating a full post-quantum CA..."
 echo "  ML-DSA-65 only (no classical fallback)."
 echo ""
 
-run_cmd "pki init-ca --name \"PQC CA\" --algorithm ml-dsa-65 --dir output/pqc-ca"
+run_cmd "pki ca init --name \"PQC CA\" --algorithm ml-dsa-65 --dir output/pqc-ca"
 
 echo ""
 
@@ -134,7 +134,7 @@ echo ""
 echo "  Issue a PQC server certificate..."
 echo ""
 
-run_cmd "pki issue --ca-dir output/pqc-ca --profile ml-dsa-kem/tls-server --cn \"server.example.com\" --dns server.example.com --out output/pqc-server.crt --key-out output/pqc-server.key"
+run_cmd "pki cert issue --ca-dir output/pqc-ca --profile ml-dsa-kem/tls-server --cn \"server.example.com\" --dns server.example.com --out output/pqc-server.crt --key-out output/pqc-server.key"
 
 echo ""
 

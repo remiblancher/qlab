@@ -91,12 +91,12 @@ post-quantum-pki-lab/
 **Commandes PKI utilisées:**
 ```bash
 # Classique
-pki init-ca --name "Classic Root CA" --algorithm ecdsa-p384 --dir ./classic-ca
-pki issue --ca-dir ./classic-ca --profile ec/tls-server --cn classic.example.com
+pki ca init --name "Classic Root CA" --algorithm ecdsa-p384 --dir ./classic-ca
+pki cert issue --ca-dir ./classic-ca --profile ec/tls-server --cn classic.example.com
 
 # Post-quantique
-pki init-ca --name "PQ Root CA" --algorithm ml-dsa-65 --dir ./pqc-ca
-pki issue --ca-dir ./pqc-ca --profile ml-dsa-kem/tls-server --cn pq.example.com
+pki ca init --name "PQ Root CA" --algorithm ml-dsa-65 --dir ./pqc-ca
+pki cert issue --ca-dir ./pqc-ca --profile ml-dsa-kem/tls-server --cn pq.example.com
 ```
 
 **Message clé:** La PKI ne change pas. Seul l'algorithme change.
@@ -115,12 +115,12 @@ pki issue --ca-dir ./pqc-ca --profile ml-dsa-kem/tls-server --cn pq.example.com
 **Commandes PKI à utiliser:**
 ```bash
 # Créer une CA hybride (Catalyst ITU-T X.509 9.8)
-pki init-ca --name "Hybrid Root CA" --algorithm catalyst --dir ./hybrid-ca \
+pki ca init --name "Hybrid Root CA" --algorithm catalyst --dir ./hybrid-ca \
     --classical-algorithm ecdsa-p384 \
     --pqc-algorithm ml-dsa-65
 
 # Émettre un certificat hybride
-pki issue --ca-dir ./hybrid-ca \
+pki cert issue --ca-dir ./hybrid-ca \
     --profile catalyst/tls-server \
     --cn hybrid.example.com \
     --out hybrid-server.crt \
@@ -149,10 +149,10 @@ pki issue --ca-dir ./hybrid-ca \
 **Commandes PKI à utiliser:**
 ```bash
 # Chiffrement classique (vulnérable)
-pki issue --ca-dir ./classic-ca --profile ec/encryption --cn sensitive-data
+pki cert issue --ca-dir ./classic-ca --profile ec/encryption --cn sensitive-data
 
 # Chiffrement PQC (résistant)
-pki issue --ca-dir ./pqc-ca --profile ml-kem/encryption --cn sensitive-data-pqc
+pki cert issue --ca-dir ./pqc-ca --profile ml-kem/encryption --cn sensitive-data-pqc
 ```
 
 **Message clé:** Le quantique ne casse pas l'authentification passée, il casse la confidentialité future.
@@ -177,7 +177,7 @@ pki issue --ca-dir ./pqc-ca --profile ml-kem/encryption --cn sensitive-data-pqc
 **Commandes PKI à utiliser:**
 ```bash
 # Révoquer pour compromission d'algorithme
-pki revoke --ca-dir ./pqc-ca --serial 0x42 --reason algorithm-compromise
+pki cert revoke --ca-dir ./pqc-ca --serial 0x42 --reason algorithm-compromise
 
 # Générer CRL
 pki crl --ca-dir ./pqc-ca --out revoked.crl
@@ -208,14 +208,14 @@ pki verify --cert ./compromised.crt --ca-dir ./pqc-ca
 **Commandes PKI à utiliser:**
 ```bash
 # Root CA: SLH-DSA (stateless, conservative)
-pki init-ca --name "PQ Root CA" --algorithm slh-dsa-128f --dir ./root-ca
+pki ca init --name "PQ Root CA" --algorithm slh-dsa-128f --dir ./root-ca
 
 # Issuing CA: ML-DSA (faster)
-pki init-ca --name "PQ Issuing CA" --algorithm ml-dsa-65 --dir ./issuing-ca \
+pki ca init --name "PQ Issuing CA" --algorithm ml-dsa-65 --dir ./issuing-ca \
     --parent ./root-ca
 
 # End-entity certificates
-pki issue --ca-dir ./issuing-ca --profile ml-dsa-kem/tls-server --cn server.example.com
+pki cert issue --ca-dir ./issuing-ca --profile ml-dsa-kem/tls-server --cn server.example.com
 ```
 
 **Message clé:** Le modèle PKI est quantique-agnostique.
@@ -240,10 +240,10 @@ pki issue --ca-dir ./issuing-ca --profile ml-dsa-kem/tls-server --cn server.exam
 **Commandes PKI à utiliser:**
 ```bash
 # CA pour signature de code
-pki init-ca --name "Code Signing CA" --algorithm slh-dsa-192f --dir ./code-ca
+pki ca init --name "Code Signing CA" --algorithm slh-dsa-192f --dir ./code-ca
 
 # Certificat de signature
-pki issue --ca-dir ./code-ca --profile slh-dsa/code-signing --cn "Firmware Signer"
+pki cert issue --ca-dir ./code-ca --profile slh-dsa/code-signing --cn "Firmware Signer"
 
 # Signer un binaire (avec outil externe ou intégré)
 pki sign --key ./signer.key --file firmware.bin --out firmware.bin.sig

@@ -13,7 +13,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki issue --ca-dir ./tsa-ca \
+#   pki cert issue --ca-dir ./tsa-ca \
 #       --profile profiles/tsa.yaml \
 #       --cn "Demo TSA" \
 #       --out tsa.crt --key-out tsa.key

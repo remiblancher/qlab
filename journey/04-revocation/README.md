@@ -71,12 +71,12 @@ The same way you revoke any certificate. PKI operations are algorithm-agnostic.
 
 ```bash
 # Create PQC CA
-pki init-ca --profile profiles/pqc-ca.yaml \
+pki ca init --profile profiles/pqc-ca.yaml \
     --name "PQC CA" \
     --dir output/pqc-ca
 
 # Issue TLS certificate
-pki issue --ca-dir output/pqc-ca \
+pki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
     --cn server.example.com \
     --dns server.example.com \
@@ -91,7 +91,7 @@ openssl x509 -in output/server.crt -noout -serial
 
 ```bash
 # Revoke certificate with reason
-pki revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
+pki cert revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
 
 # Generate updated CRL
 pki crl generate --ca-dir output/pqc-ca
@@ -131,7 +131,7 @@ pki verify --cert output/server.crt \
    └─► Identify affected certificates (serial numbers)
 
 3. REVOKE
-   └─► pki revoke <serial> --ca-dir <ca> --reason keyCompromise
+   └─► pki cert revoke <serial> --ca-dir <ca> --reason keyCompromise
 
 4. PUBLISH
    └─► pki crl generate --ca-dir <ca>

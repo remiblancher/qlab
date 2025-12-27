@@ -36,34 +36,34 @@ This demo shows a production-ready 3-level PKI hierarchy using only post-quantum
 
 ```bash
 # Initialize the root CA with highest security level
-pki init-ca --name "PQC Root CA" \
+pki ca init --name "PQC Root CA" \
     --org "Demo Organization" \
     --algorithm ml-dsa-87 \
     --dir ./pqc-root-ca
 
 # Inspect
-pki info ./pqc-root-ca/ca.crt
+pki inspect ./pqc-root-ca/ca.crt
 ```
 
 ### Step 2: Create Issuing CA (ML-DSA-65)
 
 ```bash
 # Create issuing CA signed by root
-pki init-ca --name "PQC Issuing CA" \
+pki ca init --name "PQC Issuing CA" \
     --org "Demo Organization" \
     --algorithm ml-dsa-65 \
     --parent ./pqc-root-ca \
     --dir ./pqc-issuing-ca
 
 # Inspect
-pki info ./pqc-issuing-ca/ca.crt
+pki inspect ./pqc-issuing-ca/ca.crt
 ```
 
 ### Step 3: Issue TLS Server Certificate
 
 ```bash
 # Issue end-entity certificate for TLS server
-pki issue --ca-dir ./pqc-issuing-ca \
+pki cert issue --ca-dir ./pqc-issuing-ca \
     --profile ml-dsa-kem/tls-server \
     --cn server.example.com \
     --dns server.example.com \
@@ -71,7 +71,7 @@ pki issue --ca-dir ./pqc-issuing-ca \
     --key-out server.key
 
 # Inspect
-pki info server.crt
+pki inspect server.crt
 ```
 
 > **Tip:** For detailed ASN.1 output, use `openssl x509 -in <cert> -text -noout`

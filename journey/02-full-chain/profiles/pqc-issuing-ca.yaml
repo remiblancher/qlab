@@ -14,7 +14,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki issue --ca-dir ./root-ca \
+#   pki cert issue --ca-dir ./root-ca \
 #       --profile profiles/pqc-issuing-ca.yaml \
 #       --cn "PQ Issuing CA" \
 #       --out issuing-ca.crt --key-out issuing-ca.key

@@ -67,19 +67,19 @@ This is the reality of PQC migration. You can't flip a switch and move everythin
 
 ```bash
 # Initialize hybrid CA with both classical and PQC keys
-pki init-ca --profile profiles/hybrid-root-ca.yaml \
+pki ca init --profile profiles/hybrid-root-ca.yaml \
     --name "Hybrid Root CA" \
     --dir output/hybrid-ca
 
 # Inspect
-pki info output/hybrid-ca/ca.crt
+pki inspect output/hybrid-ca/ca.crt
 ```
 
 ### Step 2: Issue Hybrid TLS Certificate
 
 ```bash
 # Issue hybrid certificate for TLS server
-pki issue --ca-dir output/hybrid-ca \
+pki cert issue --ca-dir output/hybrid-ca \
     --profile profiles/hybrid-tls-server.yaml \
     --cn hybrid.example.com \
     --dns hybrid.example.com \
@@ -87,7 +87,7 @@ pki issue --ca-dir output/hybrid-ca \
     --key-out output/hybrid-server.key
 
 # Inspect
-pki info output/hybrid-server.crt
+pki inspect output/hybrid-server.crt
 ```
 
 ### Step 3: Test Interoperability

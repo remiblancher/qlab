@@ -36,19 +36,19 @@ This is the reality of PQC migration. You can't flip a switch and move everythin
 ### Step 1: Create Hybrid CA
 
 ```bash
-pki init-ca --name "Hybrid Root CA" \
+pki ca init --name "Hybrid Root CA" \
     --algorithm ecdsa-p384 \
     --hybrid-algorithm ml-dsa-65 \
     --dir ./hybrid-ca
 
 # Inspect
-pki info ./hybrid-ca/ca.crt
+pki inspect ./hybrid-ca/ca.crt
 ```
 
 ### Step 2: Issue Hybrid TLS Certificate
 
 ```bash
-pki issue --ca-dir ./hybrid-ca \
+pki cert issue --ca-dir ./hybrid-ca \
     --profile hybrid/catalyst/tls-server \
     --cn hybrid.example.com \
     --dns hybrid.example.com \
@@ -56,7 +56,7 @@ pki issue --ca-dir ./hybrid-ca \
     --key-out hybrid-server.key
 
 # Inspect
-pki info hybrid-server.crt
+pki inspect hybrid-server.crt
 ```
 
 > **Tip:** For detailed ASN.1 output, use `openssl x509 -in hybrid-server.crt -text -noout`

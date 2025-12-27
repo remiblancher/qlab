@@ -11,7 +11,7 @@ source "$SCRIPT_DIR/colors.sh"
 # =============================================================================
 
 # Run a command with explanation
-# Usage: run_cmd "pki init-ca ..." "Creating a new CA"
+# Usage: run_cmd "pki ca init ..." "Creating a new CA"
 run_cmd() {
     local cmd="$1"
     local description="${2:-}"

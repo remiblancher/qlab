@@ -40,13 +40,13 @@ Certificate bundles solve this by grouping related certificates with a coupled l
 
 ```bash
 # Create a hybrid CA for bundle enrollment
-pki init-ca --name "Hybrid CA" \
+pki ca init --name "Hybrid CA" \
     --algorithm ecdsa-p384 \
     --hybrid-algorithm ml-dsa-65 \
     --dir ./hybrid-ca
 
 # Inspect
-pki info ./hybrid-ca/ca.crt
+pki inspect ./hybrid-ca/ca.crt
 ```
 
 ### Step 2: Enroll a Certificate Bundle

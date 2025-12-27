@@ -46,7 +46,7 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Classical CA (ECDSA P-384)"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"Classic Root CA\" --algorithm ecdsa-p384 --dir $CLASSIC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Classic Root CA\" --algorithm ecdsa-p384 --dir $CLASSIC_CA${NC}"
 echo ""
 
 CLASSIC_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -64,7 +64,7 @@ print_success "Classical CA created in ${YELLOW}${CLASSIC_CA_TIME}ms${NC}"
 print_step "Step 2: Issue Classical TLS Server Certificate"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki issue --ca-dir $CLASSIC_CA --profile ec/tls-server --cn classic.example.com${NC}"
+echo -e "  ${CYAN}pki cert issue --ca-dir $CLASSIC_CA --profile ec/tls-server --cn classic.example.com${NC}"
 echo ""
 
 CLASSIC_CERT_TIME=$(time_cmd "$PKI_BIN" issue \
@@ -80,7 +80,7 @@ print_success "Classical certificate issued in ${YELLOW}${CLASSIC_CERT_TIME}ms${
 show_cert_brief "$DEMO_TMP/classic-server.crt" "Classical TLS Certificate"
 
 echo ""
-echo -e "  ${CYAN}Inspect certificate:${NC} pki info $DEMO_TMP/classic-server.crt"
+echo -e "  ${CYAN}Inspect certificate:${NC} pki inspect $DEMO_TMP/classic-server.crt"
 
 # =============================================================================
 # Step 3: Create Post-Quantum CA
@@ -95,7 +95,7 @@ echo "  - Resistant to quantum attacks"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"PQ Root CA\" --algorithm ml-dsa-65 --dir $PQC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQ Root CA\" --algorithm ml-dsa-65 --dir $PQC_CA${NC}"
 echo ""
 
 PQC_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -113,7 +113,7 @@ print_success "Post-Quantum CA created in ${YELLOW}${PQC_CA_TIME}ms${NC}"
 print_step "Step 4: Issue Post-Quantum TLS Server Certificate"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki issue --ca-dir $PQC_CA --profile ml-dsa-kem/tls-server --cn pq.example.com${NC}"
+echo -e "  ${CYAN}pki cert issue --ca-dir $PQC_CA --profile ml-dsa-kem/tls-server --cn pq.example.com${NC}"
 echo ""
 
 PQC_CERT_TIME=$(time_cmd "$PKI_BIN" issue \
@@ -129,7 +129,7 @@ print_success "Post-Quantum certificate issued in ${YELLOW}${PQC_CERT_TIME}ms${N
 show_cert_brief "$DEMO_TMP/pq-server.crt" "Post-Quantum TLS Certificate"
 
 echo ""
-echo -e "  ${CYAN}Inspect certificate:${NC} pki info $DEMO_TMP/pq-server.crt"
+echo -e "  ${CYAN}Inspect certificate:${NC} pki inspect $DEMO_TMP/pq-server.crt"
 
 # =============================================================================
 # Step 5: Comparison

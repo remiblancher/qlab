@@ -180,12 +180,12 @@ CURRENT SITUATION
 
 ```bash
 # Create a classic ECDSA CA
-pki init-ca --name "Classic CA" \
+pki ca init --name "Classic CA" \
     --algorithm ec-p256 \
     --dir output/classic-ca
 
 # Issue ECDSA server certificate
-pki issue --ca-dir output/classic-ca \
+pki cert issue --ca-dir output/classic-ca \
     --profile ec/tls-server \
     --cn "server.example.com" \
     --dns server.example.com \
@@ -197,13 +197,13 @@ pki issue --ca-dir output/classic-ca \
 
 ```bash
 # Create hybrid CA (ECDSA + ML-DSA Catalyst)
-pki init-ca --name "Hybrid CA" \
+pki ca init --name "Hybrid CA" \
     --algorithm ec-p256 \
     --hybrid-algorithm ml-dsa-65 \
     --dir output/hybrid-ca
 
 # Issue hybrid server certificate
-pki issue --ca-dir output/hybrid-ca \
+pki cert issue --ca-dir output/hybrid-ca \
     --profile hybrid/catalyst/tls-server \
     --cn "server.example.com" \
     --dns server.example.com \
@@ -215,12 +215,12 @@ pki issue --ca-dir output/hybrid-ca \
 
 ```bash
 # Create full PQC CA
-pki init-ca --name "PQC CA" \
+pki ca init --name "PQC CA" \
     --algorithm ml-dsa-65 \
     --dir output/pqc-ca
 
 # Issue PQC server certificate
-pki issue --ca-dir output/pqc-ca \
+pki cert issue --ca-dir output/pqc-ca \
     --profile ml-dsa-kem/tls-server \
     --cn "server.example.com" \
     --dns server.example.com \

@@ -9,7 +9,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki issue --ca-dir ./ocsp-ca \
+#   pki cert issue --ca-dir ./ocsp-ca \
 #       --profile profiles/pqc-tls-server.yaml \
 #       --cn server.example.com --dns server.example.com \
 #       --out server.crt --key-out server.key

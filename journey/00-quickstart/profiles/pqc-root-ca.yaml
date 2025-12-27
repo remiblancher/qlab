@@ -13,7 +13,7 @@
 #   ML-DSA is resistant to both classical and quantum computer attacks.
 #
 # Example:
-#   pki init-ca --profile profiles/pqc-root-ca.yaml \
+#   pki ca init --profile profiles/pqc-root-ca.yaml \
 #       --name "PQ Root CA" --dir ./pqc-ca
 #
 # =============================================================================

@@ -104,7 +104,7 @@ Traditional CSR workflow:
 ### Step 1: Create Encryption CA
 
 ```bash
-pki init-ca --name "Encryption CA" \
+pki ca init --name "Encryption CA" \
     --algorithm ml-dsa-65 \
     --dir output/encryption-ca
 ```
@@ -112,7 +112,7 @@ pki init-ca --name "Encryption CA" \
 ### Step 2: Issue Signing Certificate (ML-DSA-65)
 
 ```bash
-pki issue --ca-dir output/encryption-ca \
+pki cert issue --ca-dir output/encryption-ca \
     --profile profiles/signing.yaml \
     --cn "Alice" \
     --out output/alice-sign.crt \
@@ -124,7 +124,7 @@ pki issue --ca-dir output/encryption-ca \
 ```bash
 # Generate ML-KEM key and create CSR
 # CSR is signed by Alice's SIGNING key (attestation)
-pki csr --algorithm ml-kem-768 \
+pki cert csr --algorithm ml-kem-768 \
     --keyout output/alice-enc.key \
     --cn "Alice" \
     --attest-cert output/alice-sign.crt \
@@ -137,7 +137,7 @@ pki csr --algorithm ml-kem-768 \
 ```bash
 # CA verifies attestation and issues certificate
 # Certificate includes RelatedCertificate extension
-pki issue --ca-dir output/encryption-ca \
+pki cert issue --ca-dir output/encryption-ca \
     --csr output/alice-enc.csr \
     --profile profiles/encryption.yaml \
     --out output/alice-enc.crt

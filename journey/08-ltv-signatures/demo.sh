@@ -30,19 +30,19 @@ echo "    - A document signing certificate for Alice"
 echo "    - A TSA certificate for timestamping"
 echo ""
 
-run_cmd "pki init-ca --name \"LTV Demo CA\" --algorithm ml-dsa-65 --dir output/ltv-ca"
+run_cmd "pki ca init --name \"LTV Demo CA\" --algorithm ml-dsa-65 --dir output/ltv-ca"
 
 echo ""
 echo "  Issue document signing certificate for Alice..."
 echo ""
 
-run_cmd "pki issue --ca-dir output/ltv-ca --profile ml-dsa-kem/code-signing --cn \"Alice (Legal Counsel)\" --out output/alice.crt --key-out output/alice.key"
+run_cmd "pki cert issue --ca-dir output/ltv-ca --profile ml-dsa-kem/code-signing --cn \"Alice (Legal Counsel)\" --out output/alice.crt --key-out output/alice.key"
 
 echo ""
 echo "  Issue TSA certificate..."
 echo ""
 
-run_cmd "pki issue --ca-dir output/ltv-ca --profile ml-dsa-kem/timestamping --cn \"LTV Timestamp Authority\" --out output/tsa.crt --key-out output/tsa.key"
+run_cmd "pki cert issue --ca-dir output/ltv-ca --profile ml-dsa-kem/timestamping --cn \"LTV Timestamp Authority\" --out output/tsa.crt --key-out output/tsa.key"
 
 echo ""
 

@@ -11,7 +11,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki issue --ca-dir ./revocation-ca \
+#   pki cert issue --ca-dir ./revocation-ca \
 #       --profile profiles/pqc-tls-server.yaml \
 #       --cn server.example.com --dns server.example.com \
 #       --out server.crt --key-out server.key

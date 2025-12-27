@@ -118,24 +118,24 @@ contract-ltv-proof/
 
 ```bash
 # Create CA for document signing
-pki init-ca --name "LTV Demo CA" \
+pki ca init --name "LTV Demo CA" \
     --algorithm ml-dsa-65 \
     --dir ./ltv-ca
 
 # Issue Alice's document signing certificate
-pki issue --ca-dir ./ltv-ca \
+pki cert issue --ca-dir ./ltv-ca \
     --profile ml-dsa-kem/document-signing \
     --cn "Alice (Legal)" \
     --out alice.crt --key-out alice.key
 
 # Issue OCSP responder certificate
-pki issue --ca-dir ./ltv-ca \
+pki cert issue --ca-dir ./ltv-ca \
     --profile ml-dsa-kem/ocsp-responder \
     --cn "OCSP Responder" \
     --out ocsp.crt --key-out ocsp.key
 
 # Issue TSA certificate
-pki issue --ca-dir ./ltv-ca \
+pki cert issue --ca-dir ./ltv-ca \
     --profile ml-dsa-kem/tsa \
     --cn "Timestamp Authority" \
     --out tsa.crt --key-out tsa.key

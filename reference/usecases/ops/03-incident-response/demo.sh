@@ -172,7 +172,7 @@ for CERT in "$AFFECTED_DIR"/*.crt; do
         FILENAME=$(basename "$CERT")
         CN=$(echo "$FILENAME" | sed 's/.crt//')
 
-        # Simulate revocation (in real scenario: pki revoke --ca-dir ... --cert ...)
+        # Simulate revocation (in real scenario: pki cert revoke --ca-dir ... --cert ...)
         # "$PKI_BIN" revoke --ca-dir "$LEGACY_CA" --cert "$CERT" --reason keyCompromise > /dev/null 2>&1 || true
 
         printf "  │ %-26s │ %s │\n" "$FILENAME" "$REVOKE_TIME"

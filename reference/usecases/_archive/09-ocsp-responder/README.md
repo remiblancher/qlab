@@ -38,10 +38,10 @@ The demo will:
 
 ```bash
 # Classical CA
-pki init-ca --name "Classic Root CA" --algorithm ecdsa-p384 --dir ./classic-ca
+pki ca init --name "Classic Root CA" --algorithm ecdsa-p384 --dir ./classic-ca
 
 # PQC CA (hybrid for compatibility)
-pki init-ca --name "PQC Root CA" --algorithm ecdsa-p384 \
+pki ca init --name "PQC Root CA" --algorithm ecdsa-p384 \
     --hybrid-algorithm ml-dsa-65 --dir ./pqc-ca
 ```
 
@@ -49,7 +49,7 @@ pki init-ca --name "PQC Root CA" --algorithm ecdsa-p384 \
 
 ```bash
 # Best practice: Use delegated responder (CA key stays offline)
-pki issue --ca-dir ./pqc-ca \
+pki cert issue --ca-dir ./pqc-ca \
     --profile hybrid/catalyst/ocsp-responder \
     --cn "PQC OCSP Responder" \
     --out ocsp-responder.crt \
@@ -96,7 +96,7 @@ pki ocsp info response.ocsp
 
 ```bash
 # Revoke certificate
-pki revoke <serial> --ca-dir ./pqc-ca --reason keyCompromise
+pki cert revoke <serial> --ca-dir ./pqc-ca --reason keyCompromise
 
 # Query again - status changes immediately
 curl -s -X POST \

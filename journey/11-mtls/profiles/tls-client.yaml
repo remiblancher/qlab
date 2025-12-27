@@ -12,7 +12,7 @@
 # Quantum Safety: FULLY PROTECTED
 #
 # Example:
-#   pki issue --ca-dir ./mtls-ca \
+#   pki cert issue --ca-dir ./mtls-ca \
 #       --profile profiles/tls-client.yaml \
 #       --cn "alice@example.com" \
 #       --out client.crt --key-out client.key

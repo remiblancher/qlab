@@ -55,7 +55,7 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Hybrid CA"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki init-ca --name \"Hybrid CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $HYBRID_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Hybrid CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $HYBRID_CA${NC}"
 echo ""
 
 HYBRID_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -68,7 +68,7 @@ HYBRID_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
 print_success "Hybrid CA created in ${YELLOW}${HYBRID_CA_TIME}ms${NC}"
 
 echo ""
-echo -e "  ${CYAN}Inspect CA:${NC} pki info $HYBRID_CA/ca.crt"
+echo -e "  ${CYAN}Inspect CA:${NC} pki inspect $HYBRID_CA/ca.crt"
 
 # =============================================================================
 # Step 2: Enroll Certificate Bundle
@@ -106,7 +106,7 @@ ls -la "$DEMO_TMP/alice/" 2>/dev/null || echo "  (bundle files created)"
 echo ""
 
 echo -e "${CYAN}Inspect the certificate:${NC}"
-echo -e "  ${CYAN}pki info $DEMO_TMP/alice/*.crt${NC}"
+echo -e "  ${CYAN}pki inspect $DEMO_TMP/alice/*.crt${NC}"
 echo ""
 
 # Show certificate info

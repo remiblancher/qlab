@@ -16,7 +16,7 @@
 # Quantum Safety: PROTECTED (Hybrid)
 #
 # Example:
-#   pki init-ca --profile profiles/hybrid-ca.yaml \
+#   pki ca init --profile profiles/hybrid-ca.yaml \
 #       --name "Hybrid CA" --dir ./hybrid-ca
 #
 # =============================================================================

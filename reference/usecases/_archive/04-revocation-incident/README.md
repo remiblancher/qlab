@@ -41,34 +41,34 @@ The demo will:
 
 ```bash
 # Create PQC CA
-pki init-ca --name "PQC Root CA" --algorithm ml-dsa-65 --dir ./pqc-ca
+pki ca init --name "PQC Root CA" --algorithm ml-dsa-65 --dir ./pqc-ca
 
 # Issue TLS certificate
-pki issue --ca-dir ./pqc-ca \
+pki cert issue --ca-dir ./pqc-ca \
     --profile ml-dsa-kem/tls-server \
     --cn server.example.com \
     --out server.crt \
     --key-out server.key
 
 # Inspect certificate
-pki info server.crt
+pki inspect server.crt
 ```
 
 ### Step 2: Revoke Certificate
 
 ```bash
 # Revoke certificate (serial from certificate)
-pki revoke <serial> --ca-dir ./pqc-ca --reason keyCompromise --gen-crl
+pki cert revoke <serial> --ca-dir ./pqc-ca --reason keyCompromise --gen-crl
 
 # Inspect CRL
-pki info ./pqc-ca/ca.crl
+pki inspect ./pqc-ca/ca.crl
 ```
 
 ### Step 3: Generate CRL (optional)
 
 ```bash
 # Generate CRL separately
-pki gen-crl --ca-dir ./pqc-ca --days 7
+pki cert gen-crl --ca-dir ./pqc-ca --days 7
 ```
 
 **Notice anything?** The revocation workflow is identical to classical PKI.
@@ -125,7 +125,7 @@ Certificates have expiration dates, but sometimes you need to invalidate them **
    └─► Identify affected certificates
 
 3. REVOKE
-   └─► pki revoke --ca-dir <ca> --cert <cert> --reason keyCompromise
+   └─► pki cert revoke --ca-dir <ca> --cert <cert> --reason keyCompromise
 
 4. PUBLISH
    └─► pki crl --ca-dir <ca>  (generates updated CRL)
