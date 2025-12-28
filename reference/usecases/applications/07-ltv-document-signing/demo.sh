@@ -52,7 +52,7 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Document Signing CA (ML-DSA-65)"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"LTV Demo CA\" --algorithm ml-dsa-65 --dir $LTV_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"LTV Demo CA\" --profile ml-dsa/root-ca --dir $LTV_CA${NC}"
 echo ""
 
 CA_TIME=$(time_cmd "$PKI_BIN" init-ca \

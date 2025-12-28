@@ -38,7 +38,6 @@ This is the reality of PQC migration. You can't flip a switch and move everythin
 ```bash
 pki ca init --name "Hybrid Root CA" \
     --algorithm ecdsa-p384 \
-    --hybrid-algorithm ml-dsa-65 \
     --dir ./hybrid-ca
 
 # Inspect

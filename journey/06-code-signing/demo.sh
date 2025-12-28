@@ -26,7 +26,7 @@ echo "  A code signing CA issues certificates for software publishers."
 echo "  We use ML-DSA-65 for quantum-resistant signatures."
 echo ""
 
-run_cmd "pki ca init --name \"Code Signing CA\" --algorithm ml-dsa-65 --dir output/code-ca"
+run_cmd "pki ca init --name \"Code Signing CA\" --profile profiles/pqc-ca.yaml --dir output/code-ca"
 
 echo ""
 

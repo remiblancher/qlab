@@ -59,7 +59,7 @@ print_step "Step 2: Phase 1 - Classic CA (ECDSA)"
 echo "  Creating a classic ECDSA CA (current state)..."
 echo ""
 
-run_cmd "pki ca init --name \"Classic CA\" --algorithm ec-p256 --dir output/classic-ca"
+run_cmd "pki ca init --name \"Classic CA\" --profile profiles/classic-ca.yaml --dir output/classic-ca"
 
 echo ""
 
@@ -90,7 +90,7 @@ echo "  Creating a hybrid CA with Catalyst mode..."
 echo "  Both ECDSA and ML-DSA signatures in one certificate."
 echo ""
 
-run_cmd "pki ca init --name \"Hybrid CA\" --algorithm ec-p256 --hybrid-algorithm ml-dsa-65 --dir output/hybrid-ca"
+run_cmd "pki ca init --name \"Hybrid CA\" --profile profiles/hybrid-ca.yaml --dir output/hybrid-ca"
 
 echo ""
 
@@ -120,7 +120,7 @@ echo "  Creating a full post-quantum CA..."
 echo "  ML-DSA-65 only (no classical fallback)."
 echo ""
 
-run_cmd "pki ca init --name \"PQC CA\" --algorithm ml-dsa-65 --dir output/pqc-ca"
+run_cmd "pki ca init --name \"PQC CA\" --profile profiles/pqc-ca.yaml --dir output/pqc-ca"
 
 echo ""
 

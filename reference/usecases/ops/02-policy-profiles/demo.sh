@@ -162,7 +162,6 @@ HYBRID_CA="$DEMO_TMP/hybrid-ca"
     --name "Hybrid Demo CA" \
     --org "Demo Organization" \
     --algorithm ecdsa-p384 \
-    --hybrid-algorithm ml-dsa-65 \
     --dir "$HYBRID_CA" > /dev/null 2>&1
 
 HYBRID_TIME=$(time_cmd "$PKI_BIN" issue \

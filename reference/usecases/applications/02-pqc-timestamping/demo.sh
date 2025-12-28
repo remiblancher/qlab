@@ -53,7 +53,7 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Classical Timestamp Authority (ECDSA P-384)"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"Classic Timestamp Authority\" --algorithm ecdsa-p384 --dir $CLASSIC_TSA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Classic Timestamp Authority\" --profile ec/root-ca --dir $CLASSIC_TSA${NC}"
 echo ""
 
 CLASSIC_TSA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -77,7 +77,7 @@ echo "  - Quantum computers can't forge PQC signatures"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"PQC Timestamp Authority\" --algorithm ml-dsa-65 --dir $PQC_TSA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQC Timestamp Authority\" --profile ml-dsa/root-ca --dir $PQC_TSA${NC}"
 echo ""
 
 PQC_TSA_TIME=$(time_cmd "$PKI_BIN" init-ca \

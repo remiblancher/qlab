@@ -53,7 +53,7 @@ echo "  - Recommended for long-lived root CAs"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"PQC Root CA\" --algorithm ml-dsa-87 --dir $ROOT_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQC Root CA\" --profile ml-dsa/root-ca --dir $ROOT_CA${NC}"
 echo ""
 
 ROOT_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -82,7 +82,7 @@ echo "  - Used to issue end-entity certificates"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"PQC Issuing CA\" --algorithm ml-dsa-65 --parent $ROOT_CA --dir $ISSUING_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQC Issuing CA\" --profile ml-dsa/issuing-ca --parent $ROOT_CA --dir $ISSUING_CA${NC}"
 echo ""
 
 ISSUING_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \

@@ -38,11 +38,11 @@ The demo will:
 
 ```bash
 # Classical CA
-pki ca init --name "Classic Root CA" --algorithm ecdsa-p384 --dir ./classic-ca
+pki ca init --name "Classic Root CA" --profile ec/root-ca --dir ./classic-ca
 
 # PQC CA (hybrid for compatibility)
-pki ca init --name "PQC Root CA" --algorithm ecdsa-p384 \
-    --hybrid-algorithm ml-dsa-65 --dir ./pqc-ca
+pki ca init --name "PQC Root CA" --profile hybrid/catalyst/root-ca \
+    --dir ./pqc-ca
 ```
 
 ### Step 2: Issue Delegated OCSP Responder Certificate

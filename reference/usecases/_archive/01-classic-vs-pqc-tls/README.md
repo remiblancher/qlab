@@ -36,7 +36,7 @@ Short answer: **No.** The PKI workflow is identical. Only the algorithm name cha
 
 ```bash
 # Create CA
-pki ca init --name "Classic Root CA" --algorithm ecdsa-p384 --dir ./classic-ca
+pki ca init --name "Classic Root CA" --profile ec/root-ca --dir ./classic-ca
 
 # Issue TLS certificate
 pki cert issue --ca-dir ./classic-ca \
@@ -54,7 +54,7 @@ pki inspect classic-server.crt
 
 ```bash
 # Create CA
-pki ca init --name "PQ Root CA" --algorithm ml-dsa-65 --dir ./pqc-ca
+pki ca init --name "PQ Root CA" --profile ml-dsa/root-ca --dir ./pqc-ca
 
 # Issue TLS certificate
 pki cert issue --ca-dir ./pqc-ca \

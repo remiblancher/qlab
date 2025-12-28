@@ -55,14 +55,13 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Hybrid CA"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"Hybrid CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $HYBRID_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Hybrid CA\" --profile hybrid/catalyst/root-ca --dir $HYBRID_CA${NC}"
 echo ""
 
 HYBRID_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
     --name "Hybrid CA" \
     --org "Demo Organization" \
     --algorithm ecdsa-p384 \
-    --hybrid-algorithm ml-dsa-65 \
     --dir "$HYBRID_CA")
 
 print_success "Hybrid CA created in ${YELLOW}${HYBRID_CA_TIME}ms${NC}"

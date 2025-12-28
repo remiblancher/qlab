@@ -199,7 +199,6 @@ pki cert issue --ca-dir output/classic-ca \
 # Create hybrid CA (ECDSA + ML-DSA Catalyst)
 pki ca init --name "Hybrid CA" \
     --algorithm ec-p256 \
-    --hybrid-algorithm ml-dsa-65 \
     --dir output/hybrid-ca
 
 # Issue hybrid server certificate

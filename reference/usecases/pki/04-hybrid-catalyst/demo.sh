@@ -56,15 +56,14 @@ echo "  - PQC signature in extension for future security"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"Hybrid Root CA\" --algorithm ecdsa-p384 \\"
-echo -e "      --hybrid-algorithm ml-dsa-65 --dir $HYBRID_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Hybrid Root CA\" --profile hybrid/catalyst/root-ca \\"
+echo -e "      --dir $HYBRID_CA${NC}"
 echo ""
 
 HYBRID_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
     --name "Hybrid Root CA" \
     --org "Demo Organization" \
-    --algorithm ecdsa-p384 \
-    --hybrid-algorithm ml-dsa-65 \
+    --profile hybrid/catalyst/root-ca \
     --dir "$HYBRID_CA")
 
 print_success "Hybrid CA created in ${YELLOW}${HYBRID_CA_TIME}ms${NC}"
@@ -136,7 +135,7 @@ print_step "Step 4: Compare with Classical-Only CA"
 "$PKI_BIN" init-ca \
     --name "Classic Root CA" \
     --org "Demo Organization" \
-    --algorithm ecdsa-p384 \
+    --profile hybrid/catalyst/root-ca \
     --dir "$CLASSIC_CA" > /dev/null 2>&1
 
 # Get CA certificate sizes (CA certs contain the full hybrid structure)

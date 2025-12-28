@@ -91,11 +91,11 @@ post-quantum-pki-lab/
 **Commandes PKI utilisées:**
 ```bash
 # Classique
-pki ca init --name "Classic Root CA" --algorithm ecdsa-p384 --dir ./classic-ca
+pki ca init --name "Classic Root CA" --profile ec/root-ca --dir ./classic-ca
 pki cert issue --ca-dir ./classic-ca --profile ec/tls-server --cn classic.example.com
 
 # Post-quantique
-pki ca init --name "PQ Root CA" --algorithm ml-dsa-65 --dir ./pqc-ca
+pki ca init --name "PQ Root CA" --profile ml-dsa/root-ca --dir ./pqc-ca
 pki cert issue --ca-dir ./pqc-ca --profile ml-dsa-kem/tls-server --cn pq.example.com
 ```
 
@@ -115,7 +115,7 @@ pki cert issue --ca-dir ./pqc-ca --profile ml-dsa-kem/tls-server --cn pq.example
 **Commandes PKI à utiliser:**
 ```bash
 # Créer une CA hybride (Catalyst ITU-T X.509 9.8)
-pki ca init --name "Hybrid Root CA" --algorithm catalyst --dir ./hybrid-ca \
+pki ca init --name "Hybrid Root CA" --profile hybrid/catalyst/root-ca --dir ./hybrid-ca \
     --classical-algorithm ecdsa-p384 \
     --pqc-algorithm ml-dsa-65
 
@@ -208,10 +208,10 @@ pki verify --cert ./compromised.crt --ca-dir ./pqc-ca
 **Commandes PKI à utiliser:**
 ```bash
 # Root CA: SLH-DSA (stateless, conservative)
-pki ca init --name "PQ Root CA" --algorithm slh-dsa-128f --dir ./root-ca
+pki ca init --name "PQ Root CA" --profile slh-dsa/root-ca --dir ./root-ca
 
 # Issuing CA: ML-DSA (faster)
-pki ca init --name "PQ Issuing CA" --algorithm ml-dsa-65 --dir ./issuing-ca \
+pki ca init --name "PQ Issuing CA" --profile ml-dsa/root-ca --dir ./issuing-ca \
     --parent ./root-ca
 
 # End-entity certificates
@@ -240,7 +240,7 @@ pki cert issue --ca-dir ./issuing-ca --profile ml-dsa-kem/tls-server --cn server
 **Commandes PKI à utiliser:**
 ```bash
 # CA pour signature de code
-pki ca init --name "Code Signing CA" --algorithm slh-dsa-192f --dir ./code-ca
+pki ca init --name "Code Signing CA" --profile slh-dsa/root-ca --dir ./code-ca
 
 # Certificat de signature
 pki cert issue --ca-dir ./code-ca --profile slh-dsa/code-signing --cn "Firmware Signer"
@@ -302,7 +302,7 @@ pki bundle rotate --bundle ./service-bundle.json --renew-pqc
 **Commandes PKI à utiliser:**
 ```bash
 # Créer une TSA (Time Stamp Authority) PQC
-pki init-tsa --name "PQ Timestamp Authority" --algorithm slh-dsa-128f --dir ./tsa
+pki init-tsa --name "PQ Timestamp Authority" --profile slh-dsa/root-ca --dir ./tsa
 
 # Horodater un document
 pki timestamp --tsa-dir ./tsa --file document.pdf --out document.tsr

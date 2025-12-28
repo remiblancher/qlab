@@ -41,7 +41,7 @@ The demo will:
 
 ```bash
 # Create PQC CA
-pki ca init --name "PQC Root CA" --algorithm ml-dsa-65 --dir ./pqc-ca
+pki ca init --name "PQC Root CA" --profile ml-dsa/root-ca --dir ./pqc-ca
 
 # Issue TLS certificate
 pki cert issue --ca-dir ./pqc-ca \

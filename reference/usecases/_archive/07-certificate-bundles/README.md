@@ -42,7 +42,6 @@ Certificate bundles solve this by grouping related certificates with a coupled l
 # Create a hybrid CA for bundle enrollment
 pki ca init --name "Hybrid CA" \
     --algorithm ecdsa-p384 \
-    --hybrid-algorithm ml-dsa-65 \
     --dir ./hybrid-ca
 
 # Inspect

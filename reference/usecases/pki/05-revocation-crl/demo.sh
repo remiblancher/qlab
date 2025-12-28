@@ -45,14 +45,13 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Hybrid CA and Issue Certificate"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"Hybrid Root CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $PQC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Hybrid Root CA\" --profile hybrid/catalyst/root-ca --dir $PQC_CA${NC}"
 echo ""
 
 "$PKI_BIN" init-ca \
     --name "Hybrid Root CA" \
     --org "Demo Organization" \
     --algorithm ecdsa-p384 \
-    --hybrid-algorithm ml-dsa-65 \
     --dir "$PQC_CA" > /dev/null 2>&1
 
 echo -e "  ${CYAN}pki cert issue --ca-dir $PQC_CA --profile hybrid/catalyst/tls-server --cn server.example.com${NC}"

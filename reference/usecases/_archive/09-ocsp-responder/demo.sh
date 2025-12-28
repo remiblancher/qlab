@@ -60,7 +60,7 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Classical and PQC CAs"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"Classic Root CA\" --algorithm ecdsa-p384 --dir $CLASSIC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Classic Root CA\" --profile ec/root-ca --dir $CLASSIC_CA${NC}"
 echo ""
 
 "$PKI_BIN" init-ca \
@@ -72,14 +72,13 @@ echo ""
 print_success "Classical CA created (ECDSA P-384)"
 
 echo ""
-echo -e "  ${CYAN}pki ca init --name \"PQC Root CA\" --algorithm ecdsa-p384 --hybrid-algorithm ml-dsa-65 --dir $PQC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQC Root CA\" --profile hybrid/catalyst/root-ca --dir $PQC_CA${NC}"
 echo ""
 
 "$PKI_BIN" init-ca \
     --name "PQC Root CA" \
     --org "Demo Organization" \
     --algorithm ecdsa-p384 \
-    --hybrid-algorithm ml-dsa-65 \
     --dir "$PQC_CA" > /dev/null 2>&1
 
 print_success "PQC CA created (ECDSA P-384 + ML-DSA-65)"

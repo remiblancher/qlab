@@ -36,7 +36,7 @@ print_step "Step 1: Create CA and Certificates"
 echo "  First, we create a PQC CA and issue certificates."
 echo ""
 
-run_cmd "pki ca init --name \"PQC CA\" --algorithm ml-dsa-65 --dir output/pqc-ca"
+run_cmd "pki ca init --name \"PQC CA\" --profile profiles/pqc-ca.yaml --dir output/pqc-ca"
 
 echo ""
 echo "  Issue delegated OCSP responder certificate (best practice: CA key stays offline)..."

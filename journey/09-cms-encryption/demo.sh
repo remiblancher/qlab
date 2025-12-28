@@ -62,7 +62,7 @@ echo "  The CA signs both signing and encryption certificates."
 echo "  We use ML-DSA-65 for the CA (quantum-safe signatures)."
 echo ""
 
-run_cmd "pki ca init --name \"Encryption CA\" --algorithm ml-dsa-65 --dir output/encryption-ca"
+run_cmd "pki ca init --name \"Encryption CA\" --profile profiles/pqc-ca.yaml --dir output/encryption-ca"
 
 echo ""
 

@@ -57,7 +57,7 @@ echo "  Creating a dedicated CA for mTLS authentication..."
 echo "  Algorithm: ML-DSA-65 (quantum-resistant)"
 echo ""
 
-run_cmd "pki ca init --name \"mTLS Demo CA\" --algorithm ml-dsa-65 --dir output/mtls-ca"
+run_cmd "pki ca init --name \"mTLS Demo CA\" --profile profiles/pqc-ca.yaml --dir output/mtls-ca"
 
 echo ""
 

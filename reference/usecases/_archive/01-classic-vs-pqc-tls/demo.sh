@@ -46,7 +46,7 @@ pause_for_explanation "Press Enter to start the demo..."
 print_step "Step 1: Create Classical CA (ECDSA P-384)"
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"Classic Root CA\" --algorithm ecdsa-p384 --dir $CLASSIC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"Classic Root CA\" --profile ec/root-ca --dir $CLASSIC_CA${NC}"
 echo ""
 
 CLASSIC_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
@@ -95,7 +95,7 @@ echo "  - Resistant to quantum attacks"
 echo ""
 
 echo -e "Command:"
-echo -e "  ${CYAN}pki ca init --name \"PQ Root CA\" --algorithm ml-dsa-65 --dir $PQC_CA${NC}"
+echo -e "  ${CYAN}pki ca init --name \"PQ Root CA\" --profile ml-dsa/root-ca --dir $PQC_CA${NC}"
 echo ""
 
 PQC_CA_TIME=$(time_cmd "$PKI_BIN" init-ca \
