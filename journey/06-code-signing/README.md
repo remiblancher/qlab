@@ -170,14 +170,16 @@ pki ca init --name "Code Signing CA" \
 ### Step 2: Issue Code Signing Certificate
 
 ```bash
-# Generate signing key
-pki key gen --algorithm ml-dsa-65 --out output/code-signing.key
+# Generate key and CSR
+pki cert csr --algorithm ml-dsa-65 \
+    --key-out output/code-signing.key \
+    --var cn="ACME Software" \
+    --out output/code-signing.csr
 
-# Issue certificate with existing key
+# Issue certificate from CSR
 pki cert issue --ca-dir output/code-ca \
     --profile profiles/pqc-code-signing.yaml \
-    --key output/code-signing.key \
-    --var cn="ACME Software" \
+    --csr output/code-signing.csr \
     --out output/code-signing.crt
 ```
 
