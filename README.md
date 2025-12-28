@@ -8,12 +8,20 @@ Educational demonstrations for transitioning to Post-Quantum Cryptography using 
 
 ## Why This Matters
 
-Quantum computers will eventually break RSA and ECC cryptography. The question isn't *if*, but *when*. Organizations need to prepare now — not panic, but plan.
+Quantum computers will eventually break RSA and ECC cryptography.
+The question isn't *if*, but *when* — and whether your data and signatures
+will still need to be trusted **after that moment**.
+
+This matters today because:
+
+- **Store Now, Decrypt Later (SNDL):** Encrypted data captured now can be decrypted later
+- **Trust Now, Forge Later (TNFL):** Software signatures must remain valid for 10–30 years
+- **Long-term records:** Legal, medical, and industrial records outlive cryptographic algorithms
 
 This lab demonstrates:
-- **Classical and post-quantum PKI work the same way**
-- **Hybrid certificates provide a safe migration path**
-- **The PKI model is algorithm-agnostic**
+- **Classical and post-quantum PKI work the same way** — only the algorithm changes
+- **Hybrid certificates provide a safe migration path** — protect legacy and future clients
+- **The PKI model is algorithm-agnostic** — your workflow stays exactly the same
 
 ---
 
@@ -31,47 +39,47 @@ Then start with: `./journey/00-quickstart/demo.sh`
 
 ## Learning Path
 
-**Total time: ~2h** | **Minimum path: 18 min** (Quick Start + Revelation)
+**Total time: ~1h20** | **Minimum path: 10 min** (Quick Start + Revelation)
 
 ### 🚀 Getting Started
 
-| # | Mission | Time |
-|---|---------|------|
-| 0 | [**Quick Start**](journey/00-quickstart/) — Create your first CA (ECDSA) | 10 min |
-| 1 | [**The Revelation**](journey/01-revelation/) — Why PQC matters? | 8 min |
+| # | Mission | Time | Key Message |
+|---|---------|------|-------------|
+| 0 | [**Quick Start**](journey/00-quickstart/) — Create your first CA | 5 min | The PKI doesn't change. Only the algorithm changes. |
+| 1 | [**The Revelation**](journey/01-revelation/) — Why PQC matters? | 5 min | The attack requires no hacking — just recording traffic. |
 
 ### 📚 Core PKI
 
-| # | Mission | Time |
-|---|---------|------|
-| 2 | [**Full PQC Chain**](journey/02-full-chain/) — Root → Issuing → TLS (ML-DSA) | 10 min |
-| 3 | [**Hybrid Catalyst**](journey/03-hybrid/) — Dual-key certificate (ECDSA + ML-DSA) | 10 min |
+| # | Mission | Time | Key Message |
+|---|---------|------|-------------|
+| 2 | [**Full PQC Chain**](journey/02-full-chain/) — Root → Issuing → TLS (ML-DSA) | 8 min | A complete PQC chain is no harder to build than a classical one. |
+| 3 | [**Hybrid Catalyst**](journey/03-hybrid/) — Dual-key certificate (ECDSA + ML-DSA) | 8 min | You cannot upgrade all clients at once — but certificates can. |
 
 ### ⚙️ PKI Lifecycle
 
-| # | Mission | Time |
-|---|---------|------|
-| 4 | [**Revocation**](journey/04-revocation/) — CRL generation | 10 min |
-| 5 | [**PQC OCSP**](journey/05-ocsp/) — Is This Cert Still Good? | 10 min |
+| # | Mission | Time | Key Message |
+|---|---------|------|-------------|
+| 4 | [**Revocation**](journey/04-revocation/) — CRL generation | 5 min | Revocation is a state change. CRL is its distribution. |
+| 5 | [**PQC OCSP**](journey/05-ocsp/) — Is This Cert Still Good? | 5 min | OCSP reports revocation status. It does not revoke. |
 
 ### 🔧 Applications
 
-| # | Mission | Time |
-|---|---------|------|
-| 6 | [**PQC Code Signing**](journey/06-code-signing/) — Signatures That Outlive the Threat | 8 min |
-| 7 | [**PQC Timestamping**](journey/07-timestamping/) — Trust Now, Verify Forever | 8 min |
-| 8 | [**PQC LTV**](journey/08-ltv-signatures/) — Sign Today, Verify in 30 Years | 8 min |
-| 9 | [**CMS Encryption**](journey/09-cms-encryption/) — Encrypt documents (ML-KEM) | 8 min |
+| # | Mission | Time | Key Message |
+|---|---------|------|-------------|
+| 6 | [**PQC Code Signing**](journey/06-code-signing/) — Signatures That Outlive the Threat | 5 min | A forged signature is indistinguishable from a legitimate one. |
+| 7 | [**PQC Timestamping**](journey/07-timestamping/) — Trust Now, Verify Forever | 5 min | Timestamps prove WHEN. They don't prove validity. |
+| 8 | [**PQC LTV**](journey/08-ltv-signatures/) — Sign Today, Verify in 30 Years | 5 min | A signature is only as good as its proof chain. |
+| 9 | [**CMS Encryption**](journey/09-cms-encryption/) — Encrypt documents (ML-KEM) | 5 min | You cannot prove KEM key possession by signing (RFC 9883). |
 
 ### 🎯 Advanced
 
 > Requires Docker and server infrastructure.
 
-| # | Mission | Time |
-|---|---------|------|
-| 10 | [**Crypto-Agility**](journey/10-crypto-agility/) — Migrate ECDSA → ML-DSA | 10 min |
-| 11 | [**mTLS**](journey/11-mtls/) — Mutual authentication with Docker | 10 min |
-| 12 | [**PQC Tunnel**](journey/12-pqc-tunnel/) — Key exchange demo (ML-KEM) | 8 min |
+| # | Mission | Time | Key Message |
+|---|---------|------|-------------|
+| 10 | [**Crypto-Agility**](journey/10-crypto-agility/) — Migrate ECDSA → ML-DSA | 8 min | Crypto-agility is an architectural property, not a tool. |
+| 11 | [**mTLS**](journey/11-mtls/) — Mutual authentication with Docker | 8 min | PQC certificates work in standard TLS stacks. |
+| 12 | [**PQC Tunnel**](journey/12-pqc-tunnel/) — Key exchange demo (ML-KEM) | 5 min | ML-KEM protects data in transit. CMS protects data at rest. |
 
 ---
 
@@ -107,12 +115,14 @@ post-quantum-pki-lab/
 - RSA 2048, 4096
 - Ed25519
 
-### Post-Quantum (Experimental)
+### Post-Quantum (NIST Standards 2024)
 - **ML-DSA** (FIPS 204) — Lattice-based signatures
 - **SLH-DSA** (FIPS 205) — Hash-based signatures
 - **ML-KEM** (FIPS 203) — Key encapsulation
 
-### Hybrid (Experimental)
+*Standards finalized in 2024, ecosystem still maturing.*
+
+### Hybrid (Transition)
 - Catalyst certificates (ITU-T X.509 9.8)
 - Composite certificates *(not yet implemented)*
 
@@ -138,7 +148,9 @@ post-quantum-pki-lab/
 
 ## About
 
-This project is part of the Quantum-Safe PKI initiative by [QentriQ](https://qentriq.com).
+This lab is an **educational resource**, not a product demo.
+
+Built by [QentriQ](https://qentriq.com) to help teams understand PQC migration through hands-on practice.
 
 Need help with your PQC transition? [Contact us](https://qentriq.com)
 

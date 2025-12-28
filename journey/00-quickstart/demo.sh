@@ -70,6 +70,9 @@ run_cmd "$PKI_BIN issue --ca-dir $CLASSIC_CA --profile $PROFILES/classic-tls-ser
 
 echo ""
 echo -e "  ${GREEN}Certificate issued.${NC}"
+echo ""
+echo -e "  ${DIM}File sizes:${NC}"
+ls -lh "$DEMO_TMP/classic-server.crt" "$DEMO_TMP/classic-server.key" | awk '{print "    " $5 "  " $9}'
 
 pause
 
@@ -97,6 +100,9 @@ run_cmd "$PKI_BIN issue --ca-dir $PQC_CA --profile $PROFILES/pqc-tls-server.yaml
 
 echo ""
 echo -e "  ${GREEN}Certificate issued.${NC}"
+echo ""
+echo -e "  ${DIM}File sizes:${NC}"
+ls -lh "$DEMO_TMP/pq-server.crt" "$DEMO_TMP/pq-server.key" | awk '{print "    " $5 "  " $9}'
 
 pause
 
@@ -134,8 +140,8 @@ print_comparison_row "  Key size" "$CLASSIC_KEY_SIZE" "$PQC_KEY_SIZE" " B"
 # =============================================================================
 
 echo ""
-show_lesson "Switching to post-quantum is a profile change, not an architecture change.
-Your PKI workflow stays exactly the same."
+show_lesson "The PKI doesn't change. Only the algorithm changes.
+Your workflow stays exactly the same: init-ca → issue → done."
 
 echo -e "${DIM}Explore artifacts: $DEMO_TMP${NC}"
 echo ""

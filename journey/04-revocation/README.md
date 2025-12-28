@@ -143,6 +143,8 @@ pki verify --cert output/server.crt \
    └─► Issue replacement certificates with new keys
 ```
 
+**Note:** Revocation prevents future trust. It does not remove already-installed malware or undo past compromise.
+
 ---
 
 ## Size Comparison
@@ -154,6 +156,8 @@ pki verify --cert output/server.crt \
 
 *CRLs are larger due to PQC signatures, but the protocol is unchanged.*
 
+*CRL size usually remains negligible compared to network traffic.*
+
 ---
 
 ## What You Learned
@@ -162,6 +166,7 @@ pki verify --cert output/server.crt \
 2. **CRLs are signed:** PQC CRLs have larger signatures
 3. **Same commands:** No new tools or procedures needed
 4. **Ops teams:** No retraining required for basic PKI operations
+5. **Next step:** CRLs work, but what if you need real-time revocation? See [OCSP](../05-ocsp/)
 
 ---
 

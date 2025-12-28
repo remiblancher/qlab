@@ -12,6 +12,8 @@
 
 This is the reality of PQC migration. You can't flip a switch and move everything to post-quantum overnight. Hybrid certificates solve this by combining **both** classical and PQC cryptography in a single certificate.
 
+**You cannot upgrade all clients at once — but certificates can.**
+
 ```
 ┌──────────────────┐                    ┌──────────────────┐
 │  LEGACY Client   │                    │  MODERN Client   │
@@ -141,6 +143,8 @@ A Catalyst certificate (ITU-T X.509 Section 9.8) contains dual keys:
 
 **This is the power of hybrid: zero breaking changes for legacy clients.**
 
+**Note:** Hybrid provides quantum resistance only for PQC-aware clients. Legacy clients remain protected by classical cryptography only.
+
 ---
 
 ## Size Comparison
@@ -152,6 +156,8 @@ A Catalyst certificate (ITU-T X.509 Section 9.8) contains dual keys:
 | Private Key | ~300 B | ~2.5 KB | ~2.2 KB |
 
 *The overhead comes from the additional ML-DSA key (~1952 B) and signature (~3293 B).*
+
+*In most TLS deployments, this size increase is negligible compared to application payloads.*
 
 ---
 
@@ -186,6 +192,7 @@ This demo uses **Catalyst** because:
 2. **Zero breaking changes:** Legacy clients work unchanged
 3. **Defense in depth:** If one algorithm fails, the other protects
 4. **Smooth migration:** No "flag day" required
+5. **Next step:** What happens when certificates are compromised? See [Revocation](../04-revocation/)
 
 ---
 

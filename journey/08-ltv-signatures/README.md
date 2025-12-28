@@ -4,6 +4,8 @@
 
 > **Key Message:** A signature is only as good as its proof chain. LTV bundles everything needed for offline verification decades from now.
 
+**Important distinction:** Timestamping is necessary but **not sufficient** for long-term validation. A timestamp proves WHEN something was signed. LTV proves that **all trust elements** (certificates, revocation status, timestamps) were valid at that time — and bundles them for offline verification.
+
 ---
 
 ## The Scenario
@@ -116,6 +118,8 @@ Embed EVERYTHING needed in a self-sufficient bundle:
 | **Timestamp** | Temporal proof | Proves WHEN it was signed |
 | **Certificate chain** | Trust anchor | Allows tracing to root CA |
 | **Manifest** | Metadata | Documents the bundle structure |
+
+**Note:** In production-grade LTV (CAdES-LT/LTA, PAdES-LTV), OCSP responses and CRLs are also embedded to prove revocation status at signing time.
 
 ---
 
@@ -279,6 +283,7 @@ ML-DSA signature:       Still secure            ✓ VERIFIED
 2. **LTV bundles proofs**: Document + signature + timestamp + chain
 3. **Offline verification**: No network dependencies in 2055
 4. **PQC is essential**: 30-year documents will face quantum computers
+5. **Next step:** LTV protects signed documents. What about encrypted documents that must remain confidential for decades? See [CMS Encryption](../09-cms-encryption/)
 
 ---
 

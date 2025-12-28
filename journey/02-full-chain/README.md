@@ -12,6 +12,8 @@
 
 This demo shows a production-ready 3-level PKI hierarchy using only post-quantum algorithms. No classical cryptography anywhere in the chain.
 
+*This demo focuses on PKI design, not client interoperability. See [Hybrid PKI](../03-hybrid/) for legacy client support.*
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
@@ -114,6 +116,8 @@ pki inspect output/server.crt
 
 *Approximate sizes. The trade-off: larger certificates for quantum resistance.*
 
+*Bandwidth impact is usually negligible compared to application payloads.*
+
 ---
 
 ## Algorithm Selection Guide
@@ -147,6 +151,7 @@ Use SLH-DSA when:
 1. **Same workflow:** Creating a PQC hierarchy uses identical PKI concepts
 2. **Algorithm stacking:** Root uses highest level, decreasing down the chain
 3. **Size trade-off:** ~6x larger certificates for quantum resistance
+4. **Next step:** For legacy client support, see [Hybrid PKI](../03-hybrid/)
 
 ---
 

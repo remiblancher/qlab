@@ -6,6 +6,8 @@
 
 You just created a classical PKI with ECDSA. It works. So why change?
 
+The PKI you built in [Quick Start](../00-quickstart/) is structurally correct — but cryptographically fragile in the long term.
+
 Because **quantum computers will break everything**.
 
 ---
@@ -21,6 +23,8 @@ Quantum computers will break both **encryption** and **signatures**:
 ### SNDL: Store Now, Decrypt Later
 
 Adversaries are **recording your encrypted traffic today**. When quantum computers arrive, they'll decrypt it all. This is called **Store Now, Decrypt Later (SNDL)** — also known as **Harvest Now, Decrypt Later (HNDL)**.
+
+**The attack does not require breaking encryption today — only recording traffic.**
 
 ```
 TODAY                           FUTURE (5-15 years?)
@@ -45,6 +49,8 @@ TODAY                           FUTURE (5-15 years?)
 ### TNFL: Trust Now, Forge Later
 
 Signatures you trust today can be **forged** once quantum computers arrive. This is called **Trust Now, Forge Later (TNFL)** — also known as **Sign Today, Forge Tomorrow (STFT)**. A forged signature is instant and undetectable — malicious firmware signed with a forged key installs without question.
+
+**Forged signatures are indistinguishable from legitimate ones.**
 
 ```
 TODAY                           FUTURE (5-15 years?)
@@ -139,7 +145,9 @@ The demo is an **interactive Mosca calculator** that helps you assess your PQC m
 
 ## The Solution: Post-Quantum Algorithms
 
-NIST finalized 3 post-quantum algorithms (August 2024):
+NIST finalized 3 post-quantum algorithms (August 2024).
+
+*You don't need to memorize these numbers. The important takeaway is the order of magnitude and the trade-off: larger keys and signatures in exchange for quantum resistance.*
 
 | Algorithm | Standard | Family | Protects Against | Replaces |
 |-----------|----------|--------|------------------|----------|

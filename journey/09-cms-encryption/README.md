@@ -266,6 +266,7 @@ pki cert issue --ca-dir output/encryption-ca \
 4. **Hybrid encryption** - AES (fast) + ML-KEM (quantum-safe)
 5. **CMS EnvelopedData** - Industry standard for document encryption
 6. **S/MIME pattern** - Separate signing and encryption certificates
+7. **Next step:** You now have signing and encryption certificates. How do you migrate them to new algorithms over time? See [Crypto-Agility](../10-crypto-agility/)
 
 ---
 

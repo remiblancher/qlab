@@ -4,6 +4,8 @@
 
 > **Key Message:** Real-time certificate verification with OCSP works exactly the same with PQC. Same HTTP protocol, same tools.
 
+**Important distinction:** OCSP does not revoke certificates. It only **reports** revocation status. Revocation is a CA operation (see [Revocation](../04-revocation/)). OCSP is a **distribution mechanism** — like asking "is this certificate still valid?" rather than "revoke this certificate."
+
 ---
 
 ## The Scenario
@@ -209,6 +211,7 @@ The OCSP responder certificate has:
 3. **Real-time status:** Revocation changes are immediate
 4. **Size tradeoff:** PQC responses are larger but acceptable
 5. **Drop-in replacement:** Existing OCSP clients work with PQC responders
+6. **Next step:** Real-time trust matters not only for TLS, but also for signed software. See [Code Signing](../06-code-signing/)
 
 ---
 

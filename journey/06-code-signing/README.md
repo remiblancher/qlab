@@ -265,6 +265,7 @@ Code signing certificates have specific extensions:
 3. **PQC solution**: ML-DSA signatures remain unforgeable
 4. **Size trade-off**: ~3 KB signature vs ~100 bytes (negligible for binaries)
 5. **Drop-in replacement**: Same workflow, different algorithm
+6. **Next step:** A valid signature does not prove WHEN it was created. See [Timestamping](../07-timestamping/)
 
 ---
 
