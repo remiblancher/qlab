@@ -148,11 +148,7 @@ post-quantum-pki-lab/
 
 ## About
 
-This lab is an **educational resource**, not a product demo.
-
-Built by [QentriQ](https://qentriq.com) to help teams understand PQC migration through hands-on practice.
-
-Need help with your PQC transition? [Contact us](https://qentriq.com)
+An **educational resource** to help teams understand PQC migration through hands-on practice.
 
 ## License
 
