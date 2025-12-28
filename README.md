@@ -118,7 +118,7 @@ post-quantum-pki-lab/
 
 ### Hybrid (Transition)
 - Catalyst certificates (ITU-T X.509 9.8)
-- Composite certificates *(not yet implemented)*
+- Composite certificates *(supported, no lab demo)*
 
 ---
 
