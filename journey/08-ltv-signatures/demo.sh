@@ -36,13 +36,13 @@ echo ""
 echo "  Issue document signing certificate for Alice..."
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/ltv-ca --profile ml-dsa-kem/code-signing --cn \"Alice (Legal Counsel)\" --out output/alice.crt --key-out output/alice.key"
+run_cmd "pki cert issue --ca-dir output/ltv-ca --profile profiles/document-signing.yaml --cn \"Alice (Legal Counsel)\" --out output/alice.crt --key-out output/alice.key"
 
 echo ""
 echo "  Issue TSA certificate..."
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/ltv-ca --profile ml-dsa-kem/timestamping --cn \"LTV Timestamp Authority\" --out output/tsa.crt --key-out output/tsa.key"
+run_cmd "pki cert issue --ca-dir output/ltv-ca --profile profiles/tsa.yaml --cn \"LTV Timestamp Authority\" --out output/tsa.crt --key-out output/tsa.key"
 
 echo ""
 

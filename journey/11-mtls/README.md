@@ -139,7 +139,7 @@ pki ca init --name "mTLS Demo CA" \
 ```bash
 # Server certificate with serverAuth EKU
 pki cert issue --ca-dir output/mtls-ca \
-    --profile ml-dsa/tls-server \
+    --profile profiles/tls-server.yaml \
     --cn "api.example.com" \
     --dns api.example.com \
     --out output/server.crt \
@@ -151,14 +151,14 @@ pki cert issue --ca-dir output/mtls-ca \
 ```bash
 # Client certificate for Alice
 pki cert issue --ca-dir output/mtls-ca \
-    --profile ml-dsa/tls-client \
+    --profile profiles/tls-client.yaml \
     --cn "Alice" \
     --out output/alice.crt \
     --key-out output/alice.key
 
 # Client certificate for Bob
 pki cert issue --ca-dir output/mtls-ca \
-    --profile ml-dsa/tls-client \
+    --profile profiles/tls-client.yaml \
     --cn "Bob" \
     --out output/bob.crt \
     --key-out output/bob.key
@@ -180,8 +180,8 @@ pki verify --ca output/mtls-ca/ca.crt --cert output/bob.crt
 
 | Profile | EKU | Purpose |
 |---------|-----|---------|
-| `ml-dsa/tls-server` | serverAuth | Server proves identity to client |
-| `ml-dsa/tls-client` | clientAuth | Client proves identity to server |
+| `profiles/tls-server.yaml` | serverAuth | Server proves identity to client |
+| `profiles/tls-client.yaml` | clientAuth | Client proves identity to server |
 
 ---
 

@@ -42,13 +42,13 @@ echo ""
 echo "  Issue delegated OCSP responder certificate (best practice: CA key stays offline)..."
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/pqc-ca --profile ml-dsa-kem/ocsp-responder --cn \"OCSP Responder\" --out output/ocsp-responder.crt --key-out output/ocsp-responder.key"
+run_cmd "pki cert issue --ca-dir output/pqc-ca --profile profiles/ocsp-responder.yaml --cn \"OCSP Responder\" --out output/ocsp-responder.crt --key-out output/ocsp-responder.key"
 
 echo ""
 echo "  Issue TLS server certificate to verify..."
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/pqc-ca --profile ml-dsa-kem/tls-server --cn server.example.com --dns server.example.com --out output/server.crt --key-out output/server.key"
+run_cmd "pki cert issue --ca-dir output/pqc-ca --profile profiles/pqc-tls-server.yaml --cn server.example.com --dns server.example.com --out output/server.crt --key-out output/server.key"
 
 # Get serial number
 SERIAL=$(openssl x509 -in output/server.crt -noout -serial 2>/dev/null | cut -d= -f2)

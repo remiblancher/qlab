@@ -138,7 +138,7 @@ pki ca init --name "TSA Root CA" \
 
 # Issue TSA certificate (EKU: timeStamping)
 pki cert issue --ca-dir output/tsa-ca \
-    --profile ml-dsa-kem/timestamping \
+    --profile profiles/tsa.yaml \
     --cn "PQC Timestamp Authority" \
     --out output/tsa.crt \
     --key-out output/tsa.key

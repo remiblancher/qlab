@@ -151,14 +151,14 @@ pki ca init --name "LTV Demo CA" \
 
 # Issue document signing certificate
 pki cert issue --ca-dir output/ltv-ca \
-    --profile ml-dsa-kem/code-signing \
+    --profile profiles/document-signing.yaml \
     --cn "Alice (Legal Counsel)" \
     --out output/alice.crt \
     --key-out output/alice.key
 
 # Issue TSA certificate
 pki cert issue --ca-dir output/ltv-ca \
-    --profile ml-dsa-kem/timestamping \
+    --profile profiles/tsa.yaml \
     --cn "LTV Timestamp Authority" \
     --out output/tsa.crt \
     --key-out output/tsa.key

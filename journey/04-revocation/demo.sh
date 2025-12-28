@@ -31,7 +31,7 @@ echo ""
 echo "  Now issue a TLS certificate..."
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/pqc-ca --profile ml-dsa-kem/tls-server --cn server.example.com --dns server.example.com --out output/server.crt --key-out output/server.key"
+run_cmd "pki cert issue --ca-dir output/pqc-ca --profile profiles/pqc-tls-server.yaml --cn server.example.com --dns server.example.com --out output/server.crt --key-out output/server.key"
 
 # Get serial number
 SERIAL=$(openssl x509 -in output/server.crt -noout -serial 2>/dev/null | cut -d= -f2)
