@@ -1,0 +1,78 @@
+# =============================================================================
+# Post-Quantum TLS Server Certificate Profile (ML-DSA-65)
+# =============================================================================
+#
+# Usage: Phase 3 of crypto-agility - Full PQC PKI
+#
+# This profile issues TLS server certificates using pure ML-DSA.
+# It represents the end state of the migration journey.
+#
+# Migration Path: Classic → Hybrid → **PQC**
+#
+# Standards: FIPS 204 (ML-DSA), RFC 5280 (X.509)
+# Security Level: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: FULLY PROTECTED
+#
+# Example:
+#   pki credential enroll --ca-dir output/ca \
+#       --profile profiles/tls-server-pqc.yaml \
+#       --var cn=server.example.com
+#
+# =============================================================================
+
+name: tls-server-pqc
+description: "TLS server ML-DSA-65 (Phase 3: quantum-safe)"
+
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Variables
+# -----------------------------------------------------------------------------
+variables:
+  cn:
+    type: dns_name
+    required: true
+    description: "Common Name - Server's FQDN"
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
+subject:
+  cn: "{{ cn }}"
+  o: "Demo Organization"
+  c: "FR"
+
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
+extensions:
+
+  # Basic Constraints
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+
+  # Extended Key Usage
+  extKeyUsage:
+    critical: false
+    values:
+      - serverAuth
+
+  # Subject Alternative Name
+  subjectAltName:
+    critical: false
+    dns_include_cn: true

@@ -1,0 +1,78 @@
+# =============================================================================
+# Classic TLS Server Certificate Profile (ECDSA P-256)
+# =============================================================================
+#
+# Usage: Phase 1 of crypto-agility - Classic PKI
+#
+# This profile issues TLS server certificates using ECDSA P-256.
+# It represents the starting point of the migration journey.
+#
+# Migration Path: **Classic** → Hybrid → PQC
+#
+# Standards: RFC 5280 (X.509), FIPS 186-5 (ECDSA)
+# Security Level: ~128-bit equivalent
+# Quantum Safety: NOT PROTECTED
+#
+# Example:
+#   pki credential enroll --ca-dir output/ca \
+#       --profile profiles/tls-server-classic.yaml \
+#       --var cn=server.example.com
+#
+# =============================================================================
+
+name: tls-server-classic
+description: "TLS server ECDSA P-256 (Phase 1: classic)"
+
+# -----------------------------------------------------------------------------
+# Algorithm
+# -----------------------------------------------------------------------------
+algorithm: ecdsa-p256
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Variables
+# -----------------------------------------------------------------------------
+variables:
+  cn:
+    type: dns_name
+    required: true
+    description: "Common Name - Server's FQDN"
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
+subject:
+  cn: "{{ cn }}"
+  o: "Demo Organization"
+  c: "FR"
+
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
+extensions:
+
+  # Basic Constraints
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+
+  # Extended Key Usage
+  extKeyUsage:
+    critical: false
+    values:
+      - serverAuth
+
+  # Subject Alternative Name
+  subjectAltName:
+    critical: false
+    dns_include_cn: true

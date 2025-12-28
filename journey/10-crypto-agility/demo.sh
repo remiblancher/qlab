@@ -90,7 +90,7 @@ echo ""
 echo "  Issuing a server certificate with ECDSA..."
 echo ""
 
-run_cmd "pki credential enroll --ca-dir output/ca --profile ec/tls-server --var cn=server.example.com"
+run_cmd "pki credential enroll --ca-dir output/ca --profile profiles/tls-server-classic.yaml --var cn=server.example.com"
 
 # Capture the credential ID from the output
 CRED_V1=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | head -1 | awk '{print $1}')
@@ -174,7 +174,7 @@ print_step "Step 5: Issue PQC Server Certificate"
 echo "  Issuing a server certificate with ML-DSA..."
 echo ""
 
-run_cmd "pki credential enroll --ca-dir output/ca --profile ml-dsa-kem/tls-server-sign --var cn=server.example.com"
+run_cmd "pki credential enroll --ca-dir output/ca --profile profiles/tls-server-pqc.yaml --var cn=server.example.com"
 
 # Get the new credential ID
 CRED_V3=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "$CRED_V1" | head -1 | awk '{print $1}')

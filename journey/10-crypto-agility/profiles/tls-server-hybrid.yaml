@@ -1,0 +1,90 @@
+# =============================================================================
+# Hybrid TLS Server Certificate Profile (ECDSA P-256 + ML-DSA-65)
+# =============================================================================
+#
+# Usage: Phase 2 of crypto-agility - Transition PKI
+#
+# This profile issues TLS server certificates using Catalyst hybrid mode.
+# It provides both backward compatibility (ECDSA) and quantum protection (ML-DSA).
+#
+# Migration Path: Classic → **Hybrid** → PQC
+#
+# Standards: ITU-T X.509 Section 9.8 (Catalyst), FIPS 204 (ML-DSA)
+# Security Level:
+#   - Classical: ~128-bit (ECDSA P-256)
+#   - PQC: NIST Level 3 (~192-bit equivalent)
+# Quantum Safety: PROTECTED (Hybrid)
+#
+# Example:
+#   pki credential enroll --ca-dir output/ca \
+#       --profile profiles/tls-server-hybrid.yaml \
+#       --var cn=server.example.com
+#
+# =============================================================================
+
+name: tls-server-hybrid
+description: "TLS server ECDSA P-256 + ML-DSA-65 (Phase 2: transition)"
+
+# -----------------------------------------------------------------------------
+# Hybrid Mode: Catalyst (ITU-T X.509 Section 9.8)
+# -----------------------------------------------------------------------------
+mode: catalyst
+
+# -----------------------------------------------------------------------------
+# Algorithms
+# -----------------------------------------------------------------------------
+# First: ECDSA P-256 (classical, backward compatible)
+# Second: ML-DSA-65 (PQC, quantum protection)
+#
+algorithms:
+  - ecdsa-p256
+  - ml-dsa-65
+
+# -----------------------------------------------------------------------------
+# Validity
+# -----------------------------------------------------------------------------
+validity: 365d
+
+# -----------------------------------------------------------------------------
+# Variables
+# -----------------------------------------------------------------------------
+variables:
+  cn:
+    type: dns_name
+    required: true
+    description: "Common Name - Server's FQDN"
+
+# -----------------------------------------------------------------------------
+# Subject DN
+# -----------------------------------------------------------------------------
+subject:
+  cn: "{{ cn }}"
+  o: "Demo Organization"
+  c: "FR"
+
+# -----------------------------------------------------------------------------
+# X.509 Extensions
+# -----------------------------------------------------------------------------
+extensions:
+
+  # Basic Constraints
+  basicConstraints:
+    critical: true
+    ca: false
+
+  # Key Usage
+  keyUsage:
+    critical: true
+    values:
+      - digitalSignature
+
+  # Extended Key Usage
+  extKeyUsage:
+    critical: false
+    values:
+      - serverAuth
+
+  # Subject Alternative Name
+  subjectAltName:
+    critical: false
+    dns_include_cn: true
