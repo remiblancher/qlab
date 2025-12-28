@@ -302,7 +302,7 @@ pki ca versions --ca-dir output/ca
 4. **Old certificates remain valid** after CA rotation
 5. **Rollback is always possible** - reactivate older versions
 6. **Never do "big bang"** migration - it's too risky
-7. **Next step:** Now test your PQC certificates in a real TLS handshake. See [mTLS](../11-mtls/)
+7. **You're ready:** You now have the knowledge to plan and execute a PQC migration.
 
 ---
 
@@ -314,4 +314,4 @@ pki ca versions --ca-dir output/ca
 
 ---
 
-← [CMS Encryption](../09-cms-encryption/) | [Next: mTLS →](../11-mtls/)
+← [CMS Encryption](../09-cms-encryption/)

@@ -39,7 +39,7 @@ Then start with: `./journey/00-quickstart/demo.sh`
 
 ## Learning Path
 
-**Total time: ~2h** | **Minimum path: 15 min** (Quick Start + Revelation)
+**Total time: ~1h40** | **Minimum path: 15 min** (Quick Start + Revelation)
 
 ### 🚀 Getting Started
 
@@ -71,15 +71,11 @@ Then start with: `./journey/00-quickstart/demo.sh`
 | 8 | [**PQC LTV**](journey/08-ltv-signatures/) — Sign Today, Verify in 30 Years | 10 min | A signature is only as good as its proof chain. |
 | 9 | [**CMS Encryption**](journey/09-cms-encryption/) — Encrypt documents (ML-KEM) | 10 min | You cannot prove KEM key possession by signing (RFC 9883). |
 
-### 🎯 Advanced
-
-> Requires Docker and server infrastructure.
+### 🧭 Architecture & Migration
 
 | # | Mission | Time | Key Message |
 |---|---------|------|-------------|
 | 10 | [**Crypto-Agility**](journey/10-crypto-agility/) — Migrate ECDSA → ML-DSA | 12 min | Crypto-agility is an architectural property, not a tool. |
-| 11 | [**mTLS**](journey/11-mtls/) — Mutual authentication with Docker | 12 min | PQC certificates work in standard TLS stacks. |
-| 12 | [**PQC Tunnel**](journey/12-pqc-tunnel/) — Key exchange demo (ML-KEM) | 8 min | ML-KEM protects data in transit. CMS protects data at rest. |
 
 ---
 
@@ -98,9 +94,7 @@ post-quantum-pki-lab/
 │   ├── 07-timestamping/        # Timestamping
 │   ├── 08-ltv-signatures/      # LTV Signatures
 │   ├── 09-cms-encryption/      # CMS Encryption
-│   ├── 10-crypto-agility/      # Crypto-Agility
-│   ├── 11-mtls/                # mTLS (Docker)
-│   └── 12-pqc-tunnel/          # PQC Tunnel
+│   └── 10-crypto-agility/      # Crypto-Agility
 ├── reference/usecases/         # Reference documentation
 ├── lib/                        # Shell helpers
 └── bin/pki                     # PKI tool (Go)
