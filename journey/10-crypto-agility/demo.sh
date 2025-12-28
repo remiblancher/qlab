@@ -92,8 +92,8 @@ echo ""
 
 run_cmd "pki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/classic-tls-server.yaml --var cn=server.example.com"
 
-# Capture the credential ID from the output
-CRED_V1=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | head -1 | awk '{print $1}')
+# Capture the credential ID from the output (skip header and separator lines)
+CRED_V1=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | head -1 | awk '{print $1}')
 
 if [[ -n "$CRED_V1" ]]; then
     echo ""
@@ -176,8 +176,8 @@ echo ""
 
 run_cmd "pki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/pqc-tls-server.yaml --var cn=server.example.com"
 
-# Get the new credential ID
-CRED_V3=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "$CRED_V1" | head -1 | awk '{print $1}')
+# Get the new credential ID (skip header, separator, and first credential)
+CRED_V3=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | grep -v "$CRED_V1" | head -1 | awk '{print $1}')
 
 if [[ -n "$CRED_V3" ]]; then
     echo ""
@@ -336,11 +336,11 @@ echo "  Examining the certificates we created:"
 echo ""
 
 echo "  === v1 Certificate (ECDSA) ==="
-run_cmd "pki cert info output/server-v1.pem"
+run_cmd "pki inspect output/server-v1.pem"
 
 echo ""
 echo "  === v3 Certificate (ML-DSA) ==="
-run_cmd "pki cert info output/server-v3.pem"
+run_cmd "pki inspect output/server-v3.pem"
 
 echo ""
 echo "  === All Credentials ==="

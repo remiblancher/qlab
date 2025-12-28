@@ -48,7 +48,7 @@ echo "  The certificate inherits the hybrid nature from the CA."
 echo "  It will contain both ECDSA and ML-DSA keys/signatures."
 echo ""
 
-run_cmd "pki cert csr --algorithm hybrid-p384-mldsa65 --keyout output/hybrid-server.key --cn hybrid.example.com --out output/hybrid-server.csr"
+run_cmd "pki cert csr --algorithm ecdsa-p384 --hybrid ml-dsa-65 --keyout output/hybrid-server.key --hybrid-keyout output/hybrid-server-pqc.key --cn hybrid.example.com --out output/hybrid-server.csr"
 
 echo ""
 

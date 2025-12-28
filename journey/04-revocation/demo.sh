@@ -5,7 +5,8 @@
 #  Incident Response: When Keys Are Compromised
 #  Revoke certificates and generate CRLs
 #
-#  Note: This demo uses ECDSA (Go crypto/x509 CRL limitation with PQC keys)
+#  This demo uses ML-DSA-65 (Post-Quantum) for both CA and certificates.
+#  CRL generation with PQC keys is supported via custom ASN.1 encoding.
 #
 #  Key Message: Certificate revocation works the same regardless of algorithm.
 #               Same workflow, same commands.
@@ -27,17 +28,17 @@ print_step "Step 1: Create CA and Issue Certificate"
 echo "  First, we need a CA and a certificate to revoke."
 echo ""
 
-run_cmd "pki ca init --name \"Demo CA\" --profile profiles/classic-ca.yaml --dir output/demo-ca"
+run_cmd "pki ca init --name \"Demo CA\" --profile profiles/pqc-ca.yaml --dir output/demo-ca"
 
 echo ""
 echo "  Now issue a TLS certificate..."
 echo ""
 
-run_cmd "pki cert csr --algorithm ecdsa-p384 --keyout output/server.key --cn server.example.com --out output/server.csr"
+run_cmd "pki cert csr --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com --out output/server.csr"
 
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/demo-ca --profile profiles/classic-tls-server.yaml --csr output/server.csr --out output/server.crt"
+run_cmd "pki cert issue --ca-dir output/demo-ca --profile profiles/pqc-tls-server.yaml --csr output/server.csr --out output/server.crt"
 
 # Get serial number
 SERIAL=$(openssl x509 -in output/server.crt -noout -serial 2>/dev/null | cut -d= -f2)
