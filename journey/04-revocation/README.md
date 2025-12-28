@@ -80,7 +80,7 @@ pki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
     --var cn=server.example.com \
     --out output/server.crt \
-    --key-out output/server.key
+    --keyout output/server.key
 
 # Get the serial number
 openssl x509 -in output/server.crt -noout -serial

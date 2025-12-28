@@ -16,7 +16,7 @@
 #   pki cert issue --ca-dir ./tsa-ca \
 #       --profile profiles/tsa.yaml \
 #       --var cn="Demo TSA" \
-#       --out tsa.crt --key-out tsa.key
+#       --out tsa.crt --keyout tsa.key
 #
 # =============================================================================
 

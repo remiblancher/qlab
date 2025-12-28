@@ -18,7 +18,7 @@
 #   pki cert issue --ca-dir ./hybrid-ca \
 #       --profile profiles/hybrid-tls-server.yaml \
 #       --var cn=hybrid.example.com \
-#       --out hybrid-server.crt --key-out hybrid-server.key
+#       --out hybrid-server.crt --keyout hybrid-server.key
 #
 # =============================================================================
 

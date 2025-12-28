@@ -141,7 +141,7 @@ pki cert issue --ca-dir output/tsa-ca \
     --profile profiles/pqc-tsa.yaml \
     --var cn="PQC Timestamp Authority" \
     --out output/tsa.crt \
-    --key-out output/tsa.key
+    --keyout output/tsa.key
 ```
 
 ### Step 2: Timestamp a Document

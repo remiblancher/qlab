@@ -3,10 +3,12 @@
 #  UC-04: Certificate Revocation
 #
 #  Incident Response: When Keys Are Compromised
-#  Revoke certificates and generate CRLs with ML-DSA
+#  Revoke certificates and generate CRLs
 #
-#  Key Message: Revoking a PQC certificate works exactly like revoking
-#               a classical one. Same workflow, same commands.
+#  Note: This demo uses ECDSA (Go crypto/x509 CRL limitation with PQC keys)
+#
+#  Key Message: Certificate revocation works the same regardless of algorithm.
+#               Same workflow, same commands.
 # =============================================================================
 
 set -e
@@ -25,13 +27,17 @@ print_step "Step 1: Create CA and Issue Certificate"
 echo "  First, we need a CA and a certificate to revoke."
 echo ""
 
-run_cmd "pki ca init --name \"PQC CA\" --profile profiles/pqc-ca.yaml --dir output/pqc-ca"
+run_cmd "pki ca init --name \"Demo CA\" --profile profiles/classic-ca.yaml --dir output/demo-ca"
 
 echo ""
 echo "  Now issue a TLS certificate..."
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/pqc-ca --profile profiles/pqc-tls-server.yaml --var cn=server.example.com --out output/server.crt --key-out output/server.key"
+run_cmd "pki cert csr --algorithm ecdsa-p384 --keyout output/server.key --cn server.example.com --out output/server.csr"
+
+echo ""
+
+run_cmd "pki cert issue --ca-dir output/demo-ca --profile profiles/classic-tls-server.yaml --csr output/server.csr --out output/server.crt"
 
 # Get serial number
 SERIAL=$(openssl x509 -in output/server.crt -noout -serial 2>/dev/null | cut -d= -f2)
@@ -77,7 +83,7 @@ echo "    4 = superseded"
 echo "    5 = cessationOfOperation"
 echo ""
 
-run_cmd "pki cert revoke $SERIAL --ca-dir output/pqc-ca --reason keyCompromise"
+run_cmd "pki cert revoke $SERIAL --ca-dir output/demo-ca --reason keyCompromise"
 
 echo ""
 echo -e "  ${GREEN}✓${NC} Certificate revoked"
@@ -95,15 +101,15 @@ echo "  The CRL is a signed list of all revoked certificates."
 echo "  Clients download it to check certificate validity."
 echo ""
 
-run_cmd "pki ca crl gen --ca-dir output/pqc-ca"
+run_cmd "pki ca crl gen --ca-dir output/demo-ca"
 
-if [[ -f "output/pqc-ca/crl/ca.crl" ]]; then
-    crl_size=$(wc -c < "output/pqc-ca/crl/ca.crl" | tr -d ' ')
+if [[ -f "output/demo-ca/crl/ca.crl" ]]; then
+    crl_size=$(wc -c < "output/demo-ca/crl/ca.crl" | tr -d ' ')
     echo ""
     echo -e "  ${BOLD}CRL generated:${NC}"
     echo -e "    Size: $crl_size bytes"
     echo ""
-    echo -e "  ${DIM}Note: PQC CRLs are larger due to ML-DSA signatures (~3,293 bytes)${NC}"
+    echo -e "  ${DIM}Note: CRL size depends on number of revoked certificates${NC}"
 fi
 
 echo ""
@@ -119,9 +125,9 @@ print_step "Step 5: Verify Revocation Status"
 echo "  Let's verify the certificate is now rejected..."
 echo ""
 
-echo -e "  ${DIM}$ pki verify --cert output/server.crt --ca output/pqc-ca/ca.crt --crl output/pqc-ca/crl/ca.crl${NC}"
+echo -e "  ${DIM}$ pki verify --cert output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl${NC}"
 
-if ! pki verify --cert output/server.crt --ca output/pqc-ca/ca.crt --crl output/pqc-ca/crl/ca.crl 2>&1; then
+if ! pki verify --cert output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl 2>&1; then
     echo ""
     echo -e "  ${RED}✗${NC} Certificate REVOKED - Verification failed (expected!)"
 else
@@ -144,10 +150,11 @@ echo ""
 # Conclusion
 # =============================================================================
 
-print_key_message "Revoking a PQC certificate works exactly like revoking a classical one."
+print_key_message "Certificate revocation works the same regardless of algorithm."
 
 show_lesson "PKI operations are algorithm-agnostic.
 Same workflow, same commands, same runbooks.
-No retraining needed for ops teams."
+No retraining needed for ops teams.
+Note: PQC CRL support depends on Go crypto/x509 evolution."
 
 show_footer

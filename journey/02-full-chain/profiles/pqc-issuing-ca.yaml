@@ -17,7 +17,7 @@
 #   pki cert issue --ca-dir ./root-ca \
 #       --profile profiles/pqc-issuing-ca.yaml \
 #       --name "PQ Issuing CA" \
-#       --out issuing-ca.crt --key-out issuing-ca.key
+#       --out issuing-ca.crt --keyout issuing-ca.key
 #
 # =============================================================================
 

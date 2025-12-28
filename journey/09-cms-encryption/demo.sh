@@ -93,7 +93,11 @@ echo "  │                                                                 │"
 echo "  └─────────────────────────────────────────────────────────────────┘"
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/encryption-ca --profile profiles/pqc-signing.yaml --var cn=\"Alice\" --out output/alice-sign.crt --key-out output/alice-sign.key"
+run_cmd "pki cert csr --algorithm ml-dsa-65 --keyout output/alice-sign.key --cn \"Alice\" --out output/alice-sign.csr"
+
+echo ""
+
+run_cmd "pki cert issue --ca-dir output/encryption-ca --profile profiles/pqc-signing.yaml --csr output/alice-sign.csr --out output/alice-sign.crt"
 
 echo ""
 
@@ -143,7 +147,7 @@ echo "  │                                                                 │"
 echo "  └─────────────────────────────────────────────────────────────────┘"
 echo ""
 
-run_cmd "pki cert csr --algorithm ml-kem-768 --keyout output/alice-enc.key --var cn=\"Alice\" --attest-cert output/alice-sign.crt --attest-key output/alice-sign.key -o output/alice-enc.csr"
+run_cmd "pki cert csr --algorithm ml-kem-768 --keyout output/alice-enc.key --cn \"Alice\" --attest-cert output/alice-sign.crt --attest-key output/alice-sign.key --out output/alice-enc.csr"
 
 echo ""
 
@@ -187,7 +191,7 @@ echo "  │                                                                 │"
 echo "  └─────────────────────────────────────────────────────────────────┘"
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/encryption-ca --csr output/alice-enc.csr --profile profiles/pqc-encryption.yaml --out output/alice-enc.crt"
+run_cmd "pki cert issue --ca-dir output/encryption-ca --csr output/alice-enc.csr --profile profiles/pqc-encryption.yaml --attest-cert output/alice-sign.crt --out output/alice-enc.crt"
 
 echo ""
 

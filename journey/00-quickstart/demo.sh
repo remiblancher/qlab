@@ -53,7 +53,7 @@ pause "Press Enter to start..."
 step "Create Classical Root CA" \
      "ECDSA P-384, 20 years validity, CA extensions"
 
-run_cmd "$PKI_BIN init-ca --profile $PROFILES/classic-root-ca.yaml --name 'Classic Root CA' --dir $CLASSIC_CA"
+run_cmd "$PKI_BIN ca init --profile $PROFILES/classic-root-ca.yaml --name 'Classic Root CA' --dir $CLASSIC_CA"
 
 show_files "$CLASSIC_CA"
 
@@ -66,7 +66,11 @@ pause
 step "Issue Classical TLS Certificate" \
      "ECDSA P-384, TLS Server extensions (EKU, SAN)"
 
-run_cmd "$PKI_BIN issue --ca-dir $CLASSIC_CA --profile $PROFILES/classic-tls-server.yaml --var cn=classic.example.com --out $DEMO_TMP/classic-server.crt --key-out $DEMO_TMP/classic-server.key"
+run_cmd "$PKI_BIN cert csr --algorithm ecdsa-p384 --keyout $DEMO_TMP/classic-server.key --cn classic.example.com --out $DEMO_TMP/classic-server.csr"
+
+echo ""
+
+run_cmd "$PKI_BIN cert issue --ca-dir $CLASSIC_CA --profile $PROFILES/classic-tls-server.yaml --csr $DEMO_TMP/classic-server.csr --out $DEMO_TMP/classic-server.crt"
 
 echo ""
 echo -e "  ${GREEN}Certificate issued.${NC}"
@@ -83,7 +87,7 @@ pause
 step "Create Post-Quantum Root CA" \
      "ML-DSA-65 (FIPS 204), 20 years, CA extensions"
 
-run_cmd "$PKI_BIN init-ca --profile $PROFILES/pqc-root-ca.yaml --name 'PQ Root CA' --dir $PQC_CA"
+run_cmd "$PKI_BIN ca init --profile $PROFILES/pqc-root-ca.yaml --name 'PQ Root CA' --dir $PQC_CA"
 
 show_files "$PQC_CA"
 
@@ -96,7 +100,11 @@ pause
 step "Issue Post-Quantum TLS Certificate" \
      "ML-DSA-65 (FIPS 204), TLS Server extensions"
 
-run_cmd "$PKI_BIN issue --ca-dir $PQC_CA --profile $PROFILES/pqc-tls-server.yaml --var cn=pq.example.com --out $DEMO_TMP/pq-server.crt --key-out $DEMO_TMP/pq-server.key"
+run_cmd "$PKI_BIN cert csr --algorithm ml-dsa-65 --keyout $DEMO_TMP/pq-server.key --cn pq.example.com --out $DEMO_TMP/pq-server.csr"
+
+echo ""
+
+run_cmd "$PKI_BIN cert issue --ca-dir $PQC_CA --profile $PROFILES/pqc-tls-server.yaml --csr $DEMO_TMP/pq-server.csr --out $DEMO_TMP/pq-server.crt"
 
 echo ""
 echo -e "  ${GREEN}Certificate issued.${NC}"
@@ -141,7 +149,7 @@ print_comparison_row "  Key size" "$CLASSIC_KEY_SIZE" "$PQC_KEY_SIZE" " B"
 
 echo ""
 show_lesson "The PKI doesn't change. Only the algorithm changes.
-Your workflow stays exactly the same: init-ca → issue → done."
+Your workflow stays exactly the same: ca init → issue → done."
 
 echo -e "${DIM}Explore artifacts: $DEMO_TMP${NC}"
 echo ""

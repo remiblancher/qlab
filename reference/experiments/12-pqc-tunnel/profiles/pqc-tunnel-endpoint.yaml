@@ -20,7 +20,7 @@
 #       --profile profiles/tunnel-endpoint.yaml \
 #       --cn "tunnel.example.com" \
 #       --san "DNS:tunnel.example.com" \
-#       --out endpoint.crt --key-out endpoint.key
+#       --out endpoint.crt --keyout endpoint.key
 #
 # =============================================================================
 

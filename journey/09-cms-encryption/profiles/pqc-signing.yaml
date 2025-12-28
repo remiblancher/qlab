@@ -21,7 +21,7 @@
 #   pki cert issue --ca-dir ./encryption-ca \
 #       --profile profiles/signing.yaml \
 #       --var cn="Alice" \
-#       --out alice-sign.crt --key-out alice-sign.key
+#       --out alice-sign.crt --keyout alice-sign.key
 #
 # =============================================================================
 

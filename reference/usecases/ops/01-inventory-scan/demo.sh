@@ -59,7 +59,7 @@ echo ""
 
 # Legacy CA (RSA - older)
 echo -e "  Creating ${YELLOW}Legacy CA${NC} (RSA-2048)..."
-"$PKI_BIN" init-ca \
+"$PKI_BIN" ca init \
     --name "Legacy Root CA" \
     --org "Demo Organization" \
     --algorithm rsa-2048 \
@@ -67,7 +67,7 @@ echo -e "  Creating ${YELLOW}Legacy CA${NC} (RSA-2048)..."
 
 # Standard CA (ECDSA - current)
 echo -e "  Creating ${GREEN}Standard CA${NC} (ECDSA P-384)..."
-"$PKI_BIN" init-ca \
+"$PKI_BIN" ca init \
     --name "Standard Root CA" \
     --org "Demo Organization" \
     --algorithm ecdsa-p384 \
@@ -75,7 +75,7 @@ echo -e "  Creating ${GREEN}Standard CA${NC} (ECDSA P-384)..."
 
 # PQC CA (ML-DSA - future)
 echo -e "  Creating ${BLUE}PQC CA${NC} (ML-DSA-65)..."
-"$PKI_BIN" init-ca \
+"$PKI_BIN" ca init \
     --name "PQC Root CA" \
     --org "Demo Organization" \
     --algorithm ml-dsa-65 \
@@ -86,28 +86,52 @@ echo ""
 echo -e "  Issuing certificates..."
 
 # Legacy certificates
-"$PKI_BIN" issue --ca-dir "$LEGACY_CA" --profile rsa/tls-server \
+"$PKI_BIN" cert csr --algorithm rsa-2048 \
+    --keyout "$CERTS_DIR/legacy-server-1.key" \
     --cn "old-app.example.com" --dns "old-app.example.com" \
-    --out "$CERTS_DIR/legacy-server-1.crt" --key-out "$CERTS_DIR/legacy-server-1.key" > /dev/null 2>&1
-"$PKI_BIN" issue --ca-dir "$LEGACY_CA" --profile rsa/tls-server \
+    --out "$CERTS_DIR/legacy-server-1.csr" > /dev/null 2>&1
+"$PKI_BIN" cert issue --ca-dir "$LEGACY_CA" --profile rsa/tls-server \
+    --csr "$CERTS_DIR/legacy-server-1.csr" \
+    --out "$CERTS_DIR/legacy-server-1.crt" > /dev/null 2>&1
+"$PKI_BIN" cert csr --algorithm rsa-2048 \
+    --keyout "$CERTS_DIR/legacy-server-2.key" \
     --cn "legacy-api.example.com" --dns "legacy-api.example.com" \
-    --out "$CERTS_DIR/legacy-server-2.crt" --key-out "$CERTS_DIR/legacy-server-2.key" > /dev/null 2>&1
+    --out "$CERTS_DIR/legacy-server-2.csr" > /dev/null 2>&1
+"$PKI_BIN" cert issue --ca-dir "$LEGACY_CA" --profile rsa/tls-server \
+    --csr "$CERTS_DIR/legacy-server-2.csr" \
+    --out "$CERTS_DIR/legacy-server-2.crt" > /dev/null 2>&1
 
 # Standard certificates
-"$PKI_BIN" issue --ca-dir "$STANDARD_CA" --profile ec/tls-server \
+"$PKI_BIN" cert csr --algorithm ecdsa-p384 \
+    --keyout "$CERTS_DIR/standard-server-1.key" \
     --cn "api.example.com" --dns "api.example.com" \
-    --out "$CERTS_DIR/standard-server-1.crt" --key-out "$CERTS_DIR/standard-server-1.key" > /dev/null 2>&1
-"$PKI_BIN" issue --ca-dir "$STANDARD_CA" --profile ec/tls-server \
+    --out "$CERTS_DIR/standard-server-1.csr" > /dev/null 2>&1
+"$PKI_BIN" cert issue --ca-dir "$STANDARD_CA" --profile ec/tls-server \
+    --csr "$CERTS_DIR/standard-server-1.csr" \
+    --out "$CERTS_DIR/standard-server-1.crt" > /dev/null 2>&1
+"$PKI_BIN" cert csr --algorithm ecdsa-p384 \
+    --keyout "$CERTS_DIR/standard-server-2.key" \
     --cn "web.example.com" --dns "web.example.com" \
-    --out "$CERTS_DIR/standard-server-2.crt" --key-out "$CERTS_DIR/standard-server-2.key" > /dev/null 2>&1
+    --out "$CERTS_DIR/standard-server-2.csr" > /dev/null 2>&1
+"$PKI_BIN" cert issue --ca-dir "$STANDARD_CA" --profile ec/tls-server \
+    --csr "$CERTS_DIR/standard-server-2.csr" \
+    --out "$CERTS_DIR/standard-server-2.crt" > /dev/null 2>&1
 
 # PQC certificates
-"$PKI_BIN" issue --ca-dir "$PQC_CA" --profile ml-dsa-kem/tls-server \
+"$PKI_BIN" cert csr --algorithm ml-dsa-65 \
+    --keyout "$CERTS_DIR/pqc-server-1.key" \
     --cn "pq-api.example.com" --dns "pq-api.example.com" \
-    --out "$CERTS_DIR/pqc-server-1.crt" --key-out "$CERTS_DIR/pqc-server-1.key" > /dev/null 2>&1
-"$PKI_BIN" issue --ca-dir "$PQC_CA" --profile ml-dsa-kem/tls-server \
+    --out "$CERTS_DIR/pqc-server-1.csr" > /dev/null 2>&1
+"$PKI_BIN" cert issue --ca-dir "$PQC_CA" --profile ml-dsa-kem/tls-server \
+    --csr "$CERTS_DIR/pqc-server-1.csr" \
+    --out "$CERTS_DIR/pqc-server-1.crt" > /dev/null 2>&1
+"$PKI_BIN" cert csr --algorithm ml-dsa-65 \
+    --keyout "$CERTS_DIR/pqc-server-2.key" \
     --cn "pq-web.example.com" --dns "pq-web.example.com" \
-    --out "$CERTS_DIR/pqc-server-2.crt" --key-out "$CERTS_DIR/pqc-server-2.key" > /dev/null 2>&1
+    --out "$CERTS_DIR/pqc-server-2.csr" > /dev/null 2>&1
+"$PKI_BIN" cert issue --ca-dir "$PQC_CA" --profile ml-dsa-kem/tls-server \
+    --csr "$CERTS_DIR/pqc-server-2.csr" \
+    --out "$CERTS_DIR/pqc-server-2.crt" > /dev/null 2>&1
 
 print_success "Created 3 CAs and 6 end-entity certificates"
 

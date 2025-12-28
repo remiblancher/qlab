@@ -16,7 +16,7 @@
 #   pki cert issue --ca-dir ./pqc-ca \
 #       --profile profiles/pqc-tls-server.yaml \
 #       --var cn=pq.example.com \
-#       --out pq-server.crt --key-out pq-server.key
+#       --out pq-server.crt --keyout pq-server.key
 #
 # =============================================================================
 

@@ -116,7 +116,11 @@ echo "    - ML-DSA-65 key for authentication (digitalSignature)"
 echo "    - ML-KEM-768 key for key exchange (keyEncipherment)"
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/kem-ca --profile profiles/pqc-tunnel-endpoint.yaml --cn \"tunnel.example.com\" --dns tunnel.example.com --out output/tunnel.crt --key-out output/tunnel.key"
+run_cmd "pki cert csr --algorithm ml-dsa-65 --keyout output/tunnel.key --cn \"tunnel.example.com\" --dns tunnel.example.com --out output/tunnel.csr"
+
+echo ""
+
+run_cmd "pki cert issue --ca-dir output/kem-ca --profile profiles/pqc-tunnel-endpoint.yaml --csr output/tunnel.csr --out output/tunnel.crt"
 
 echo ""
 

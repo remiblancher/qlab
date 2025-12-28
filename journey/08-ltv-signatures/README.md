@@ -158,14 +158,14 @@ pki cert issue --ca-dir output/ltv-ca \
     --profile profiles/pqc-document-signing.yaml \
     --var cn="Alice (Legal Counsel)" \
     --out output/alice.crt \
-    --key-out output/alice.key
+    --keyout output/alice.key
 
 # Issue TSA certificate
 pki cert issue --ca-dir output/ltv-ca \
     --profile profiles/pqc-tsa.yaml \
     --var cn="LTV Timestamp Authority" \
     --out output/tsa.crt \
-    --key-out output/tsa.key
+    --keyout output/tsa.key
 ```
 
 ### Step 2: Sign the Document

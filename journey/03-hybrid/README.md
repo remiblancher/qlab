@@ -85,7 +85,7 @@ pki cert issue --ca-dir output/hybrid-ca \
     --profile profiles/hybrid-tls-server.yaml \
     --var cn=hybrid.example.com \
     --out output/hybrid-server.crt \
-    --key-out output/hybrid-server.key
+    --keyout output/hybrid-server.key
 
 # Inspect
 pki inspect output/hybrid-server.crt

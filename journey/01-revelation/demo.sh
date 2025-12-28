@@ -66,21 +66,29 @@ echo "  Y = Years to migrate to PQC"
 echo "  Z = Years your data/signatures must stay protected"
 echo ""
 
-echo -e "${BOLD}Enter your values:${NC}"
-echo ""
-
-read -p "  X - Years until quantum computer (default: 10): " X
-X=${X:-10}
-
-read -p "  Y - Years to migrate your systems (default: 5): " Y
-Y=${Y:-5}
-
-read -p "  Z - Years your data must stay secret: " Z
-if [[ -z "$Z" ]]; then
+# CI mode: use defaults without prompting
+if [[ "${CI:-false}" == "true" ]]; then
+    X=10
+    Y=5
+    Z=20
+    echo "  [CI mode] Using defaults: X=$X, Y=$Y, Z=$Z"
+else
+    echo -e "${BOLD}Enter your values:${NC}"
     echo ""
-    echo -e "  ${YELLOW}Examples: Healthcare=50, Government=75, Firmware=20${NC}"
-    read -p "  Z: " Z
-    Z=${Z:-20}
+
+    read -p "  X - Years until quantum computer (default: 10): " X
+    X=${X:-10}
+
+    read -p "  Y - Years to migrate your systems (default: 5): " Y
+    Y=${Y:-5}
+
+    read -p "  Z - Years your data must stay secret: " Z
+    if [[ -z "$Z" ]]; then
+        echo ""
+        echo -e "  ${YELLOW}Examples: Healthcare=50, Government=75, Firmware=20${NC}"
+        read -p "  Z: " Z
+        Z=${Z:-20}
+    fi
 fi
 
 # =============================================================================

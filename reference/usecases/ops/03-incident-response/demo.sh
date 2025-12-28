@@ -59,14 +59,14 @@ echo -e "${CYAN}Simulating normal PKI environment with mixed algorithms...${NC}"
 echo ""
 
 # Create legacy CA (RSA - will be "deprecated")
-"$PKI_BIN" init-ca \
+"$PKI_BIN" ca init \
     --name "Legacy CA" \
     --org "Demo Organization" \
     --algorithm rsa-2048 \
     --dir "$LEGACY_CA" > /dev/null 2>&1
 
 # Create PQC CA (for re-issuance)
-"$PKI_BIN" init-ca \
+"$PKI_BIN" ca init \
     --name "PQC CA" \
     --org "Demo Organization" \
     --algorithm ml-dsa-65 \
@@ -76,9 +76,13 @@ echo ""
 SERVICES=("api-server" "web-frontend" "internal-svc" "batch-processor")
 
 for SVC in "${SERVICES[@]}"; do
-    "$PKI_BIN" issue --ca-dir "$LEGACY_CA" --profile rsa/tls-server \
+    "$PKI_BIN" cert csr --algorithm rsa-2048 \
+        --keyout "$AFFECTED_DIR/${SVC}.key" \
         --cn "${SVC}.example.com" --dns "${SVC}.example.com" \
-        --out "$AFFECTED_DIR/${SVC}.crt" --key-out "$AFFECTED_DIR/${SVC}.key" > /dev/null 2>&1
+        --out "$AFFECTED_DIR/${SVC}.csr" > /dev/null 2>&1
+    "$PKI_BIN" cert issue --ca-dir "$LEGACY_CA" --profile rsa/tls-server \
+        --csr "$AFFECTED_DIR/${SVC}.csr" \
+        --out "$AFFECTED_DIR/${SVC}.crt" > /dev/null 2>&1
 done
 
 print_success "Created ${#SERVICES[@]} certificates with RSA-2048"
@@ -206,9 +210,13 @@ echo "  │ Certificate                │ Algorithm    │ Status     │"
 echo "  ├────────────────────────────┼──────────────┼────────────┤"
 
 for SVC in "${SERVICES[@]}"; do
-    "$PKI_BIN" issue --ca-dir "$PQC_CA" --profile ml-dsa-kem/tls-server \
+    "$PKI_BIN" cert csr --algorithm ml-dsa-65 \
+        --keyout "$ROTATED_DIR/${SVC}.key" \
         --cn "${SVC}.example.com" --dns "${SVC}.example.com" \
-        --out "$ROTATED_DIR/${SVC}.crt" --key-out "$ROTATED_DIR/${SVC}.key" > /dev/null 2>&1
+        --out "$ROTATED_DIR/${SVC}.csr" > /dev/null 2>&1
+    "$PKI_BIN" cert issue --ca-dir "$PQC_CA" --profile ml-dsa-kem/tls-server \
+        --csr "$ROTATED_DIR/${SVC}.csr" \
+        --out "$ROTATED_DIR/${SVC}.crt" > /dev/null 2>&1
 
     printf "  │ %-26s │ ${BLUE}ML-DSA-65${NC}    │ ${GREEN}ISSUED${NC}     │\n" "${SVC}.crt"
 done

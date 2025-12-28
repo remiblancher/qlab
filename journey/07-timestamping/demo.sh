@@ -32,7 +32,11 @@ echo ""
 echo "  Issue TSA certificate..."
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/tsa-ca --profile profiles/pqc-tsa.yaml --var cn=\"PQC Timestamp Authority\" --out output/tsa.crt --key-out output/tsa.key"
+run_cmd "pki cert csr --algorithm ml-dsa-65 --keyout output/tsa.key --cn \"PQC Timestamp Authority\" --out output/tsa.csr"
+
+echo ""
+
+run_cmd "pki cert issue --ca-dir output/tsa-ca --profile profiles/pqc-tsa.yaml --csr output/tsa.csr --out output/tsa.crt"
 
 echo ""
 

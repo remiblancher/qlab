@@ -116,7 +116,7 @@ pki cert issue --ca-dir output/encryption-ca \
     --profile profiles/pqc-signing.yaml \
     --var cn="Alice" \
     --out output/alice-sign.crt \
-    --key-out output/alice-sign.key
+    --keyout output/alice-sign.key
 ```
 
 ### Step 3: Create CSR for Encryption Key (RFC 9883 Attestation)

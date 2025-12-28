@@ -202,7 +202,7 @@ pki cert issue --ca-dir output/kem-ca \
     --cn "tunnel.example.com" \
     --dns tunnel.example.com \
     --out output/tunnel.crt \
-    --key-out output/tunnel.key
+    --keyout output/tunnel.key
 ```
 
 ---

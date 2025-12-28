@@ -39,12 +39,17 @@ After running the demo, artifacts are in `output/`.
 pki ca init --profile profiles/classic-root-ca.yaml \
     --name "Classic Root CA" --dir ./classic-ca
 
+# Generate key and CSR
+pki cert csr --algorithm ecdsa-p384 \
+    --keyout classic-server.key \
+    --cn classic.example.com \
+    --out classic-server.csr
+
 # Issue TLS certificate
 pki cert issue --ca-dir ./classic-ca \
     --profile profiles/classic-tls-server.yaml \
-    --var cn=classic.example.com \
-    --out classic-server.crt \
-    --key-out classic-server.key
+    --csr classic-server.csr \
+    --out classic-server.crt
 
 # Inspect
 pki inspect classic-server.crt
@@ -57,12 +62,17 @@ pki inspect classic-server.crt
 pki ca init --profile profiles/pqc-root-ca.yaml \
     --name "PQ Root CA" --dir ./pqc-ca
 
+# Generate key and CSR
+pki cert csr --algorithm ml-dsa-65 \
+    --keyout pq-server.key \
+    --cn pq.example.com \
+    --out pq-server.csr
+
 # Issue TLS certificate
 pki cert issue --ca-dir ./pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
-    --var cn=pq.example.com \
-    --out pq-server.crt \
-    --key-out pq-server.key
+    --csr pq-server.csr \
+    --out pq-server.crt
 
 # Inspect
 pki inspect pq-server.crt
@@ -100,7 +110,7 @@ pki inspect pq-server.crt
 
 **Switching to post-quantum is a profile change, not an architecture change.**
 
-The workflow stays identical: `init-ca` → `issue` → X.509 certificates.
+The workflow stays identical: `ca init` → `cert csr` → `cert issue` → X.509 certificates.
 Only the algorithm (and sizes) change.
 
 ---

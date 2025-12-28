@@ -56,7 +56,7 @@ print_step "Step 1: Create CA"
 echo -e "${CYAN}Creating a CA that can issue certificates with any algorithm...${NC}"
 echo ""
 
-"$PKI_BIN" init-ca \
+"$PKI_BIN" ca init \
     --name "Policy Demo CA" \
     --org "Demo Organization" \
     --algorithm ecdsa-p384 \
@@ -78,13 +78,15 @@ echo -e "      --profile ec/tls-server \\"
 echo -e "      --cn api.example.com${NC}"
 echo ""
 
-CLASSIC_TIME=$(time_cmd "$PKI_BIN" issue \
+"$PKI_BIN" cert csr --algorithm ecdsa-p384 \
+    --keyout "$CLASSIC_DIR/server.key" \
+    --cn "api.example.com" --dns "api.example.com" \
+    --out "$CLASSIC_DIR/server.csr" > /dev/null 2>&1
+CLASSIC_TIME=$(time_cmd "$PKI_BIN" cert issue \
     --ca-dir "$CA_DIR" \
     --profile ec/tls-server \
-    --cn "api.example.com" \
-    --dns "api.example.com" \
-    --out "$CLASSIC_DIR/server.crt" \
-    --key-out "$CLASSIC_DIR/server.key")
+    --csr "$CLASSIC_DIR/server.csr" \
+    --out "$CLASSIC_DIR/server.crt")
 
 print_success "Classic certificate issued in ${YELLOW}${CLASSIC_TIME}ms${NC}"
 
@@ -113,19 +115,21 @@ echo ""
 
 # Create a PQC CA for ML-DSA certificates
 PQC_CA="$DEMO_TMP/pqc-ca"
-"$PKI_BIN" init-ca \
+"$PKI_BIN" ca init \
     --name "PQC Demo CA" \
     --org "Demo Organization" \
     --algorithm ml-dsa-65 \
     --dir "$PQC_CA" > /dev/null 2>&1
 
-PQC_TIME=$(time_cmd "$PKI_BIN" issue \
+"$PKI_BIN" cert csr --algorithm ml-dsa-65 \
+    --keyout "$PQC_DIR/server.key" \
+    --cn "api.example.com" --dns "api.example.com" \
+    --out "$PQC_DIR/server.csr" > /dev/null 2>&1
+PQC_TIME=$(time_cmd "$PKI_BIN" cert issue \
     --ca-dir "$PQC_CA" \
     --profile ml-dsa-kem/tls-server \
-    --cn "api.example.com" \
-    --dns "api.example.com" \
-    --out "$PQC_DIR/server.crt" \
-    --key-out "$PQC_DIR/server.key")
+    --csr "$PQC_DIR/server.csr" \
+    --out "$PQC_DIR/server.crt")
 
 print_success "PQC certificate issued in ${YELLOW}${PQC_TIME}ms${NC}"
 
@@ -158,19 +162,21 @@ echo ""
 
 # Create a Hybrid CA
 HYBRID_CA="$DEMO_TMP/hybrid-ca"
-"$PKI_BIN" init-ca \
+"$PKI_BIN" ca init \
     --name "Hybrid Demo CA" \
     --org "Demo Organization" \
     --algorithm ecdsa-p384 \
     --dir "$HYBRID_CA" > /dev/null 2>&1
 
-HYBRID_TIME=$(time_cmd "$PKI_BIN" issue \
+"$PKI_BIN" cert csr --algorithm ecdsa-p384 \
+    --keyout "$HYBRID_DIR/server.key" \
+    --cn "api.example.com" --dns "api.example.com" \
+    --out "$HYBRID_DIR/server.csr" > /dev/null 2>&1
+HYBRID_TIME=$(time_cmd "$PKI_BIN" cert issue \
     --ca-dir "$HYBRID_CA" \
     --profile hybrid/catalyst/tls-server \
-    --cn "api.example.com" \
-    --dns "api.example.com" \
-    --out "$HYBRID_DIR/server.crt" \
-    --key-out "$HYBRID_DIR/server.key")
+    --csr "$HYBRID_DIR/server.csr" \
+    --out "$HYBRID_DIR/server.crt")
 
 print_success "Hybrid certificate issued in ${YELLOW}${HYBRID_TIME}ms${NC}"
 

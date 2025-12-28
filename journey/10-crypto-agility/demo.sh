@@ -73,7 +73,7 @@ echo "  Creating the Migration CA with ECDSA (current state)..."
 echo "  This represents the starting point of our migration journey."
 echo ""
 
-run_cmd "pki ca init --name \"Migration CA\" --profile profiles/classic-ca.yaml --dir output/ca"
+run_cmd "pki ca init --name \"Migration CA\" --profile $SCRIPT_DIR/profiles/classic-ca.yaml --dir output/ca"
 
 echo ""
 
@@ -90,7 +90,7 @@ echo ""
 echo "  Issuing a server certificate with ECDSA..."
 echo ""
 
-run_cmd "pki credential enroll --ca-dir output/ca --profile profiles/classic-tls-server.yaml --var cn=server.example.com"
+run_cmd "pki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/classic-tls-server.yaml --var cn=server.example.com"
 
 # Capture the credential ID from the output
 CRED_V1=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | head -1 | awk '{print $1}')
@@ -115,7 +115,7 @@ echo "  Rotating the CA to hybrid mode (Catalyst)..."
 echo "  The old ECDSA version becomes archived, new hybrid version is active."
 echo ""
 
-run_cmd "pki ca rotate --ca-dir output/ca --profile profiles/hybrid-ca.yaml"
+run_cmd "pki ca rotate --ca-dir output/ca --profile $SCRIPT_DIR/profiles/hybrid-ca.yaml"
 
 echo ""
 echo "  Checking CA versions:"
@@ -145,7 +145,7 @@ echo "  Rotating the CA to full post-quantum..."
 echo "  ML-DSA-65 only (no classical fallback)."
 echo ""
 
-run_cmd "pki ca rotate --ca-dir output/ca --profile profiles/pqc-ca.yaml"
+run_cmd "pki ca rotate --ca-dir output/ca --profile $SCRIPT_DIR/profiles/pqc-ca.yaml"
 
 echo ""
 echo "  Checking CA versions:"
@@ -174,7 +174,7 @@ print_step "Step 5: Issue PQC Server Certificate"
 echo "  Issuing a server certificate with ML-DSA..."
 echo ""
 
-run_cmd "pki credential enroll --ca-dir output/ca --profile profiles/pqc-tls-server.yaml --var cn=server.example.com"
+run_cmd "pki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/pqc-tls-server.yaml --var cn=server.example.com"
 
 # Get the new credential ID
 CRED_V3=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "$CRED_V1" | head -1 | awk '{print $1}')

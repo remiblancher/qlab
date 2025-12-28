@@ -15,7 +15,7 @@
 #   pki cert issue --ca-dir ./mtls-ca \
 #       --profile profiles/tls-client.yaml \
 #       --cn "alice@example.com" \
-#       --out client.crt --key-out client.key
+#       --out client.crt --keyout client.key
 #
 # =============================================================================
 

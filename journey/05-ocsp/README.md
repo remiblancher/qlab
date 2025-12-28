@@ -70,14 +70,14 @@ pki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-ocsp-responder.yaml \
     --var cn="OCSP Responder" \
     --out output/ocsp-responder.crt \
-    --key-out output/ocsp-responder.key
+    --keyout output/ocsp-responder.key
 
 # Issue TLS certificate to verify
 pki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
     --var cn=server.example.com \
     --out output/server.crt \
-    --key-out output/server.key
+    --keyout output/server.key
 ```
 
 ### Step 2: Start OCSP Responder

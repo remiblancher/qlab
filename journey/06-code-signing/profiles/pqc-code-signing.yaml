@@ -16,7 +16,7 @@
 #   pki cert issue --ca-dir ./code-signing-ca \
 #       --profile profiles/code-signing.yaml \
 #       --var cn="Developer" \
-#       --out developer.crt --key-out developer.key
+#       --out developer.crt --keyout developer.key
 #
 # =============================================================================
 

@@ -15,7 +15,7 @@
 #   pki cert issue --ca-dir ./ltv-ca \
 #       --profile profiles/document-signing.yaml \
 #       --var cn="Legal Department" \
-#       --out doc-signer.crt --key-out doc-signer.key
+#       --out doc-signer.crt --keyout doc-signer.key
 #
 # =============================================================================
 

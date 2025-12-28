@@ -68,7 +68,11 @@ print_step "Step 3: Issue TLS Server Certificate"
 echo "  The TLS server certificate uses ML-DSA-65 for authentication."
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/pqc-issuing-ca --profile profiles/pqc-tls-server.yaml --var cn=server.example.com --out output/server.crt --key-out output/server.key"
+run_cmd "pki cert csr --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com --out output/server.csr"
+
+echo ""
+
+run_cmd "pki cert issue --ca-dir output/pqc-issuing-ca --profile profiles/pqc-tls-server.yaml --csr output/server.csr --out output/server.crt"
 
 echo ""
 echo -e "  ${BOLD}Certificate details:${NC}"

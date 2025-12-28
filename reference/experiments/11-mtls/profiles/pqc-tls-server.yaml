@@ -16,7 +16,7 @@
 #       --profile profiles/tls-server.yaml \
 #       --cn "api.example.com" \
 #       --san "DNS:api.example.com,DNS:localhost" \
-#       --out server.crt --key-out server.key
+#       --out server.crt --keyout server.key
 #
 # =============================================================================
 

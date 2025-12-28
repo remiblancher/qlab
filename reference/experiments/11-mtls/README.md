@@ -146,7 +146,7 @@ pki cert issue --ca-dir output/mtls-ca \
     --cn "api.example.com" \
     --dns api.example.com \
     --out output/server.crt \
-    --key-out output/server.key
+    --keyout output/server.key
 ```
 
 ### Step 3: Issue Client Certificates
@@ -157,14 +157,14 @@ pki cert issue --ca-dir output/mtls-ca \
     --profile profiles/pqc-tls-client.yaml \
     --cn "Alice" \
     --out output/alice.crt \
-    --key-out output/alice.key
+    --keyout output/alice.key
 
 # Client certificate for Bob
 pki cert issue --ca-dir output/mtls-ca \
     --profile profiles/pqc-tls-client.yaml \
     --cn "Bob" \
     --out output/bob.crt \
-    --key-out output/bob.key
+    --keyout output/bob.key
 ```
 
 ### Step 4: Verify Client Certificates
