@@ -4,7 +4,7 @@
 
 Educational demonstrations for transitioning to Post-Quantum Cryptography using a real PKI implementation.
 
-> **QLAB** is built on top of **[QPKI (Post-Quantum PKI)](https://github.com/remiblancher/pki)**, which provides the underlying PKI toolkit for all certificate authority operations, key generation, and cryptographic functions. QPKI is an external dependency.
+> **QLAB** is built on top of **[QPKI (Post-Quantum PKI)](https://github.com/remiblancher/post-quantum-pki)**, which provides the underlying PKI toolkit for all certificate authority operations, key generation, and cryptographic functions. QPKI is an external dependency.
 
 ---
 
@@ -134,7 +134,7 @@ post-quantum-pki-lab/
 
 ## Useful Links
 
-- [QPKI - Post-Quantum PKI](https://github.com/remiblancher/pki) — The PKI toolkit used by QLAB
+- [QPKI - Post-Quantum PKI](https://github.com/remiblancher/post-quantum-pki) — The PKI toolkit used by QLAB
 - [Glossary](docs/GLOSSARY.md) — PQC and PKI terminology
 - [NIST Post-Quantum Cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
 - [FIPS 203 (ML-KEM)](https://csrc.nist.gov/pubs/fips/203/final)
@@ -152,7 +152,7 @@ QLAB provides:
 - Interactive demonstrations of quantum-safe certificate operations
 - Step-by-step journeys from classical to post-quantum PKI
 
-QLAB uses **[QPKI (Post-Quantum PKI)](https://github.com/remiblancher/pki)** for all PKI operations including:
+QLAB uses **[QPKI (Post-Quantum PKI)](https://github.com/remiblancher/post-quantum-pki)** for all PKI operations including:
 - Certificate Authority (CA) management
 - Certificate generation and issuance
 - Post-Quantum Cryptography (PQC) algorithms

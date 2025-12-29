@@ -115,7 +115,7 @@ echo -e "Attempting to download pre-built binary..."
 echo ""
 
 # GitHub release URL (update this when releases are available)
-GITHUB_REPO="remiblancher/pki"
+GITHUB_REPO="remiblancher/post-quantum-pki"
 VERSION="${PKI_VERSION:-latest}"
 
 if [[ "$VERSION" == "latest" ]]; then
