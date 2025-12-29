@@ -22,7 +22,7 @@ This matters today because:
 
 This lab demonstrates:
 - **Classical and post-quantum PKI work the same way** — only the algorithm changes
-- **Hybrid certificates provide a safe migration path** — protect legacy and future clients
+- **Hybrid certificates provide a quantum-safe migration path** — protect legacy and future clients
 - **The PKI model is algorithm-agnostic** — your workflow stays exactly the same
 
 ---
