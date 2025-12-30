@@ -30,27 +30,27 @@ echo "    - A document signing certificate for Alice"
 echo "    - A TSA certificate for timestamping"
 echo ""
 
-run_cmd "pki ca init --name \"LTV Demo CA\" --profile profiles/pqc-ca.yaml --dir output/ltv-ca"
+run_cmd "qpki ca init --name \"LTV Demo CA\" --profile profiles/pqc-ca.yaml --dir output/ltv-ca"
 
 echo ""
 echo "  Issue document signing certificate for Alice..."
 echo ""
 
-run_cmd "pki cert csr --algorithm ml-dsa-65 --keyout output/alice.key --cn \"Alice (Legal Counsel)\" --out output/alice.csr"
+run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/alice.key --cn \"Alice (Legal Counsel)\" --out output/alice.csr"
 
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/ltv-ca --profile profiles/pqc-document-signing.yaml --csr output/alice.csr --out output/alice.crt"
+run_cmd "qpki cert issue --ca-dir output/ltv-ca --profile profiles/pqc-document-signing.yaml --csr output/alice.csr --out output/alice.crt"
 
 echo ""
 echo "  Issue TSA certificate..."
 echo ""
 
-run_cmd "pki cert csr --algorithm ml-dsa-65 --keyout output/tsa.key --cn \"LTV Timestamp Authority\" --out output/tsa.csr"
+run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/tsa.key --cn \"LTV Timestamp Authority\" --out output/tsa.csr"
 
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/ltv-ca --profile profiles/pqc-tsa.yaml --csr output/tsa.csr --out output/tsa.crt"
+run_cmd "qpki cert issue --ca-dir output/ltv-ca --profile profiles/pqc-tsa.yaml --csr output/tsa.csr --out output/tsa.crt"
 
 echo ""
 
@@ -98,7 +98,7 @@ echo ""
 echo "  Signing with CMS (ML-DSA)..."
 echo ""
 
-run_cmd "pki cms sign --data output/contract.txt --cert output/alice.crt --key output/alice.key -o output/contract.p7s"
+run_cmd "qpki cms sign --data output/contract.txt --cert output/alice.crt --key output/alice.key -o output/contract.p7s"
 
 echo ""
 
@@ -121,7 +121,7 @@ echo "  The timestamp proves WHEN the document was signed."
 echo "  This is critical because it proves the certificate was valid at signing time."
 echo ""
 
-run_cmd "pki tsa sign --data output/contract.p7s --cert output/tsa.crt --key output/tsa.key -o output/contract.tsr"
+run_cmd "qpki tsa sign --data output/contract.p7s --cert output/tsa.crt --key output/tsa.key -o output/contract.tsr"
 
 echo ""
 
@@ -196,7 +196,7 @@ echo ""
 echo "  Verifying CMS signature using bundled chain..."
 echo ""
 
-run_cmd "pki cms verify --signature $BUNDLE_DIR/signature.p7s --data $BUNDLE_DIR/document.txt"
+run_cmd "qpki cms verify --signature $BUNDLE_DIR/signature.p7s --data $BUNDLE_DIR/document.txt"
 
 echo ""
 echo -e "  ${GREEN}✓${NC} Signature VALID"

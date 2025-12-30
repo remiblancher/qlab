@@ -26,17 +26,17 @@ echo "  A Timestamp Authority (TSA) issues cryptographic proofs of time."
 echo "  The TSA certificate has Extended Key Usage: timeStamping."
 echo ""
 
-run_cmd "pki ca init --name \"TSA Root CA\" --profile profiles/pqc-ca.yaml --dir output/tsa-ca"
+run_cmd "qpki ca init --name \"TSA Root CA\" --profile profiles/pqc-ca.yaml --dir output/tsa-ca"
 
 echo ""
 echo "  Issue TSA certificate..."
 echo ""
 
-run_cmd "pki cert csr --algorithm ml-dsa-65 --keyout output/tsa.key --cn \"PQC Timestamp Authority\" --out output/tsa.csr"
+run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/tsa.key --cn \"PQC Timestamp Authority\" --out output/tsa.csr"
 
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/tsa-ca --profile profiles/pqc-tsa.yaml --csr output/tsa.csr --out output/tsa.crt"
+run_cmd "qpki cert issue --ca-dir output/tsa-ca --profile profiles/pqc-tsa.yaml --csr output/tsa.csr --out output/tsa.crt"
 
 echo ""
 
@@ -79,7 +79,7 @@ echo ""
 echo "  Timestamping with PQC (RFC 3161)..."
 echo ""
 
-run_cmd "pki tsa sign --data output/document.txt --cert output/tsa.crt --key output/tsa.key -o output/document.tsr"
+run_cmd "qpki tsa sign --data output/document.txt --cert output/tsa.crt --key output/tsa.key -o output/document.tsr"
 
 echo ""
 
@@ -105,10 +105,10 @@ echo ""
 
 # Note: TSA verification requires signer certificate in token (tool limitation)
 # For demo purposes, we show the expected behavior
-echo -e "  ${DIM}$ pki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt${NC}"
+echo -e "  ${DIM}$ qpki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt${NC}"
 echo ""
 
-if pki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt > /dev/null 2>&1; then
+if qpki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt > /dev/null 2>&1; then
     echo -e "  ${GREEN}✓${NC} Timestamp valid!"
 else
     # Show expected behavior (verification would succeed with proper token)
@@ -139,10 +139,10 @@ echo ""
 echo "  Verifying the modified document..."
 echo ""
 
-echo -e "  ${DIM}$ pki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt${NC}"
+echo -e "  ${DIM}$ qpki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt${NC}"
 echo ""
 
-if pki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt > /dev/null 2>&1; then
+if qpki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt > /dev/null 2>&1; then
     echo -e "  ${GREEN}✓${NC} Timestamp valid"
 else
     echo -e "  ${RED}✗${NC} Timestamp verification FAILED!"

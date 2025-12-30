@@ -73,7 +73,7 @@ echo "  Creating the Migration CA with ECDSA (current state)..."
 echo "  This represents the starting point of our migration journey."
 echo ""
 
-run_cmd "pki ca init --name \"Migration CA\" --profile $SCRIPT_DIR/profiles/classic-ca.yaml --dir output/ca"
+run_cmd "qpki ca init --name \"Migration CA\" --profile $SCRIPT_DIR/profiles/classic-ca.yaml --dir output/ca"
 
 echo ""
 
@@ -90,7 +90,7 @@ echo ""
 echo "  Issuing a server certificate with ECDSA..."
 echo ""
 
-run_cmd "pki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/classic-tls-server.yaml --var cn=server.example.com"
+run_cmd "qpki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/classic-tls-server.yaml --var cn=server.example.com"
 
 # Capture the credential ID from the output (skip header and separator lines)
 CRED_V1=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | head -1 | awk '{print $1}')
@@ -98,7 +98,7 @@ CRED_V1=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | g
 if [[ -n "$CRED_V1" ]]; then
     echo ""
     echo -e "  ${CYAN}Credential ID:${NC} $CRED_V1"
-    run_cmd "pki credential export $CRED_V1 --ca-dir output/ca -o output/server-v1.pem"
+    run_cmd "qpki credential export $CRED_V1 --ca-dir output/ca -o output/server-v1.pem"
 fi
 
 echo ""
@@ -115,13 +115,13 @@ echo "  Rotating the CA to hybrid mode (Catalyst)..."
 echo "  The old ECDSA version becomes archived, new hybrid version is active."
 echo ""
 
-run_cmd "pki ca rotate --ca-dir output/ca --profile $SCRIPT_DIR/profiles/hybrid-ca.yaml"
+run_cmd "qpki ca rotate --ca-dir output/ca --profile $SCRIPT_DIR/profiles/hybrid-ca.yaml"
 
 echo ""
 echo "  Checking CA versions:"
 echo ""
 
-run_cmd "pki ca versions --ca-dir output/ca"
+run_cmd "qpki ca versions --ca-dir output/ca"
 
 echo ""
 
@@ -145,13 +145,13 @@ echo "  Rotating the CA to full post-quantum..."
 echo "  ML-DSA-65 only (no classical fallback)."
 echo ""
 
-run_cmd "pki ca rotate --ca-dir output/ca --profile $SCRIPT_DIR/profiles/pqc-ca.yaml"
+run_cmd "qpki ca rotate --ca-dir output/ca --profile $SCRIPT_DIR/profiles/pqc-ca.yaml"
 
 echo ""
 echo "  Checking CA versions:"
 echo ""
 
-run_cmd "pki ca versions --ca-dir output/ca"
+run_cmd "qpki ca versions --ca-dir output/ca"
 
 echo ""
 
@@ -174,7 +174,7 @@ print_step "Step 5: Issue PQC Server Certificate"
 echo "  Issuing a server certificate with ML-DSA..."
 echo ""
 
-run_cmd "pki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/pqc-tls-server.yaml --var cn=server.example.com"
+run_cmd "qpki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/pqc-tls-server.yaml --var cn=server.example.com"
 
 # Get the new credential ID (skip header, separator, and first credential)
 CRED_V3=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | grep -v "$CRED_V1" | head -1 | awk '{print $1}')
@@ -182,7 +182,7 @@ CRED_V3=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | g
 if [[ -n "$CRED_V3" ]]; then
     echo ""
     echo -e "  ${CYAN}Credential ID:${NC} $CRED_V3"
-    run_cmd "pki credential export $CRED_V3 --ca-dir output/ca -o output/server-v3.pem"
+    run_cmd "qpki credential export $CRED_V3 --ca-dir output/ca -o output/server-v3.pem"
 fi
 
 echo ""
@@ -211,15 +211,15 @@ echo "  └───────────────────────
 echo ""
 
 echo "  Trust store for legacy clients (v1 only):"
-run_cmd "pki ca export --ca-dir output/ca --version v1 -o output/trust-legacy.pem"
+run_cmd "qpki ca export --ca-dir output/ca --version v1 -o output/trust-legacy.pem"
 
 echo ""
 echo "  Trust store for modern clients (v3 only):"
-run_cmd "pki ca export --ca-dir output/ca --version v3 -o output/trust-modern.pem"
+run_cmd "qpki ca export --ca-dir output/ca --version v3 -o output/trust-modern.pem"
 
 echo ""
 echo "  Trust store for transition (all versions):"
-run_cmd "pki ca export --ca-dir output/ca --all -o output/trust-transition.pem"
+run_cmd "qpki ca export --ca-dir output/ca --all -o output/trust-transition.pem"
 
 echo ""
 
@@ -250,7 +250,7 @@ echo "  ├───────────────────────
 
 # Test 1: Legacy cert with legacy trust
 echo -n "  │  v1 cert + trust-legacy.pem   │  "
-if pki verify --cert output/server-v1.pem --ca output/trust-legacy.pem > /dev/null 2>&1; then
+if qpki verify --cert output/server-v1.pem --ca output/trust-legacy.pem > /dev/null 2>&1; then
     echo -e "${GREEN}✓ OK${NC}                          │"
 else
     echo -e "${RED}✗ FAIL${NC}                        │"
@@ -258,7 +258,7 @@ fi
 
 # Test 2: PQC cert with modern trust
 echo -n "  │  v3 cert + trust-modern.pem   │  "
-if pki verify --cert output/server-v3.pem --ca output/trust-modern.pem > /dev/null 2>&1; then
+if qpki verify --cert output/server-v3.pem --ca output/trust-modern.pem > /dev/null 2>&1; then
     echo -e "${GREEN}✓ OK${NC}                          │"
 else
     echo -e "${RED}✗ FAIL${NC}                        │"
@@ -266,7 +266,7 @@ fi
 
 # Test 3: Legacy cert with transition trust
 echo -n "  │  v1 cert + trust-transition   │  "
-if pki verify --cert output/server-v1.pem --ca output/trust-transition.pem > /dev/null 2>&1; then
+if qpki verify --cert output/server-v1.pem --ca output/trust-transition.pem > /dev/null 2>&1; then
     echo -e "${GREEN}✓ OK${NC}                          │"
 else
     echo -e "${RED}✗ FAIL${NC}                        │"
@@ -274,7 +274,7 @@ fi
 
 # Test 4: PQC cert with transition trust
 echo -n "  │  v3 cert + trust-transition   │  "
-if pki verify --cert output/server-v3.pem --ca output/trust-transition.pem > /dev/null 2>&1; then
+if qpki verify --cert output/server-v3.pem --ca output/trust-transition.pem > /dev/null 2>&1; then
     echo -e "${GREEN}✓ OK${NC}                          │"
 else
     echo -e "${RED}✗ FAIL${NC}                        │"
@@ -307,13 +307,13 @@ echo "  Crypto-agility means you can go BACK if needed."
 echo "  Let's reactivate the Hybrid CA (v2)..."
 echo ""
 
-run_cmd "pki ca activate --ca-dir output/ca --version v2"
+run_cmd "qpki ca activate --ca-dir output/ca --version v2"
 
 echo ""
 echo "  Checking CA versions after rollback:"
 echo ""
 
-run_cmd "pki ca versions --ca-dir output/ca"
+run_cmd "qpki ca versions --ca-dir output/ca"
 
 echo ""
 echo -e "  ${YELLOW}v2 (Hybrid) is now active again!${NC}"
@@ -336,15 +336,15 @@ echo "  Examining the certificates we created:"
 echo ""
 
 echo "  === v1 Certificate (ECDSA) ==="
-run_cmd "pki inspect output/server-v1.pem"
+run_cmd "qpki inspect output/server-v1.pem"
 
 echo ""
 echo "  === v3 Certificate (ML-DSA) ==="
-run_cmd "pki inspect output/server-v3.pem"
+run_cmd "qpki inspect output/server-v3.pem"
 
 echo ""
 echo "  === All Credentials ==="
-run_cmd "pki credential list --ca-dir output/ca"
+run_cmd "qpki credential list --ca-dir output/ca"
 
 echo ""
 

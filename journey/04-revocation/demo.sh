@@ -28,17 +28,17 @@ print_step "Step 1: Create CA and Issue Certificate"
 echo "  First, we need a CA and a certificate to revoke."
 echo ""
 
-run_cmd "pki ca init --name \"Demo CA\" --profile profiles/pqc-ca.yaml --dir output/demo-ca"
+run_cmd "qpki ca init --name \"Demo CA\" --profile profiles/pqc-ca.yaml --dir output/demo-ca"
 
 echo ""
 echo "  Now issue a TLS certificate..."
 echo ""
 
-run_cmd "pki cert csr --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com --out output/server.csr"
+run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com --out output/server.csr"
 
 echo ""
 
-run_cmd "pki cert issue --ca-dir output/demo-ca --profile profiles/pqc-tls-server.yaml --csr output/server.csr --out output/server.crt"
+run_cmd "qpki cert issue --ca-dir output/demo-ca --profile profiles/pqc-tls-server.yaml --csr output/server.csr --out output/server.crt"
 
 # Get serial number
 SERIAL=$(openssl x509 -in output/server.crt -noout -serial 2>/dev/null | cut -d= -f2)
@@ -84,7 +84,7 @@ echo "    4 = superseded"
 echo "    5 = cessationOfOperation"
 echo ""
 
-run_cmd "pki cert revoke $SERIAL --ca-dir output/demo-ca --reason keyCompromise"
+run_cmd "qpki cert revoke $SERIAL --ca-dir output/demo-ca --reason keyCompromise"
 
 echo ""
 echo -e "  ${GREEN}✓${NC} Certificate revoked"
@@ -102,7 +102,7 @@ echo "  The CRL is a signed list of all revoked certificates."
 echo "  Clients download it to check certificate validity."
 echo ""
 
-run_cmd "pki ca crl gen --ca-dir output/demo-ca"
+run_cmd "qpki ca crl gen --ca-dir output/demo-ca"
 
 if [[ -f "output/demo-ca/crl/ca.crl" ]]; then
     crl_size=$(wc -c < "output/demo-ca/crl/ca.crl" | tr -d ' ')
@@ -126,9 +126,9 @@ print_step "Step 5: Verify Revocation Status"
 echo "  Let's verify the certificate is now rejected..."
 echo ""
 
-echo -e "  ${DIM}$ pki verify --cert output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl${NC}"
+echo -e "  ${DIM}$ qpki verify --cert output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl${NC}"
 
-if ! pki verify --cert output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl 2>&1; then
+if ! qpki verify --cert output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl 2>&1; then
     echo ""
     echo -e "  ${RED}✗${NC} Certificate REVOKED - Verification failed (expected!)"
 else
