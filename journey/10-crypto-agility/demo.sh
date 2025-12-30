@@ -93,7 +93,7 @@ echo ""
 run_cmd "qpki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/classic-tls-server.yaml --var cn=server.example.com"
 
 # Capture the credential ID from the output (skip header and separator lines)
-CRED_V1=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | head -1 | awk '{print $1}')
+CRED_V1=$(qpki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | head -1 | awk '{print $1}')
 
 if [[ -n "$CRED_V1" ]]; then
     echo ""
@@ -177,7 +177,7 @@ echo ""
 run_cmd "qpki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/pqc-tls-server.yaml --var cn=server.example.com"
 
 # Get the new credential ID (skip header, separator, and first credential)
-CRED_V3=$(pki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | grep -v "$CRED_V1" | head -1 | awk '{print $1}')
+CRED_V3=$(qpki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | grep -v "$CRED_V1" | head -1 | awk '{print $1}')
 
 if [[ -n "$CRED_V3" ]]; then
     echo ""
