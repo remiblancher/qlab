@@ -42,7 +42,7 @@ echo ""
 echo "  Issue delegated OCSP responder certificate (best practice: CA key stays offline)..."
 echo ""
 
-run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/ocsp-responder.key --cn \"OCSP Responder\" --out output/ocsp-responder.csr"
+run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/ocsp-responder.key --cn \"OCSP Responder\" -o output/ocsp-responder.csr"
 
 echo ""
 
@@ -52,7 +52,7 @@ echo ""
 echo "  Issue TLS server certificate to verify..."
 echo ""
 
-run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com --out output/server.csr"
+run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com -o output/server.csr"
 
 echo ""
 

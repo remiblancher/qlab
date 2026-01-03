@@ -246,14 +246,14 @@ qpki ca export --ca-dir output/ca --all -o output/trust-transition.pem
 
 ```bash
 # Old cert validates with legacy trust
-qpki verify --cert output/server-v1.pem --ca output/trust-legacy.pem
+qpki cert verify output/server-v1.pem --ca output/trust-legacy.pem
 
 # New cert validates with modern trust
-qpki verify --cert output/server-v3.pem --ca output/trust-modern.pem
+qpki cert verify output/server-v3.pem --ca output/trust-modern.pem
 
 # ALL certs validate with transition bundle
-qpki verify --cert output/server-v1.pem --ca output/trust-transition.pem
-qpki verify --cert output/server-v3.pem --ca output/trust-transition.pem
+qpki cert verify output/server-v1.pem --ca output/trust-transition.pem
+qpki cert verify output/server-v3.pem --ca output/trust-transition.pem
 ```
 
 ### Step 7: Incident Simulation (Rollback)

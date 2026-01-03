@@ -40,10 +40,10 @@ qpki ca init --profile profiles/classic-root-ca.yaml \
     --name "Classic Root CA" --dir ./classic-ca
 
 # Generate key and CSR
-qpki cert csr --algorithm ecdsa-p384 \
+qpki csr gen --algorithm ecdsa-p384 \
     --keyout classic-server.key \
     --cn classic.example.com \
-    --out classic-server.csr
+    -o classic-server.csr
 
 # Issue TLS certificate
 qpki cert issue --ca-dir ./classic-ca \
@@ -63,10 +63,10 @@ qpki ca init --profile profiles/pqc-root-ca.yaml \
     --name "PQ Root CA" --dir ./pqc-ca
 
 # Generate key and CSR
-qpki cert csr --algorithm ml-dsa-65 \
+qpki csr gen --algorithm ml-dsa-65 \
     --keyout pq-server.key \
     --cn pq.example.com \
-    --out pq-server.csr
+    -o pq-server.csr
 
 # Issue TLS certificate
 qpki cert issue --ca-dir ./pqc-ca \
@@ -110,7 +110,7 @@ qpki inspect pq-server.crt
 
 **Switching to post-quantum is a profile change, not an architecture change.**
 
-The workflow stays identical: `qpki ca init` → `qpki cert csr` → `qpki cert issue` → X.509 certificates.
+The workflow stays identical: `qpki ca init` → `qpki csr gen` → `qpki cert issue` → X.509 certificates.
 Only the algorithm (and sizes) change.
 
 ---

@@ -68,7 +68,7 @@ print_step "Step 3: Issue TLS Server Certificate"
 echo "  The TLS server certificate uses ML-DSA-65 for authentication."
 echo ""
 
-run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com --out output/server.csr"
+run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com -o output/server.csr"
 
 echo ""
 

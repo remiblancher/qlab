@@ -66,7 +66,7 @@ pause
 step "Issue Classical TLS Certificate" \
      "ECDSA P-384, TLS Server extensions (EKU, SAN)"
 
-run_cmd "$PKI_BIN cert csr --algorithm ecdsa-p384 --keyout $DEMO_TMP/classic-server.key --cn classic.example.com --out $DEMO_TMP/classic-server.csr"
+run_cmd "$PKI_BIN csr gen --algorithm ecdsa-p384 --keyout $DEMO_TMP/classic-server.key --cn classic.example.com -o $DEMO_TMP/classic-server.csr"
 
 echo ""
 
@@ -100,7 +100,7 @@ pause
 step "Issue Post-Quantum TLS Certificate" \
      "ML-DSA-65 (FIPS 204), TLS Server extensions"
 
-run_cmd "$PKI_BIN cert csr --algorithm ml-dsa-65 --keyout $DEMO_TMP/pq-server.key --cn pq.example.com --out $DEMO_TMP/pq-server.csr"
+run_cmd "$PKI_BIN csr gen --algorithm ml-dsa-65 --keyout $DEMO_TMP/pq-server.key --cn pq.example.com -o $DEMO_TMP/pq-server.csr"
 
 echo ""
 

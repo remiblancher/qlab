@@ -34,7 +34,7 @@ echo ""
 echo "  Now issue a TLS certificate..."
 echo ""
 
-run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com --out output/server.csr"
+run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/server.key --cn server.example.com -o output/server.csr"
 
 echo ""
 
@@ -102,7 +102,7 @@ echo "  The CRL is a signed list of all revoked certificates."
 echo "  Clients download it to check certificate validity."
 echo ""
 
-run_cmd "qpki ca crl gen --ca-dir output/demo-ca"
+run_cmd "qpki crl gen --ca-dir output/demo-ca"
 
 if [[ -f "output/demo-ca/crl/ca.crl" ]]; then
     crl_size=$(wc -c < "output/demo-ca/crl/ca.crl" | tr -d ' ')
@@ -126,9 +126,9 @@ print_step "Step 5: Verify Revocation Status"
 echo "  Let's verify the certificate is now rejected..."
 echo ""
 
-echo -e "  ${DIM}$ qpki verify --cert output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl${NC}"
+echo -e "  ${DIM}$ qpki cert verify output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl${NC}"
 
-if ! qpki verify --cert output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl 2>&1; then
+if ! qpki cert verify output/server.crt --ca output/demo-ca/ca.crt --crl output/demo-ca/crl/ca.crl 2>&1; then
     echo ""
     echo -e "  ${RED}✗${NC} Certificate REVOKED - Verification failed (expected!)"
 else

@@ -43,7 +43,7 @@ echo "    - Extended Key Usage: codeSigning"
 echo "    - Key Usage: digitalSignature"
 echo ""
 
-run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/code-signing.key --cn \"ACME Software\" --out output/code-signing.csr"
+run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/code-signing.key --cn \"ACME Software\" -o output/code-signing.csr"
 
 echo ""
 
@@ -102,7 +102,7 @@ print_step "Step 4: Verify the Signature"
 echo "  Simulating client-side verification..."
 echo ""
 
-run_cmd "qpki cms verify --signature output/firmware.p7s --data output/firmware.bin"
+run_cmd "qpki cms verify output/firmware.p7s --data output/firmware.bin"
 
 echo ""
 echo -e "  ${GREEN}✓${NC} Signature valid!"
@@ -129,10 +129,10 @@ echo ""
 echo "  Verifying the tampered firmware..."
 echo ""
 
-echo -e "  ${DIM}$ qpki cms verify --signature output/firmware.p7s --data output/firmware.bin${NC}"
+echo -e "  ${DIM}$ qpki cms verify output/firmware.p7s --data output/firmware.bin${NC}"
 echo ""
 
-if qpki cms verify --signature output/firmware.p7s --data output/firmware.bin > /dev/null 2>&1; then
+if qpki cms verify output/firmware.p7s --data output/firmware.bin > /dev/null 2>&1; then
     echo -e "  ${GREEN}✓${NC} Signature valid"
 else
     echo -e "  ${RED}✗${NC} Signature verification FAILED!"

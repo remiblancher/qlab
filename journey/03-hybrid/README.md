@@ -99,7 +99,7 @@ openssl verify -CAfile output/hybrid-ca/ca.crt output/hybrid-server.crt
 # → OK (uses ECDSA, ignores PQC extensions)
 
 # PQC-aware client (qpki tool)
-qpki verify --cert output/hybrid-server.crt --ca output/hybrid-ca/ca.crt
+qpki cert verify output/hybrid-server.crt --ca output/hybrid-ca/ca.crt
 # → OK (verifies BOTH ECDSA and ML-DSA signatures)
 ```
 

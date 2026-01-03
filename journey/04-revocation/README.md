@@ -93,14 +93,14 @@ openssl x509 -in output/server.crt -noout -serial
 qpki cert revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
 
 # Generate updated CRL
-qpki ca crl gen --ca-dir output/pqc-ca
+qpki crl gen --ca-dir output/pqc-ca
 ```
 
 ### Step 3: Verify Revocation
 
 ```bash
 # Verify certificate against CRL (should fail)
-qpki verify --cert output/server.crt \
+qpki cert verify output/server.crt \
     --ca output/pqc-ca/ca.crt \
     --crl output/pqc-ca/crl/ca.crl
 ```
@@ -133,7 +133,7 @@ qpki verify --cert output/server.crt \
    └─► qpki cert revoke <serial> --ca-dir <ca> --reason keyCompromise
 
 4. PUBLISH
-   └─► qpki ca crl gen --ca-dir <ca>
+   └─► qpki crl gen --ca-dir <ca>
 
 5. NOTIFY
    └─► Inform relying parties, update distribution points

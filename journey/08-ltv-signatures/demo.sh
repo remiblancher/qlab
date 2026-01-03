@@ -36,7 +36,7 @@ echo ""
 echo "  Issue document signing certificate for Alice..."
 echo ""
 
-run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/alice.key --cn \"Alice (Legal Counsel)\" --out output/alice.csr"
+run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/alice.key --cn \"Alice (Legal Counsel)\" -o output/alice.csr"
 
 echo ""
 
@@ -46,7 +46,7 @@ echo ""
 echo "  Issue TSA certificate..."
 echo ""
 
-run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/tsa.key --cn \"LTV Timestamp Authority\" --out output/tsa.csr"
+run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/tsa.key --cn \"LTV Timestamp Authority\" -o output/tsa.csr"
 
 echo ""
 
@@ -196,7 +196,7 @@ echo ""
 echo "  Verifying CMS signature using bundled chain..."
 echo ""
 
-run_cmd "qpki cms verify --signature $BUNDLE_DIR/signature.p7s --data $BUNDLE_DIR/document.txt"
+run_cmd "qpki cms verify $BUNDLE_DIR/signature.p7s --data $BUNDLE_DIR/document.txt"
 
 echo ""
 echo -e "  ${GREEN}✓${NC} Signature VALID"

@@ -48,7 +48,7 @@ echo "  The certificate inherits the hybrid nature from the CA."
 echo "  It will contain both ECDSA and ML-DSA keys/signatures."
 echo ""
 
-run_cmd "qpki cert csr --algorithm ecdsa-p384 --hybrid ml-dsa-65 --keyout output/hybrid-server.key --hybrid-keyout output/hybrid-server-pqc.key --cn hybrid.example.com --out output/hybrid-server.csr"
+run_cmd "qpki csr gen --algorithm ecdsa-p384 --hybrid ml-dsa-65 --keyout output/hybrid-server.key --hybrid-keyout output/hybrid-server-pqc.key --cn hybrid.example.com -o output/hybrid-server.csr"
 
 echo ""
 
@@ -87,8 +87,8 @@ echo -e "  ${BOLD}Test 2: PQC-Aware Client (pki)${NC}"
 echo "    The qpki tool verifies BOTH signatures."
 echo ""
 
-echo -e "  ${DIM}$ qpki verify --cert output/hybrid-server.crt --ca output/hybrid-ca/ca.crt${NC}"
-if qpki verify --cert output/hybrid-server.crt --ca output/hybrid-ca/ca.crt 2>&1; then
+echo -e "  ${DIM}$ qpki cert verify output/hybrid-server.crt --ca output/hybrid-ca/ca.crt${NC}"
+if qpki cert verify output/hybrid-server.crt --ca output/hybrid-ca/ca.crt 2>&1; then
     echo ""
     echo -e "    ${GREEN}✓${NC} PQC client: BOTH ECDSA AND ML-DSA verified"
 fi

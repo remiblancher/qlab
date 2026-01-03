@@ -124,9 +124,9 @@ qpki cert issue --ca-dir output/encryption-ca \
 ```bash
 # Generate ML-KEM key and create CSR
 # CSR is signed by Alice's SIGNING key (attestation)
-qpki cert csr --algorithm ml-kem-768 \
+qpki csr gen --algorithm ml-kem-768 \
     --keyout output/alice-enc.key \
-    --var cn="Alice" \
+    --cn "Alice" \
     --attest-cert output/alice-sign.crt \
     --attest-key output/alice-sign.key \
     -o output/alice-enc.csr

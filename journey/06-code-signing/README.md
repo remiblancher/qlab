@@ -171,10 +171,10 @@ qpki ca init --name "Code Signing CA" \
 
 ```bash
 # Generate key and CSR
-qpki cert csr --algorithm ml-dsa-65 \
+qpki csr gen --algorithm ml-dsa-65 \
     --keyout output/code-signing.key \
     --cn "ACME Software" \
-    --out output/code-signing.csr
+    -o output/code-signing.csr
 
 # Issue certificate from CSR
 qpki cert issue --ca-dir output/code-ca \
@@ -200,7 +200,7 @@ qpki cms sign --data output/firmware.bin \
 
 ```bash
 # Verify signature against original binary
-qpki cms verify --signature output/firmware.p7s \
+qpki cms verify output/firmware.p7s \
     --data output/firmware.bin
 # Result: VALID
 ```
@@ -212,7 +212,7 @@ qpki cms verify --signature output/firmware.p7s \
 echo "MALWARE" >> output/firmware.bin
 
 # Verify again
-qpki cms verify --signature output/firmware.p7s \
+qpki cms verify output/firmware.p7s \
     --data output/firmware.bin
 # Result: INVALID - signature verification failed
 ```

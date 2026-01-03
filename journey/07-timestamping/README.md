@@ -161,7 +161,7 @@ qpki tsa sign --data output/document.txt \
 
 ```bash
 # Verify token against original document
-qpki tsa verify --token output/document.tsr \
+qpki tsa verify output/document.tsr \
     --data output/document.txt \
     --ca output/tsa-ca/ca.crt
 # Result: VALID
@@ -174,7 +174,7 @@ qpki tsa verify --token output/document.tsr \
 echo "FRAUDULENT MODIFICATION" >> output/document.txt
 
 # Verify again
-qpki tsa verify --token output/document.tsr \
+qpki tsa verify output/document.tsr \
     --data output/document.txt \
     --ca output/tsa-ca/ca.crt
 # Result: INVALID - document modified after timestamping

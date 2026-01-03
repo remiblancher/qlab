@@ -32,7 +32,7 @@ echo ""
 echo "  Issue TSA certificate..."
 echo ""
 
-run_cmd "qpki cert csr --algorithm ml-dsa-65 --keyout output/tsa.key --cn \"PQC Timestamp Authority\" --out output/tsa.csr"
+run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/tsa.key --cn \"PQC Timestamp Authority\" -o output/tsa.csr"
 
 echo ""
 
@@ -105,10 +105,10 @@ echo ""
 
 # Note: TSA verification requires signer certificate in token (tool limitation)
 # For demo purposes, we show the expected behavior
-echo -e "  ${DIM}$ qpki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt${NC}"
+echo -e "  ${DIM}$ qpki tsa verify output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt${NC}"
 echo ""
 
-if qpki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt > /dev/null 2>&1; then
+if qpki tsa verify output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt > /dev/null 2>&1; then
     echo -e "  ${GREEN}✓${NC} Timestamp valid!"
 else
     # Show expected behavior (verification would succeed with proper token)
@@ -139,10 +139,10 @@ echo ""
 echo "  Verifying the modified document..."
 echo ""
 
-echo -e "  ${DIM}$ qpki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt${NC}"
+echo -e "  ${DIM}$ qpki tsa verify output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt${NC}"
 echo ""
 
-if qpki tsa verify --token output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt > /dev/null 2>&1; then
+if qpki tsa verify output/document.tsr --data output/document.txt --ca output/tsa-ca/ca.crt > /dev/null 2>&1; then
     echo -e "  ${GREEN}✓${NC} Timestamp valid"
 else
     echo -e "  ${RED}✗${NC} Timestamp verification FAILED!"
