@@ -66,7 +66,7 @@ This demo shows a production-ready 3-level PKI hierarchy using only post-quantum
 ```bash
 # Initialize the root CA with highest security level
 qpki ca init --profile profiles/pqc-root-ca.yaml \
-    --name "PQC Root CA" \
+    --var cn="PQC Root CA" \
     --dir output/pqc-root-ca
 
 # Inspect
@@ -78,7 +78,7 @@ qpki inspect output/pqc-root-ca/ca.crt
 ```bash
 # Create issuing CA signed by root
 qpki ca init --profile profiles/pqc-issuing-ca.yaml \
-    --name "PQC Issuing CA" \
+    --var cn="PQC Issuing CA" \
     --parent output/pqc-root-ca \
     --dir output/pqc-issuing-ca
 

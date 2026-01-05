@@ -37,7 +37,7 @@ After running the demo, artifacts are in `output/`.
 ```bash
 # Create CA
 qpki ca init --profile profiles/classic-root-ca.yaml \
-    --name "Classic Root CA" --dir ./classic-ca
+    --var cn="Classic Root CA" --dir ./classic-ca
 
 # Generate key and CSR
 qpki csr gen --algorithm ecdsa-p384 \
@@ -60,7 +60,7 @@ qpki inspect classic-server.crt
 ```bash
 # Create CA
 qpki ca init --profile profiles/pqc-root-ca.yaml \
-    --name "PQ Root CA" --dir ./pqc-ca
+    --var cn="PQ Root CA" --dir ./pqc-ca
 
 # Generate key and CSR
 qpki csr gen --algorithm ml-dsa-65 \

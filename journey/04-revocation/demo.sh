@@ -28,7 +28,7 @@ print_step "Step 1: Create CA and Issue Certificate"
 echo "  First, we need a CA and a certificate to revoke."
 echo ""
 
-run_cmd "qpki ca init --name \"Demo CA\" --profile profiles/pqc-ca.yaml --dir output/demo-ca"
+run_cmd "qpki ca init --profile profiles/pqc-ca.yaml --var cn=\"Demo CA\" --dir output/demo-ca"
 
 echo ""
 echo "  Now issue a TLS certificate..."

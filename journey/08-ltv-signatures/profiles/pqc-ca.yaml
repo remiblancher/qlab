@@ -13,7 +13,7 @@
 #
 # Example:
 #   pki ca init --profile profiles/pqc-ca.yaml \
-#       --name "LTV Demo CA" --dir ./ltv-ca
+#       --var cn="LTV Demo CA" --dir ./ltv-ca
 #
 # =============================================================================
 

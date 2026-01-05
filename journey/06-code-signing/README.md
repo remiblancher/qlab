@@ -162,8 +162,8 @@ Sign the code BEFORE distributing it:
 
 ```bash
 # Create a PQC CA for code signing
-qpki ca init --name "Code Signing CA" \
-    --profile profiles/pqc-ca.yaml \
+qpki ca init --profile profiles/pqc-ca.yaml \
+    --var cn="Code Signing CA" \
     --dir output/code-ca
 ```
 

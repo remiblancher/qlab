@@ -171,8 +171,8 @@ CURRENT SITUATION
 
 ```bash
 # Create a Migration CA starting with ECDSA
-qpki ca init --name "Migration CA" \
-    --profile profiles/classic-ca.yaml \
+qpki ca init --profile profiles/classic-ca.yaml \
+    --var cn="Migration CA" \
     --dir output/ca
 
 # Issue ECDSA server certificate

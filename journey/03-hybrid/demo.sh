@@ -29,7 +29,7 @@ echo ""
 echo "  Standard: ITU-T X.509 Section 9.8 (Catalyst)"
 echo ""
 
-run_cmd "qpki ca init --profile profiles/hybrid-root-ca.yaml --name \"Hybrid Root CA\" --dir output/hybrid-ca"
+run_cmd "qpki ca init --profile profiles/hybrid-root-ca.yaml --var cn=\"Hybrid Root CA\" --dir output/hybrid-ca"
 
 echo ""
 echo -e "  ${BOLD}Hybrid CA details:${NC}"

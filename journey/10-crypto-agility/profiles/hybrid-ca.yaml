@@ -17,7 +17,7 @@
 #
 # Example:
 #   pki ca init --profile profiles/hybrid-ca.yaml \
-#       --name "Hybrid CA" --dir ./hybrid-ca
+#       --var cn="Hybrid CA" --dir ./hybrid-ca
 #
 # =============================================================================
 

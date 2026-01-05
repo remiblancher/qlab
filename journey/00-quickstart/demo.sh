@@ -53,7 +53,7 @@ pause "Press Enter to start..."
 step "Create Classical Root CA" \
      "ECDSA P-384, 20 years validity, CA extensions"
 
-run_cmd "$PKI_BIN ca init --profile $PROFILES/classic-root-ca.yaml --name 'Classic Root CA' --dir $CLASSIC_CA"
+run_cmd "$PKI_BIN ca init --profile $PROFILES/classic-root-ca.yaml --var cn='Classic Root CA' --dir $CLASSIC_CA"
 
 show_files "$CLASSIC_CA"
 
@@ -87,7 +87,7 @@ pause
 step "Create Post-Quantum Root CA" \
      "ML-DSA-65 (FIPS 204), 20 years, CA extensions"
 
-run_cmd "$PKI_BIN ca init --profile $PROFILES/pqc-root-ca.yaml --name 'PQ Root CA' --dir $PQC_CA"
+run_cmd "$PKI_BIN ca init --profile $PROFILES/pqc-root-ca.yaml --var cn='PQ Root CA' --dir $PQC_CA"
 
 show_files "$PQC_CA"
 

@@ -14,7 +14,7 @@
 #
 # Example:
 #   pki ca init --profile profiles/pqc-root-ca.yaml \
-#       --name "PQ Root CA" --dir ./pqc-ca
+#       --var cn="PQ Root CA" --dir ./pqc-ca
 #
 # =============================================================================
 

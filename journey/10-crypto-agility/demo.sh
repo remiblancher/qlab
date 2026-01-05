@@ -73,7 +73,7 @@ echo "  Creating the Migration CA with ECDSA (current state)..."
 echo "  This represents the starting point of our migration journey."
 echo ""
 
-run_cmd "qpki ca init --name \"Migration CA\" --profile $SCRIPT_DIR/profiles/classic-ca.yaml --dir output/ca"
+run_cmd "qpki ca init --profile $SCRIPT_DIR/profiles/classic-ca.yaml --var cn=\"Migration CA\" --dir output/ca"
 
 echo ""
 

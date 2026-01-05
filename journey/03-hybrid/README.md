@@ -70,7 +70,7 @@ This is the reality of PQC migration. You can't flip a switch and move everythin
 ```bash
 # Initialize hybrid CA with both classical and PQC keys
 qpki ca init --profile profiles/hybrid-root-ca.yaml \
-    --name "Hybrid Root CA" \
+    --var cn="Hybrid Root CA" \
     --dir output/hybrid-ca
 
 # Inspect

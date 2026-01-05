@@ -132,8 +132,8 @@ A trusted authority (TSA) proves when the signature was created:
 
 ```bash
 # Create a PQC CA for timestamp authority
-qpki ca init --name "TSA Root CA" \
-    --profile profiles/pqc-ca.yaml \
+qpki ca init --profile profiles/pqc-ca.yaml \
+    --var cn="TSA Root CA" \
     --dir output/tsa-ca
 
 # Issue TSA certificate (EKU: timeStamping)

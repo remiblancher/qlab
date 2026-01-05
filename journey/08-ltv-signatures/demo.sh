@@ -30,7 +30,7 @@ echo "    - A document signing certificate for Alice"
 echo "    - A TSA certificate for timestamping"
 echo ""
 
-run_cmd "qpki ca init --name \"LTV Demo CA\" --profile profiles/pqc-ca.yaml --dir output/ltv-ca"
+run_cmd "qpki ca init --profile profiles/pqc-ca.yaml --var cn=\"LTV Demo CA\" --dir output/ltv-ca"
 
 echo ""
 echo "  Issue document signing certificate for Alice..."

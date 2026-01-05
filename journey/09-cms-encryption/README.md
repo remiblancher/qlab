@@ -104,8 +104,8 @@ Traditional CSR workflow:
 ### Step 1: Create Encryption CA
 
 ```bash
-qpki ca init --name "Encryption CA" \
-    --profile profiles/pqc-ca.yaml \
+qpki ca init --profile profiles/pqc-ca.yaml \
+    --var cn="Encryption CA" \
     --dir output/encryption-ca
 ```
 

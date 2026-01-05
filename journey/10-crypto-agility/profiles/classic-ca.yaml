@@ -15,7 +15,7 @@
 #
 # Example:
 #   pki ca init --profile profiles/classic-ca.yaml \
-#       --name "Classic CA" --dir ./classic-ca
+#       --var cn="Classic CA" --dir ./classic-ca
 #
 # =============================================================================
 

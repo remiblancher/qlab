@@ -25,7 +25,7 @@ echo "  The Root CA is the trust anchor of your PKI."
 echo "  It uses ML-DSA-87 (NIST Level 5) for maximum security."
 echo ""
 
-run_cmd "qpki ca init --profile profiles/pqc-root-ca.yaml --name \"PQC Root CA\" --dir output/pqc-root-ca"
+run_cmd "qpki ca init --profile profiles/pqc-root-ca.yaml --var cn=\"PQC Root CA\" --dir output/pqc-root-ca"
 
 echo ""
 echo -e "  ${BOLD}Root CA details:${NC}"
@@ -44,7 +44,7 @@ echo "  The Issuing CA issues end-entity certificates."
 echo "  It uses ML-DSA-65 (NIST Level 3) - good balance of security/performance."
 echo ""
 
-run_cmd "qpki ca init --profile profiles/pqc-issuing-ca.yaml --name \"PQC Issuing CA\" --parent output/pqc-root-ca --dir output/pqc-issuing-ca"
+run_cmd "qpki ca init --profile profiles/pqc-issuing-ca.yaml --var cn=\"PQC Issuing CA\" --parent output/pqc-root-ca --dir output/pqc-issuing-ca"
 
 echo ""
 echo -e "  ${BOLD}Chain visualization:${NC}"

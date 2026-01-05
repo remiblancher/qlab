@@ -72,7 +72,7 @@ The same way you revoke any certificate. PKI operations are algorithm-agnostic.
 ```bash
 # Create PQC CA
 qpki ca init --profile profiles/pqc-ca.yaml \
-    --name "PQC CA" \
+    --var cn="PQC CA" \
     --dir output/pqc-ca
 
 # Issue TLS certificate
