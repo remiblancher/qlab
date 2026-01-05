@@ -127,7 +127,7 @@ if [[ -f "output/hybrid-ca/ca.crt" ]]; then
     printf "  │  %-25s %8s B %16s │\n" "Hybrid Private Key" "$hybrid_key_size" "~2 KB"
     echo "  └────────────────────────────────────────────────────────────┘"
     echo ""
-    echo -e "  ${DIM}Overhead comes from ML-DSA key (~1952 B) + signature (~3293 B)${NC}"
+    echo -e "  ${DIM}Overhead comes from ML-DSA key (~1952 B) + signature (~3309 B)${NC}"
 fi
 
 echo ""

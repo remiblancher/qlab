@@ -26,7 +26,7 @@ description: "Root CA ML-DSA-87 (post-quantum, NIST Level 5)"
 # -----------------------------------------------------------------------------
 # ML-DSA-87 (FIPS 204) - Strongest ML-DSA variant
 #   - NIST Level 5 security (~256-bit equivalent)
-#   - Public key: ~2,592 bytes, Signature: ~4,595 bytes
+#   - Public key: ~2,592 bytes, Signature: ~4,627 bytes
 #   - Maximum protection for long-lived Root CA
 #
 algorithm: ml-dsa-87

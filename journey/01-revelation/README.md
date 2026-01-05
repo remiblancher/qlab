@@ -172,8 +172,8 @@ ML-DSA (Module Lattice Digital Signature Algorithm) provides quantum-resistant d
 | Variant | Security | Public Key | Signature |
 |---------|----------|------------|-----------|
 | ML-DSA-44 | Level 2 (~128-bit) | 1,312 bytes | 2,420 bytes |
-| ML-DSA-65 | Level 3 (~192-bit) | 1,952 bytes | 3,293 bytes |
-| ML-DSA-87 | Level 5 (~256-bit) | 2,592 bytes | 4,595 bytes |
+| ML-DSA-65 | Level 3 (~192-bit) | 1,952 bytes | 3,309 bytes |
+| ML-DSA-87 | Level 5 (~256-bit) | 2,592 bytes | 4,627 bytes |
 
 ### SLH-DSA Variants (Stateless Hash-Based Signatures)
 

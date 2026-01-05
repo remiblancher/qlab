@@ -150,7 +150,7 @@ qpki cert verify output/server.crt \
 
 | Component | Classical (ECDSA) | Post-Quantum (ML-DSA) | Ratio |
 |-----------|-------------------|----------------------|-------|
-| CRL signature | ~96 bytes | ~3,293 bytes | ~34x |
+| CRL signature | ~96 bytes | ~3,309 bytes | ~34x |
 | CRL total size | ~500 bytes | ~3,800 bytes | ~7.6x |
 
 *CRLs are larger due to PQC signatures, but the protocol is unchanged.*

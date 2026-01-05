@@ -86,7 +86,7 @@ echo ""
 if [[ -f "output/document.tsr" ]]; then
     tsr_size=$(wc -c < "output/document.tsr" | tr -d ' ')
     echo -e "  ${CYAN}Timestamp token size:${NC} $tsr_size bytes"
-    echo -e "  ${DIM}(ML-DSA-65 signature is ~3,293 bytes)${NC}"
+    echo -e "  ${DIM}(ML-DSA-65 signature is ~3,309 bytes)${NC}"
 fi
 
 echo ""

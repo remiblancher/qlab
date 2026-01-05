@@ -142,7 +142,7 @@ Sign the code BEFORE distributing it:
 | Aspect | Classical (ECDSA) | Post-Quantum (ML-DSA) |
 |--------|-------------------|----------------------|
 | Signature algorithm | ECDSA P-384 | ML-DSA-65 |
-| Signature size | ~96 bytes | ~3,293 bytes |
+| Signature size | ~96 bytes | ~3,309 bytes |
 | Future-proof | No | Yes |
 | Verification speed | Fast | Fast |
 
@@ -244,7 +244,7 @@ qpki cms verify output/firmware.p7s \
 | Component | Classical (ECDSA P-384) | Post-Quantum (ML-DSA-65) | Notes |
 |-----------|-------------------------|--------------------------|-------|
 | Public key | ~97 bytes | ~1,952 bytes | In certificate |
-| Signature | ~96 bytes | ~3,293 bytes | Per signed file |
+| Signature | ~96 bytes | ~3,309 bytes | Per signed file |
 | Certificate | ~1 KB | ~6 KB | One-time distribution |
 
 *For a 100 MB binary, the signature overhead is negligible.*

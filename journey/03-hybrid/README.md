@@ -125,7 +125,7 @@ A Catalyst certificate (ITU-T X.509 Section 9.8) contains dual keys:
 ├─────────────────────────────────────────────────────────────────┤
 │  Extension: Alternative Signature                               │
 │    Algorithm: ML-DSA-65 (post-quantum)                          │
-│    Signature: [3293 bytes]                                      │
+│    Signature: [3309 bytes]                                      │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -154,7 +154,7 @@ A Catalyst certificate (ITU-T X.509 Section 9.8) contains dual keys:
 | TLS Certificate | ~1 KB | ~6 KB | ~5 KB |
 | Private Key | ~300 B | ~2.5 KB | ~2.2 KB |
 
-*The overhead comes from the additional ML-DSA key (~1952 B) and signature (~3293 B).*
+*The overhead comes from the additional ML-DSA key (~1952 B) and signature (~3309 B).*
 
 *In most TLS deployments, this size increase is negligible compared to application payloads.*
 

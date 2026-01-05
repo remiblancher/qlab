@@ -26,7 +26,7 @@ description: "Root CA ML-DSA-65 (post-quantum, FIPS 204)"
 # -----------------------------------------------------------------------------
 # ML-DSA-65 (FIPS 204) - Module-Lattice Digital Signature Algorithm
 #   - NIST Level 3 security (~192-bit equivalent)
-#   - Public key: ~1,952 bytes, Signature: ~3,293 bytes
+#   - Public key: ~1,952 bytes, Signature: ~3,309 bytes
 #
 algorithm: ml-dsa-65
 

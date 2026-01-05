@@ -86,7 +86,7 @@ echo ""
 if [[ -f "output/firmware.p7s" ]]; then
     sig_size=$(wc -c < "output/firmware.p7s" | tr -d ' ')
     echo -e "  ${CYAN}Signature size:${NC} $sig_size bytes"
-    echo -e "  ${DIM}(ML-DSA-65 signature is ~3,293 bytes)${NC}"
+    echo -e "  ${DIM}(ML-DSA-65 signature is ~3,309 bytes)${NC}"
 fi
 
 echo ""

@@ -241,7 +241,7 @@ qpki tsa verify output/document.tsr \
 | Component | Classical (ECDSA P-384) | Post-Quantum (ML-DSA-65) | Notes |
 |-----------|-------------------------|--------------------------|-------|
 | TSA public key | ~97 bytes | ~1,952 bytes | In certificate |
-| Timestamp signature | ~96 bytes | ~3,293 bytes | Per document |
+| Timestamp signature | ~96 bytes | ~3,309 bytes | Per document |
 | Token overhead | ~2-3 KB | ~6-8 KB | Includes cert chain |
 
 *For a 10 MB PDF, the timestamp overhead is negligible.*
