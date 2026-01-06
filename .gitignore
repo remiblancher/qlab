@@ -1,5 +1,5 @@
 # Compiled binary
-bin/pki
+bin/
 
 # Demo output directories
 **/output/
