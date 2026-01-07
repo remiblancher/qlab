@@ -177,12 +177,14 @@ qpki ca init --profile profiles/classic-ca.yaml \
 
 # Issue ECDSA server certificate
 qpki credential enroll --ca-dir output/ca \
+    --cred-dir output/credentials \
     --profile profiles/classic-tls-server.yaml \
     --var cn=server.example.com
 
 # Export the credential
 qpki credential export <credential-id> \
     --ca-dir output/ca \
+    --cred-dir output/credentials \
     -o output/server-v1.pem
 ```
 
@@ -220,12 +222,14 @@ qpki ca versions --ca-dir output/ca
 ```bash
 # Issue PQC server certificate
 qpki credential enroll --ca-dir output/ca \
+    --cred-dir output/credentials \
     --profile profiles/pqc-tls-server.yaml \
     --var cn=server.example.com
 
 # Export the credential
 qpki credential export <credential-id> \
     --ca-dir output/ca \
+    --cred-dir output/credentials \
     -o output/server-v3.pem
 ```
 

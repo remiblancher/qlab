@@ -17,6 +17,7 @@
 #
 # Example:
 #   pki credential enroll --ca-dir output/ca \
+#       --cred-dir output/credentials \
 #       --profile profiles/tls-server-hybrid.yaml \
 #       --var cn=server.example.com
 #

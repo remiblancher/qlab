@@ -75,6 +75,9 @@ echo ""
 
 run_cmd "qpki ca init --profile $SCRIPT_DIR/profiles/classic-ca.yaml --var cn=\"Migration CA\" --ca-dir output/ca"
 
+# Create credentials directory
+mkdir -p output/credentials
+
 echo ""
 
 # Show certificate info
@@ -90,15 +93,15 @@ echo ""
 echo "  Issuing a server certificate with ECDSA..."
 echo ""
 
-run_cmd "qpki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/classic-tls-server.yaml --var cn=server.example.com"
+run_cmd "qpki credential enroll --ca-dir output/ca --cred-dir output/credentials --profile $SCRIPT_DIR/profiles/classic-tls-server.yaml --var cn=server.example.com"
 
 # Capture the credential ID from the output (skip header and separator lines)
-CRED_V1=$(qpki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | head -1 | awk '{print $1}')
+CRED_V1=$(qpki credential list --cred-dir output/credentials 2>/dev/null | grep -v "^ID" | grep -v "^--" | head -1 | awk '{print $1}')
 
 if [[ -n "$CRED_V1" ]]; then
     echo ""
     echo -e "  ${CYAN}Credential ID:${NC} $CRED_V1"
-    run_cmd "qpki credential export $CRED_V1 --ca-dir output/ca -o output/server-v1.pem"
+    run_cmd "qpki credential export $CRED_V1 --ca-dir output/ca --cred-dir output/credentials -o output/server-v1.pem"
 fi
 
 echo ""
@@ -174,15 +177,15 @@ print_step "Step 5: Issue PQC Server Certificate"
 echo "  Issuing a server certificate with ML-DSA..."
 echo ""
 
-run_cmd "qpki credential enroll --ca-dir output/ca --profile $SCRIPT_DIR/profiles/pqc-tls-server.yaml --var cn=server.example.com"
+run_cmd "qpki credential enroll --ca-dir output/ca --cred-dir output/credentials --profile $SCRIPT_DIR/profiles/pqc-tls-server.yaml --var cn=server.example.com"
 
 # Get the new credential ID (skip header, separator, and first credential)
-CRED_V3=$(qpki credential list --ca-dir output/ca 2>/dev/null | grep -v "^ID" | grep -v "^--" | grep -v "$CRED_V1" | head -1 | awk '{print $1}')
+CRED_V3=$(qpki credential list --cred-dir output/credentials 2>/dev/null | grep -v "^ID" | grep -v "^--" | grep -v "$CRED_V1" | head -1 | awk '{print $1}')
 
 if [[ -n "$CRED_V3" ]]; then
     echo ""
     echo -e "  ${CYAN}Credential ID:${NC} $CRED_V3"
-    run_cmd "qpki credential export $CRED_V3 --ca-dir output/ca -o output/server-v3.pem"
+    run_cmd "qpki credential export $CRED_V3 --ca-dir output/ca --cred-dir output/credentials -o output/server-v3.pem"
 fi
 
 echo ""
@@ -344,7 +347,7 @@ run_cmd "qpki inspect output/server-v3.pem"
 
 echo ""
 echo "  === All Credentials ==="
-run_cmd "qpki credential list --ca-dir output/ca"
+run_cmd "qpki credential list --cred-dir output/credentials"
 
 echo ""
 
