@@ -158,6 +158,7 @@ qpki cert issue --ca-dir output/encryption-ca \
 # Encrypt document for Alice using her ML-KEM encryption certificate
 qpki cms encrypt \
     --recipient output/alice-enc.crt \
+    --content-enc aes-256-gcm \
     --in output/secret-document.txt \
     --out output/secret-document.p7m
 ```

@@ -265,7 +265,7 @@ orig_size=$(wc -c < "output/secret-document.txt" | tr -d ' ')
 echo -e "  ${CYAN}Original size:${NC} $orig_size bytes"
 echo ""
 
-run_cmd "qpki cms encrypt --recipient output/alice-enc.crt --in output/secret-document.txt --out output/secret-document.p7m"
+run_cmd "qpki cms encrypt --recipient output/alice-enc.crt --content-enc aes-256-gcm --in output/secret-document.txt --out output/secret-document.p7m"
 
 echo ""
 
