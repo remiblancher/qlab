@@ -69,12 +69,40 @@ echo ""
 pause
 
 # =============================================================================
-# Step 3: Issue Signing Certificate (ML-DSA-65)
+# Step 3: Generate Signing CSR (ML-DSA-65)
 # =============================================================================
 
-print_step "Step 3: Issue Signing Certificate for Alice (ML-DSA-65)"
+print_step "Step 3: Generate Signing CSR (ML-DSA-65)"
 
-echo "  First, Alice gets a SIGNING certificate."
+echo "  Alice generates a key pair and CSR for her signing certificate."
+echo "  The CSR is self-signed (proof of possession of the private key)."
+echo ""
+echo "  ┌─────────────────────────────────────────────────────────────────┐"
+echo "  │  CSR GENERATION (Classical Workflow)                            │"
+echo "  ├─────────────────────────────────────────────────────────────────┤"
+echo "  │                                                                 │"
+echo "  │  1. Generate ML-DSA-65 key pair                                 │"
+echo "  │  2. Create Certificate Signing Request (CSR)                    │"
+echo "  │  3. Sign CSR with private key (proof of possession)             │"
+echo "  │                                                                 │"
+echo "  │  This works because ML-DSA can SIGN!                            │"
+echo "  │                                                                 │"
+echo "  └─────────────────────────────────────────────────────────────────┘"
+echo ""
+
+run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/alice-sign.key --cn \"Alice\" -o output/alice-sign.csr"
+
+echo ""
+
+pause
+
+# =============================================================================
+# Step 4: Issue Signing Certificate
+# =============================================================================
+
+print_step "Step 4: Issue Signing Certificate for Alice"
+
+echo "  The CA verifies the CSR signature and issues the certificate."
 echo "  This certificate will be used to attest for her encryption key."
 echo ""
 echo "  ┌─────────────────────────────────────────────────────────────────┐"
@@ -91,10 +119,6 @@ echo "  │    • Attest CSR for encryption certificates                     �
 echo "  │    • Authenticate identity in S/MIME                            │"
 echo "  │                                                                 │"
 echo "  └─────────────────────────────────────────────────────────────────┘"
-echo ""
-
-run_cmd "qpki csr gen --algorithm ml-dsa-65 --keyout output/alice-sign.key --cn \"Alice\" -o output/alice-sign.csr"
-
 echo ""
 
 run_cmd "qpki cert issue --ca-dir output/encryption-ca --profile profiles/pqc-signing.yaml --csr output/alice-sign.csr --out output/alice-sign.crt"
@@ -114,10 +138,10 @@ echo ""
 pause
 
 # =============================================================================
-# Step 4: Create CSR for Encryption Key (ML-KEM-768)
+# Step 5: Create CSR for Encryption Key (ML-KEM-768)
 # =============================================================================
 
-print_step "Step 4: Create CSR for Encryption Key (RFC 9883 Attestation)"
+print_step "Step 5: Create CSR for Encryption Key (RFC 9883 Attestation)"
 
 echo "  Now Alice creates a CSR for her ENCRYPTION key."
 echo "  The CSR is signed by her SIGNING key (attestation)."
@@ -164,10 +188,10 @@ echo ""
 pause
 
 # =============================================================================
-# Step 5: CA Issues Encryption Certificate
+# Step 6: CA Issues Encryption Certificate
 # =============================================================================
 
-print_step "Step 5: CA Issues Encryption Certificate"
+print_step "Step 6: CA Issues Encryption Certificate"
 
 echo "  The CA verifies the CSR attestation and issues the encryption cert."
 echo "  The certificate includes RelatedCertificate extension pointing"
@@ -208,10 +232,10 @@ echo ""
 pause
 
 # =============================================================================
-# Step 6: Alice's Certificate Pair
+# Step 7: Alice's Certificate Pair
 # =============================================================================
 
-print_step "Step 6: Alice's Certificate Pair"
+print_step "Step 7: Alice's Certificate Pair"
 
 echo "  Alice now has TWO linked certificates:"
 echo ""
@@ -245,10 +269,10 @@ echo ""
 pause
 
 # =============================================================================
-# Step 7: CMS Encryption Flow
+# Step 8: CMS Encryption Flow
 # =============================================================================
 
-print_step "Step 7: How CMS Encryption Works"
+print_step "Step 8: How CMS Encryption Works"
 
 echo "  Now that Alice has her certificates, she can receive encrypted documents."
 echo ""
@@ -312,10 +336,10 @@ echo ""
 pause
 
 # =============================================================================
-# Why Hybrid Encryption?
+# Step 9: Why Hybrid Encryption?
 # =============================================================================
 
-print_step "Step 8: Why Hybrid Encryption?"
+print_step "Step 9: Why Hybrid Encryption?"
 
 echo "  ┌─────────────────────────────────────────────────────────────────┐"
 echo "  │  WHY AES + ML-KEM?                                              │"
