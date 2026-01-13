@@ -77,21 +77,31 @@ qpki ca init --profile profiles/hybrid-root-ca.yaml \
 qpki inspect output/hybrid-ca/ca.crt
 ```
 
-### Step 2: Issue Hybrid TLS Certificate
+### Step 2: Generate Hybrid Keys and CSR
 
 ```bash
-# Issue hybrid certificate for TLS server
+# Generate hybrid keys (classical + PQC) and create CSR
+qpki csr gen --algorithm ecdsa-p384 --hybrid ml-dsa-65 \
+    --keyout output/hybrid-server.key \
+    --hybrid-keyout output/hybrid-server-pqc.key \
+    --cn hybrid.example.com \
+    -o output/hybrid-server.csr
+```
+
+### Step 3: Issue Hybrid TLS Certificate
+
+```bash
+# Issue hybrid certificate from CSR
 qpki cert issue --ca-dir output/hybrid-ca \
     --profile profiles/hybrid-tls-server.yaml \
-    --var cn=hybrid.example.com \
-    --out output/hybrid-server.crt \
-    --keyout output/hybrid-server.key
+    --csr output/hybrid-server.csr \
+    --out output/hybrid-server.crt
 
 # Inspect
 qpki inspect output/hybrid-server.crt
 ```
 
-### Step 3: Test Interoperability
+### Step 4: Test Interoperability
 
 ```bash
 # Legacy client (OpenSSL - classical only)

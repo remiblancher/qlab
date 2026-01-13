@@ -128,23 +128,36 @@ A trusted authority (TSA) proves when the signature was created:
 
 ## The Commands
 
-### Step 1: Create TSA CA and Certificate
+### Step 1: Create TSA CA
 
 ```bash
 # Create a PQC CA for timestamp authority
 qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="TSA Root CA" \
     --ca-dir output/tsa-ca
+```
 
+### Step 2: Generate TSA Key and CSR
+
+```bash
+# Generate ML-DSA-65 key and CSR for TSA
+qpki csr gen --algorithm ml-dsa-65 \
+    --keyout output/tsa.key \
+    --cn "PQC Timestamp Authority" \
+    -o output/tsa.csr
+```
+
+### Step 3: Issue TSA Certificate
+
+```bash
 # Issue TSA certificate (EKU: timeStamping)
 qpki cert issue --ca-dir output/tsa-ca \
     --profile profiles/pqc-tsa.yaml \
-    --var cn="PQC Timestamp Authority" \
-    --out output/tsa.crt \
-    --keyout output/tsa.key
+    --csr output/tsa.csr \
+    --out output/tsa.crt
 ```
 
-### Step 2: Timestamp a Document
+### Step 4: Timestamp a Document
 
 ```bash
 # Create a test document
@@ -157,7 +170,7 @@ qpki tsa sign --data output/document.txt \
     -o output/document.tsr
 ```
 
-### Step 3: Verify the Timestamp
+### Step 5: Verify the Timestamp
 
 ```bash
 # Verify token against original document
@@ -167,7 +180,7 @@ qpki tsa verify output/document.tsr \
 # Result: VALID
 ```
 
-### Step 4: Tamper and Verify Again
+### Step 6: Tamper and Verify Again
 
 ```bash
 # Modify the document (simulate fraud)

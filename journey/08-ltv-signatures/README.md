@@ -145,33 +145,48 @@ Embed EVERYTHING needed in a self-sufficient bundle:
 
 ## The Commands
 
-### Step 1: Create PKI Infrastructure
+### Step 1: Create CA
 
 ```bash
 # Create PQC CA
 qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="LTV Demo CA" \
     --ca-dir output/ltv-ca
+```
 
-# Export CA certificate for chain building
-qpki ca export --ca-dir output/ltv-ca > output/ltv-ca/ca.crt
+### Step 2: Generate Keys and CSRs
 
+```bash
+# Generate document signing key and CSR (Alice)
+qpki csr gen --algorithm ml-dsa-65 \
+    --keyout output/alice.key \
+    --cn "Alice (Legal Counsel)" \
+    -o output/alice.csr
+
+# Generate TSA key and CSR
+qpki csr gen --algorithm ml-dsa-65 \
+    --keyout output/tsa.key \
+    --cn "LTV Timestamp Authority" \
+    -o output/tsa.csr
+```
+
+### Step 3: Issue Certificates
+
+```bash
 # Issue document signing certificate
 qpki cert issue --ca-dir output/ltv-ca \
     --profile profiles/pqc-document-signing.yaml \
-    --var cn="Alice (Legal Counsel)" \
-    --out output/alice.crt \
-    --keyout output/alice.key
+    --csr output/alice.csr \
+    --out output/alice.crt
 
 # Issue TSA certificate
 qpki cert issue --ca-dir output/ltv-ca \
     --profile profiles/pqc-tsa.yaml \
-    --var cn="LTV Timestamp Authority" \
-    --out output/tsa.crt \
-    --keyout output/tsa.key
+    --csr output/tsa.csr \
+    --out output/tsa.crt
 ```
 
-### Step 2: Sign the Document
+### Step 4: Sign the Document
 
 ```bash
 # Create a 30-year lease agreement
@@ -189,7 +204,7 @@ qpki cms sign --data output/contract.txt \
     -o output/contract.p7s
 ```
 
-### Step 3: Add Timestamp
+### Step 5: Add Timestamp
 
 ```bash
 # Timestamp the signature (proves WHEN it was signed)
@@ -199,7 +214,7 @@ qpki tsa sign --data output/contract.p7s \
     -o output/contract.tsr
 ```
 
-### Step 4: Create LTV Bundle
+### Step 6: Create LTV Bundle
 
 ```bash
 # Package everything for long-term verification
@@ -210,7 +225,7 @@ cp output/contract.tsr output/ltv-bundle/timestamp.tsr
 cat output/alice.crt output/ltv-ca/ca.crt > output/ltv-bundle/chain.pem
 ```
 
-### Step 5: Verify Offline (Simulating 2055)
+### Step 7: Verify Offline (Simulating 2055)
 
 ```bash
 # Verify using only the bundle (no network)

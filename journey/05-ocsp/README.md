@@ -56,34 +56,49 @@ Yes. Same HTTP protocol, same request/response format. Only signature sizes chan
 
 ## The Commands
 
-### Step 1: Create CA and OCSP Responder Certificate
+### Step 1: Create CA
 
 ```bash
 # Create PQC CA with ML-DSA-65
 qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="PQC CA" \
     --ca-dir output/pqc-ca
+```
 
-# Export CA certificate (needed for OCSP request issuerKeyHash)
-qpki ca export --ca-dir output/pqc-ca > output/pqc-ca/ca.crt
+### Step 2: Generate Keys and CSRs
 
+```bash
+# Generate OCSP responder key and CSR
+qpki csr gen --algorithm ml-dsa-65 \
+    --keyout output/ocsp-responder.key \
+    --cn "OCSP Responder" \
+    -o output/ocsp-responder.csr
+
+# Generate TLS server key and CSR
+qpki csr gen --algorithm ml-dsa-65 \
+    --keyout output/server.key \
+    --cn server.example.com \
+    -o output/server.csr
+```
+
+### Step 3: Issue Certificates
+
+```bash
 # Issue delegated OCSP responder certificate
 # Best practice: CA key stays offline
 qpki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-ocsp-responder.yaml \
-    --var cn="OCSP Responder" \
-    --out output/ocsp-responder.crt \
-    --keyout output/ocsp-responder.key
+    --csr output/ocsp-responder.csr \
+    --out output/ocsp-responder.crt
 
 # Issue TLS certificate to verify
 qpki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
-    --var cn=server.example.com \
-    --out output/server.crt \
-    --keyout output/server.key
+    --csr output/server.csr \
+    --out output/server.crt
 ```
 
-### Step 2: Start OCSP Responder
+### Step 4: Start OCSP Responder
 
 ```bash
 # Start with delegated certificate (recommended)
@@ -92,7 +107,7 @@ qpki ocsp serve --port 8888 --ca-dir output/pqc-ca \
     --key output/ocsp-responder.key
 ```
 
-### Step 3: Query Certificate Status
+### Step 5: Query Certificate Status
 
 ```bash
 # Generate OCSP request
@@ -111,7 +126,7 @@ curl -s -X POST \
 qpki ocsp info output/response.ocsp
 ```
 
-### Step 4: Revoke and Re-query
+### Step 6: Revoke and Re-query
 
 ```bash
 # Revoke certificate

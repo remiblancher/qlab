@@ -67,26 +67,39 @@ The same way you revoke any certificate. PKI operations are algorithm-agnostic.
 
 ## The Commands
 
-### Step 1: Create CA and Issue Certificate
+### Step 1: Create CA
 
 ```bash
 # Create PQC CA
 qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="PQC CA" \
     --ca-dir output/pqc-ca
+```
 
-# Issue TLS certificate
+### Step 2: Generate Key and CSR
+
+```bash
+# Generate ML-DSA-65 key and CSR
+qpki csr gen --algorithm ml-dsa-65 \
+    --keyout output/server.key \
+    --cn server.example.com \
+    -o output/server.csr
+```
+
+### Step 3: Issue TLS Certificate
+
+```bash
+# Issue TLS certificate from CSR
 qpki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
-    --var cn=server.example.com \
-    --out output/server.crt \
-    --keyout output/server.key
+    --csr output/server.csr \
+    --out output/server.crt
 
 # Get the serial number
 openssl x509 -in output/server.crt -noout -serial
 ```
 
-### Step 2: Revoke Certificate
+### Step 4: Revoke Certificate
 
 ```bash
 # Revoke certificate with reason
@@ -96,7 +109,7 @@ qpki cert revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
 qpki crl gen --ca-dir output/pqc-ca
 ```
 
-### Step 3: Verify Revocation
+### Step 5: Verify Revocation
 
 ```bash
 # Verify certificate against CRL (should fail)

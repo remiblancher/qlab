@@ -86,15 +86,24 @@ qpki ca init --profile profiles/pqc-issuing-ca.yaml \
 qpki inspect output/pqc-issuing-ca/ca.crt
 ```
 
-### Step 3: Issue TLS Server Certificate
+### Step 3: Generate Server Key and CSR
 
 ```bash
-# Issue end-entity certificate for TLS server
+# Generate ML-DSA-65 key and CSR
+qpki csr gen --algorithm ml-dsa-65 \
+    --keyout output/server.key \
+    --cn server.example.com \
+    -o output/server.csr
+```
+
+### Step 4: Issue TLS Server Certificate
+
+```bash
+# Issue end-entity certificate from CSR
 qpki cert issue --ca-dir output/pqc-issuing-ca \
     --profile profiles/pqc-tls-server.yaml \
-    --var cn=server.example.com \
-    --out output/server.crt \
-    --keyout output/server.key
+    --csr output/server.csr \
+    --out output/server.crt
 
 # Inspect
 qpki inspect output/server.crt
