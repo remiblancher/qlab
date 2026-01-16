@@ -111,10 +111,13 @@ A trusted authority (TSA) proves when the signature was created:
 
 | Step | What Happens | Expected Result |
 |------|--------------|-----------------|
-| 1 | Create TSA CA and certificate | TSA with ML-DSA-65 |
-| 2 | Timestamp a document | Timestamp token (.tsr) |
-| 3 | Verify the timestamp | Status: VALID |
-| 4 | Tamper and verify again | Status: INVALID |
+| 1 | Create TSA CA | PQC CA with ML-DSA-65 |
+| 2 | Issue TSA certificate | TSA with id-kp-timeStamping |
+| 3 | Start TSA server | HTTP service on port 8318 |
+| 4 | Create document | File to timestamp |
+| 5 | Request timestamp | Token via HTTP POST |
+| 6 | Verify timestamp | Status: VALID |
+| 7 | Tamper and verify | Status: INVALID |
 
 ---
 
@@ -137,7 +140,7 @@ qpki ca init --profile profiles/pqc-ca.yaml \
     --ca-dir output/tsa-ca
 ```
 
-### Step 2: Generate TSA Key and CSR
+### Step 2: Issue TSA Certificate
 
 ```bash
 # Generate ML-DSA-65 key and CSR for TSA
@@ -145,11 +148,7 @@ qpki csr gen --algorithm ml-dsa-65 \
     --keyout output/tsa.key \
     --cn "PQC Timestamp Authority" \
     -o output/tsa.csr
-```
 
-### Step 3: Issue TSA Certificate
-
-```bash
 # Issue TSA certificate (EKU: timeStamping)
 qpki cert issue --ca-dir output/tsa-ca \
     --profile profiles/pqc-tsa.yaml \
@@ -157,30 +156,51 @@ qpki cert issue --ca-dir output/tsa-ca \
     --out output/tsa.crt
 ```
 
-### Step 4: Timestamp a Document
+### Step 3: Start TSA Server
+
+```bash
+# Start RFC 3161 HTTP timestamp server
+qpki tsa serve --port 8318 \
+    --cert output/tsa.crt \
+    --key output/tsa.key
+```
+
+### Step 4: Create Document
 
 ```bash
 # Create a test document
 echo "Contract content - signed on $(date)" > output/document.txt
-
-# Timestamp with PQC (RFC 3161)
-qpki tsa sign --data output/document.txt \
-    --cert output/tsa.crt \
-    --key output/tsa.key \
-    -o output/document.tsr
 ```
 
-### Step 5: Verify the Timestamp
+### Step 5: Request Timestamp (via HTTP)
+
+```bash
+# Create timestamp request
+qpki tsa request --data output/document.txt \
+    -o output/request.tsq
+
+# Send to TSA server via HTTP POST
+curl -s -X POST \
+    -H "Content-Type: application/timestamp-query" \
+    --data-binary @output/request.tsq \
+    http://localhost:8318/ \
+    -o output/document.tsr
+
+# Inspect token
+qpki tsa info output/document.tsr
+```
+
+### Step 6: Verify Timestamp (VALID)
 
 ```bash
 # Verify token against original document
 qpki tsa verify output/document.tsr \
     --data output/document.txt \
     --ca output/tsa-ca/ca.crt
-# Result: VALID
+# Status: VALID
 ```
 
-### Step 6: Tamper and Verify Again
+### Step 7: Tamper and Verify Again (INVALID)
 
 ```bash
 # Modify the document (simulate fraud)
@@ -190,7 +210,7 @@ echo "FRAUDULENT MODIFICATION" >> output/document.txt
 qpki tsa verify output/document.tsr \
     --data output/document.txt \
     --ca output/tsa-ca/ca.crt
-# Result: INVALID - document modified after timestamping
+# Status: INVALID - document modified after timestamping
 ```
 
 ---
