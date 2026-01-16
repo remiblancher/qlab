@@ -138,6 +138,9 @@ A trusted authority (TSA) proves when the signature was created:
 qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="TSA Root CA" \
     --ca-dir output/tsa-ca
+
+# Export CA certificate for verification
+qpki ca export --ca-dir output/tsa-ca > output/tsa-ca/ca.crt
 ```
 
 ### Step 2: Issue TSA Certificate
