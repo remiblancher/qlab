@@ -39,10 +39,13 @@ Yes. Same HTTP protocol, same request/response format. Only signature sizes chan
 
 | Step | What Happens | Expected Result |
 |------|--------------|-----------------|
-| 1 | Start OCSP responder | HTTP service on port 8888 |
-| 2 | Query valid certificate | Status: GOOD |
-| 3 | Revoke certificate | Certificate marked revoked |
-| 4 | Query again | Status: REVOKED (immediate!) |
+| 1 | Create CA | PQC CA with ML-DSA-65 |
+| 2 | Issue OCSP responder certificate | Delegated responder ready |
+| 3 | Start OCSP responder | HTTP service on port 8888 |
+| 4 | Issue TLS certificate | Certificate to verify |
+| 5 | Query certificate status | Status: GOOD |
+| 6 | Revoke certificate | Certificate marked revoked |
+| 7 | Query again | Status: REVOKED (immediate!) |
 
 ---
 
@@ -65,7 +68,7 @@ qpki ca init --profile profiles/pqc-ca.yaml \
     --ca-dir output/pqc-ca
 ```
 
-### Step 2: Generate Keys and CSRs
+### Step 2: Issue OCSP Responder Certificate
 
 ```bash
 # Generate OCSP responder key and CSR
@@ -74,31 +77,15 @@ qpki csr gen --algorithm ml-dsa-65 \
     --cn "OCSP Responder" \
     -o output/ocsp-responder.csr
 
-# Generate TLS server key and CSR
-qpki csr gen --algorithm ml-dsa-65 \
-    --keyout output/server.key \
-    --cn server.example.com \
-    -o output/server.csr
-```
-
-### Step 3: Issue Certificates
-
-```bash
 # Issue delegated OCSP responder certificate
 # Best practice: CA key stays offline
 qpki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-ocsp-responder.yaml \
     --csr output/ocsp-responder.csr \
     --out output/ocsp-responder.crt
-
-# Issue TLS certificate to verify
-qpki cert issue --ca-dir output/pqc-ca \
-    --profile profiles/pqc-tls-server.yaml \
-    --csr output/server.csr \
-    --out output/server.crt
 ```
 
-### Step 4: Start OCSP Responder
+### Step 3: Start OCSP Responder
 
 ```bash
 # Start with delegated certificate (recommended)
@@ -107,7 +94,23 @@ qpki ocsp serve --port 8888 --ca-dir output/pqc-ca \
     --key output/ocsp-responder.key
 ```
 
-### Step 5: Query Certificate Status
+### Step 4: Issue TLS Certificate
+
+```bash
+# Generate TLS server key and CSR
+qpki csr gen --algorithm ml-dsa-65 \
+    --keyout output/server.key \
+    --cn server.example.com \
+    -o output/server.csr
+
+# Issue TLS certificate
+qpki cert issue --ca-dir output/pqc-ca \
+    --profile profiles/pqc-tls-server.yaml \
+    --csr output/server.csr \
+    --out output/server.crt
+```
+
+### Step 5: Query Certificate Status (GOOD)
 
 ```bash
 # Generate OCSP request
@@ -124,14 +127,19 @@ curl -s -X POST \
 
 # Inspect response
 qpki ocsp info output/response.ocsp
+# Status: good
 ```
 
-### Step 6: Revoke and Re-query
+### Step 6: Revoke Certificate
 
 ```bash
 # Revoke certificate
 qpki cert revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
+```
 
+### Step 7: Query Again (REVOKED)
+
+```bash
 # Query again - status changes immediately!
 curl -s -X POST \
     -H "Content-Type: application/ocsp-request" \
