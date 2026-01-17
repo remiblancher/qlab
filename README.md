@@ -121,7 +121,7 @@ UC-10: "Crypto-agility = CA versioning + trust bundles"
 | 4 | [**Revocation**](journey/04-revocation/) — CRL generation | 10 min | Revoking PQC certs = same command, same workflow. |
 | 5 | [**PQC OCSP**](journey/05-ocsp/) — Is This Cert Still Good? | 10 min | OCSP real-time status = same HTTP protocol. |
 
-### 💼 Business Use Cases
+### 💼 Real-World Applications
 
 | # | Mission | Time | Key Message |
 |---|---------|------|-------------|
