@@ -244,7 +244,6 @@ The OCSP responder certificate has:
 3. **Real-time status:** Revocation changes are immediate
 4. **Size tradeoff:** PQC responses are larger but acceptable
 5. **Drop-in replacement:** Existing OCSP clients work with PQC responders
-6. **Next step:** Real-time trust matters not only for TLS, but also for signed software. See [Code Signing](../06-code-signing/)
 
 ---
 

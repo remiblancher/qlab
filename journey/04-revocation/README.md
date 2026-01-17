@@ -178,7 +178,6 @@ qpki cert verify output/server.crt \
 2. **CRLs are signed:** PQC CRLs have larger signatures
 3. **Same commands:** No new tools or procedures needed
 4. **Ops teams:** No retraining required for basic PKI operations
-5. **Next step:** CRLs work, but what if you need real-time revocation? See [OCSP](../05-ocsp/)
 
 ---
 

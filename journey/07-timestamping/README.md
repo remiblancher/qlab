@@ -331,7 +331,6 @@ For timestamps to remain valid for decades:
 2. **Quantum threat**: Future quantum computers could forge timestamp signatures
 3. **PQC solution**: ML-DSA signatures ensure timestamps remain unforgeable
 4. **Compliance**: Legal, financial, and regulatory requirements demand PQC
-5. **Next step:** A timestamp proves WHEN. LTV proves that ALL trust elements were valid at that time. See [LTV Signatures](../08-ltv-signatures/)
 
 ---
 

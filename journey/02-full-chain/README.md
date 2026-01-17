@@ -159,7 +159,6 @@ Use SLH-DSA when:
 1. **Same workflow:** Creating a PQC hierarchy uses identical PKI concepts
 2. **Algorithm stacking:** Root uses highest level, decreasing down the chain
 3. **Size trade-off:** ~6x larger certificates for quantum resistance
-4. **Next step:** For legacy client support, see [Hybrid PKI](../03-hybrid/)
 
 ---
 

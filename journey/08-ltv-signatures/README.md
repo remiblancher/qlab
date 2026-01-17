@@ -329,7 +329,6 @@ ML-DSA signature:       Still secure            ✓ VERIFIED
 2. **LTV bundles proofs**: Document + signature + timestamp + chain
 3. **Offline verification**: No network dependencies in 2055
 4. **PQC is essential**: 30-year documents will face quantum computers
-5. **Next step:** LTV protects signed documents. What about encrypted documents that must remain confidential for decades? See [CMS Encryption](../09-cms-encryption/)
 
 ---
 
