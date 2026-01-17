@@ -74,7 +74,7 @@ if [[ -d "$PKI_SOURCE_DIR" ]] && [[ -f "$PKI_SOURCE_DIR/go.mod" ]]; then
 
     # Check Go version
     if ! command -v go &> /dev/null; then
-        echo -e "${RED}Go is not installed. Please install Go 1.21+${NC}"
+        echo -e "${RED}Go is not installed. Please install Go 1.25+${NC}"
         exit 1
     fi
 

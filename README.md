@@ -10,23 +10,7 @@ QLAB is an educational resource to help teams understand PKI and Post-Quantum Cr
 - **Interactive demos** — Quantum-safe certificate operations
 - **Step-by-step journeys** — From classical to post-quantum PKI
 
-QLAB uses **[QPKI](https://github.com/remiblancher/post-quantum-pki)** for all PKI operations:
-- Certificate Authority (CA) management
-- Certificate generation and issuance
-- Post-Quantum Cryptography (PQC) algorithms
-- Hybrid certificates support
-
----
-
-## Table of Contents
-
-- [Why This Matters](#why-this-matters)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Learning Path](#learning-path)
-- [Supported Algorithms](#supported-algorithms)
-- [Useful Links](#useful-links)
-- [License](#license)
+QLAB uses **[QPKI](https://github.com/remiblancher/post-quantum-pki)** for all PKI operations.
 
 ---
 
@@ -53,15 +37,9 @@ This lab demonstrates:
 
 ---
 
-## Prerequisites
-
-- **Go 1.25+** (for building QPKI from source)
-- **OpenSSL 3.x** (for verification demos)
-- **Docker** (optional, for isolated environments)
-
----
-
 ## Installation
+
+**Requirements:** Go 1.25+, OpenSSL 3.x
 
 ```bash
 git clone https://github.com/remiblancher/post-quantum-pki-lab.git
