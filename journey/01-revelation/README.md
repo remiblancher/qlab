@@ -149,11 +149,13 @@ NIST finalized 3 post-quantum algorithms (August 2024).
 
 *You don't need to memorize these numbers. The important takeaway is the order of magnitude and the trade-off: larger keys and signatures in exchange for quantum resistance.*
 
-| Algorithm | Standard | Family | Protects Against | Replaces |
-|-----------|----------|--------|------------------|----------|
-| ML-KEM | FIPS 203 | Module Lattice | SNDL (encryption) | ECDH, RSA-KEM |
-| ML-DSA | FIPS 204 | Module Lattice | TNFL (signatures) | ECDSA, RSA |
-| SLH-DSA | FIPS 205 | Stateless Hash | TNFL (signatures) | Alternative to ML-DSA |
+| Algorithm | Standard | Family | Purpose | Replaces | Protects Against |
+|-----------|----------|--------|---------|----------|------------------|
+| ML-KEM | FIPS 203 | Module Lattice | Key exchange | ECDH, RSA-KEM | SNDL |
+| ML-DSA | FIPS 204 | Module Lattice | Signatures | ECDSA, RSA | TNFL |
+| SLH-DSA | FIPS 205 | Stateless Hash | Signatures (conservative) | — | TNFL |
+
+*For detailed sizes and variants, see [Algorithm Sizes Reference](../../docs/ALGORITHM-SIZES.md).*
 
 ### Classical vs Post-Quantum: At a Glance
 
@@ -179,16 +181,6 @@ NIST finalized 3 post-quantum algorithms (August 2024).
 | Speed | Very fast | Fast | ~ Similar |
 
 **Bottom line:** Larger sizes, but performance is comparable or better. The trade-off is worth it for quantum resistance.
-
-### Algorithm Quick Reference
-
-| Algorithm | Purpose | Replaces | Key Insight |
-|-----------|---------|----------|-------------|
-| **ML-KEM** | Key exchange | ECDH, RSA-KEM | Protects against SNDL |
-| **ML-DSA** | Signatures | ECDSA, RSA | Protects against TNFL |
-| **SLH-DSA** | Signatures (conservative) | — | Hash-based, larger but proven |
-
-*For detailed sizes and variants, see [Algorithm Sizes Reference](../../docs/ALGORITHM-SIZES.md).*
 
 ---
 
