@@ -263,16 +263,6 @@ Code signing certificates have specific extensions:
 
 ---
 
-## What You Learned
-
-1. **Long-lived signatures**: Code signatures may be verified for 10+ years
-2. **Quantum threat**: Future quantum computers could forge classical signatures
-3. **PQC solution**: ML-DSA signatures remain unforgeable
-4. **Size trade-off**: ~3 KB signature vs ~100 bytes (negligible for binaries)
-5. **Drop-in replacement**: Same workflow, different algorithm
-
----
-
 ## When to Adopt PQC Code Signing
 
 | Scenario | Recommendation |
@@ -281,6 +271,16 @@ Code signing certificates have specific extensions:
 | Critical infrastructure | **Now** - High-value targets |
 | Enterprise software | Plan for 2025-2026 |
 | Consumer apps | Can wait, but plan ahead |
+
+---
+
+## What You Learned
+
+1. **Long-lived signatures**: Code signatures may be verified for 10+ years
+2. **Quantum threat**: Future quantum computers could forge classical signatures
+3. **PQC solution**: ML-DSA signatures remain unforgeable
+4. **Size trade-off**: ~3 KB signature vs ~100 bytes (negligible for binaries)
+5. **Drop-in replacement**: Same workflow, different algorithm
 
 ---
 

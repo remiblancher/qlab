@@ -221,15 +221,6 @@ PQC algorithms are mathematically sound, but they're new. Classical algorithms l
 
 ---
 
-## What You Learned
-
-1. **Hybrid:** The capability to combine classical + PQC cryptography
-2. **Zero breaking changes:** Legacy clients work unchanged
-3. **Defense in depth:** If one algorithm fails, the other protects
-4. **Smooth migration:** No "flag day" required
-
----
-
 ## When to Use Hybrid
 
 | Scenario | Recommendation |
@@ -239,6 +230,15 @@ PQC algorithms are mathematically sound, but they're new. Classical algorithms l
 | IoT devices (long-lived) | **Hybrid** - future-proof |
 | Regulatory environments | **Hybrid** - satisfies both requirements |
 | Testing/Development | Pure PQC (to validate full stack) |
+
+---
+
+## What You Learned
+
+1. **Hybrid:** The capability to combine classical + PQC cryptography
+2. **Zero breaking changes:** Legacy clients work unchanged
+3. **Defense in depth:** If one algorithm fails, the other protects
+4. **Smooth migration:** No "flag day" required
 
 ---
 

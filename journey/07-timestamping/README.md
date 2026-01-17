@@ -325,15 +325,6 @@ For timestamps to remain valid for decades:
 
 ---
 
-## What You Learned
-
-1. **Ultra-long validity**: Timestamps may be verified 30+ years later
-2. **Quantum threat**: Future quantum computers could forge timestamp signatures
-3. **PQC solution**: ML-DSA signatures ensure timestamps remain unforgeable
-4. **Compliance**: Legal, financial, and regulatory requirements demand PQC
-
----
-
 ## When to Adopt PQC Timestamping
 
 | Scenario | Recommendation |
@@ -343,6 +334,15 @@ For timestamps to remain valid for decades:
 | Financial audit | **Now** - Regulatory requirements |
 | AI/ML training logs | **Now** - Emerging regulations |
 | General archival | Plan for 2025-2026 |
+
+---
+
+## What You Learned
+
+1. **Ultra-long validity**: Timestamps may be verified 30+ years later
+2. **Quantum threat**: Future quantum computers could forge timestamp signatures
+3. **PQC solution**: ML-DSA signatures ensure timestamps remain unforgeable
+4. **Compliance**: Legal, financial, and regulatory requirements demand PQC
 
 ---
 
