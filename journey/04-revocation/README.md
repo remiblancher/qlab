@@ -48,12 +48,13 @@ The same way you revoke any certificate. PKI operations are algorithm-agnostic.
 
 ## What This Demo Shows
 
-| Operation | Classical | Post-Quantum |
-|-----------|-----------|--------------|
-| Issue certificate | Same workflow | Same workflow |
-| Revoke certificate | Same workflow | Same workflow |
-| Generate CRL | Same workflow | Same workflow |
-| Verify revocation | Same workflow | Same workflow |
+| Step | What Happens | Key Concept |
+|------|--------------|-------------|
+| 1 | Create PQC CA | Setup |
+| 2 | Issue certificate | CSR + issue (already learned) |
+| 3 | Revoke certificate | Mark as untrusted in CA DB |
+| 4 | Generate CRL | Publish revocation list |
+| 5 | Verify against CRL | Confirm revocation works |
 
 ---
 
@@ -76,43 +77,50 @@ qpki ca init --profile profiles/pqc-ca.yaml \
     --ca-dir output/pqc-ca
 ```
 
-### Step 2: Generate Key and CSR
+### Step 2: Issue Certificate
 
 ```bash
-# Generate ML-DSA-65 key and CSR
+# Generate ML-DSA-65 key, CSR, and issue certificate
 qpki csr gen --algorithm ml-dsa-65 \
     --keyout output/server.key \
     --cn server.example.com \
     --out output/server.csr
-```
 
-### Step 3: Issue TLS Certificate
-
-```bash
-# Issue TLS certificate from CSR
 qpki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
     --csr output/server.csr \
     --out output/server.crt
 
-# Get the serial number
+# Note the serial number (needed for revocation)
 openssl x509 -in output/server.crt -noout -serial
 ```
 
-### Step 4: Revoke Certificate
+### Step 3: Revoke Certificate
 
 ```bash
 # Revoke certificate with reason
 qpki cert revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
-
-# Generate updated CRL
-qpki crl gen --ca-dir output/pqc-ca
 ```
 
-### Step 5: Verify Revocation
+The certificate is now marked as revoked in the CA database.
+But clients don't know yet — we need to publish a CRL.
+
+### Step 4: Generate CRL
 
 ```bash
-# Verify certificate against CRL (should fail)
+# Generate the Certificate Revocation List
+qpki crl gen --ca-dir output/pqc-ca
+
+# View the CRL contents
+openssl crl -in output/pqc-ca/crl/ca.crl -text -noout
+```
+
+The CRL is now published. Clients can check if certificates are revoked.
+
+### Step 5: Verify CRL
+
+```bash
+# Verify certificate against CRL (should fail - certificate is revoked)
 qpki cert verify output/server.crt \
     --ca output/pqc-ca/ca.crt \
     --crl output/pqc-ca/crl/ca.crl
