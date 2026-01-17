@@ -180,6 +180,23 @@ qpki cert verify output/server.crt \
 
 ---
 
+## When Revocation Matters Most
+
+| Industry | Scenario | Impact |
+|----------|----------|--------|
+| **Financial services** | Stolen code signing key | Malicious transactions signed |
+| **Healthcare** | Compromised device cert | Patient data exposed |
+| **Government** | Employee termination | Unauthorized access continues |
+| **E-commerce** | TLS key leaked on GitHub | Man-in-the-middle attacks |
+| **IoT/Industrial** | Factory device breach | Supply chain compromise |
+
+**Compliance requirements:**
+- **PCI-DSS**: Revoke compromised keys within 24 hours
+- **HIPAA**: Immediate revocation for terminated employees
+- **SOC 2**: Document revocation procedures and response times
+
+---
+
 ## What You Learned
 
 1. **Algorithm-agnostic:** Revocation workflow is identical for classical and PQC

@@ -237,6 +237,23 @@ The OCSP responder certificate has:
 
 ---
 
+## When to Use OCSP
+
+| Industry | Use Case | Why Real-Time Matters |
+|----------|----------|----------------------|
+| **Banking/Finance** | Transaction signing | Reject compromised certs instantly |
+| **E-commerce** | Payment processing | Prevent fraud during checkout |
+| **Healthcare** | EHR access | Immediate access revocation |
+| **Government** | Citizen portals | Real-time credential validation |
+| **Cloud/SaaS** | API authentication | Block compromised service accounts |
+
+**CRL alone is insufficient when:**
+- Transactions are high-value (financial, legal)
+- Compliance requires real-time status (PCI-DSS, HIPAA)
+- Attack window must be minimized (< 1 hour tolerance)
+
+---
+
 ## What You Learned
 
 1. **Same HTTP protocol:** RFC 6960 works unchanged with PQC
