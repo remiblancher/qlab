@@ -188,7 +188,7 @@ NIST finalized 3 post-quantum algorithms (August 2024).
 | **ML-DSA** | Signatures | ECDSA, RSA | Protects against TNFL |
 | **SLH-DSA** | Signatures (conservative) | — | Hash-based, larger but proven |
 
-*For detailed sizes and variants, see the [Glossary](../../docs/GLOSSARY.md).*
+*For detailed sizes and variants, see [Algorithm Sizes Reference](../../docs/ALGORITHM-SIZES.md).*
 
 ---
 

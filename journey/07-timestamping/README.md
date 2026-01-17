@@ -2,7 +2,7 @@
 
 ## Post-Quantum Timestamping with ML-DSA
 
-> **Key Message:** Timestamps prove when documents existed. PQC ensures those proofs remain valid for decades.
+> **Key Message:** Timestamps prove WHEN — even after cert expiration. PQC ensures those proofs remain unforgeable for decades.
 
 ---
 

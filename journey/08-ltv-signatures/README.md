@@ -2,7 +2,7 @@
 
 ## Long-Term Validation for Document Signing
 
-> **Key Message:** A signature is only as good as its proof chain. LTV bundles everything needed for offline verification decades from now.
+> **Key Message:** LTV bundles all proofs for offline verification in 2055. A signature is only as good as its proof chain.
 
 **Important distinction:** Timestamping is necessary but **not sufficient** for long-term validation. A timestamp proves WHEN something was signed. LTV proves that **all trust elements** (certificates, revocation status, timestamps) were valid at that time — and bundles them for offline verification.
 

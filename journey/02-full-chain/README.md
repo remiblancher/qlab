@@ -2,7 +2,7 @@
 
 ## Build a Complete PQC PKI Hierarchy
 
-> **Key Message:** Build a complete quantum-resistant PKI from root to end-entity.
+> **Key Message:** End-to-end PQC chain = same architecture, quantum-safe. The hierarchy doesn't change — only the algorithms.
 
 ---
 
