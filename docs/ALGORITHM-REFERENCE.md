@@ -66,15 +66,15 @@ Technical reference for NIST post-quantum algorithm variants.
 > Ratios remain valid across different machines.
 > Absolute values are indicative (CPU @ 3.3 GHz).
 
-### RSA vs ML-DSA (Signatures)
+### ML-DSA vs RSA (Signatures)
 
 *Sources: [OpenSSL Cookbook](https://www.feistyduck.com/library/openssl-cookbook/online/openssl-command-line/performance.html), [arXiv:2503.12952](https://arxiv.org/abs/2503.12952)*
 
 | Algorithm | Sign | Verify | Ratio vs ML-DSA-65 |
 |-----------|------|--------|-------------------|
-| RSA-2048 | ~1 ms | 0.045 ms | Sign: **7x slower** |
-| RSA-3072 | ~4.8 ms | 0.096 ms | Sign: **7x slower** |
 | ML-DSA-65 | 0.70 ms | 0.15 ms | — |
+| RSA-2048 | ~1 ms | 0.045 ms | Sign: 1.4x slower |
+| RSA-3072 | ~4.8 ms | 0.096 ms | Sign: 7x slower |
 
 > RSA verification is faster, but signing is significantly slower than ML-DSA.
 > For servers that sign frequently, ML-DSA provides better throughput.
@@ -83,9 +83,9 @@ Technical reference for NIST post-quantum algorithm variants.
 
 *Sources: [arXiv:2508.01694](https://arxiv.org/html/2508.01694v3), [filippo.io](https://words.filippo.io/dispatches/mlkem768/)*
 
-| Algorithm | Operation | Time | Ratio |
-|-----------|-----------|------|-------|
-| ML-KEM-768 | Encaps + Decaps | ~0.2 ms | **Baseline** |
+| Algorithm | Operation | Time | Ratio vs ML-KEM-768 |
+|-----------|-----------|------|---------------------|
+| ML-KEM-768 | Encaps + Decaps | ~0.2 ms | — |
 | X25519 | ECDHE | ~0.65 ms | ~3x slower |
 | RSA-3072 | Key transport | >200 ms | ~1000x slower |
 
