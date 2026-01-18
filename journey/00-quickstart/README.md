@@ -113,15 +113,15 @@ qpki inspect pq-server.crt
 
 *\* Source: [NIST FIPS 204](https://csrc.nist.gov/pubs/fips/204/final), Table 2. Certificate sizes depend on extensions.*
 
-### Performance Comparison**
+### Performance Comparison (ML-DSA-65 vs ECDSA P-384)
 
-| Operation | Classical | Post-Quantum | Notes |
-|-----------|-----------|--------------|-------|
-| Key generation | fast | slower | ML-DSA slower by design |
-| Sign | fast | ~2x faster | ML-DSA outperforms ECDSA |
-| Verify | fast | faster | ML-DSA significantly faster |
+| Operation | Ratio |
+|-----------|-------|
+| Key generation | **3x faster** |
+| Signing | **~20% faster** |
+| Verification | **2x faster** |
 
-*\*\* Source: [ML-DSA Benchmark](https://medium.com/@moeghifar/post-quantum-digital-signatures-the-benchmark-of-ml-dsa-against-ecdsa-and-eddsa-d4406a5918d9). Performance varies by hardware.*
+*Details: [Algorithm Sizes & Performance](../../docs/ALGORITHM-SIZES.md#performance-benchmarks)*
 
 **The trade-off:** Larger sizes, but faster operations and quantum resistance.
 

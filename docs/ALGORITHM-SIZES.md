@@ -39,8 +39,36 @@ Technical reference for NIST post-quantum algorithm variants.
 | Level 3 | AES-192 | Recommended default |
 | Level 5 | AES-256 | Maximum security |
 
+## Performance Benchmarks
+
+*Source: [arXiv:2503.12952](https://arxiv.org/abs/2503.12952) (2025), CPU @ 3.3 GHz*
+
+### ML-DSA vs ECDSA (Signatures)
+
+| Algorithm | KeyGen | Sign | Verify | Total |
+|-----------|--------|------|--------|-------|
+| ML-DSA-44 | 0.09 ms | 0.45 ms | 0.10 ms | 0.64 ms |
+| ML-DSA-65 | 0.15 ms | 0.70 ms | 0.15 ms | 0.99 ms |
+| ML-DSA-87 | 0.25 ms | 0.84 ms | 0.27 ms | 1.36 ms |
+| ECDSA P-256 | 0.30 ms | 0.40 ms | 0.10 ms | 0.80 ms |
+| ECDSA P-384 | 0.50 ms | 0.90 ms | 0.30 ms | 1.70 ms |
+
+### Direct Comparison (Security Level 3: ML-DSA-65 vs ECDSA P-384)
+
+| Metric | ECDSA P-384 | ML-DSA-65 | Ratio |
+|--------|-------------|-----------|-------|
+| KeyGen | 0.50 ms | 0.15 ms | **3x faster** |
+| Sign | 0.90 ms | 0.70 ms | **~20% faster** |
+| Verify | 0.30 ms | 0.15 ms | **2x faster** |
+| Public Key | 97 B | 1,952 B | **20x larger** |
+| Signature | 96 B | 3,309 B | **34x larger** |
+
+> Ratios remain valid across different machines.
+> Absolute values are indicative (CPU @ 3.3 GHz).
+
 ## References
 
 - [FIPS 203: ML-KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
 - [FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
 - [FIPS 205: SLH-DSA Standard](https://csrc.nist.gov/pubs/fips/205/final)
+- [arXiv:2503.12952 - PQC Performance Analysis](https://arxiv.org/abs/2503.12952)

@@ -155,32 +155,30 @@ NIST finalized 3 post-quantum algorithms (August 2024).
 | ML-DSA | FIPS 204 | Module Lattice | Signatures | ECDSA, RSA | TNFL |
 | SLH-DSA | FIPS 205 | Stateless Hash | Signatures (conservative) | — | TNFL |
 
-*For detailed sizes and variants, see [Algorithm Sizes Reference](../../docs/ALGORITHM-SIZES.md).*
-
 ### Classical vs Post-Quantum: At a Glance
 
 *Before diving into variants, here's what changes:*
 
 **Signatures (protects against TNFL)**
 
-| | Classical | Post-Quantum | Change |
-|--|-----------|--------------|--------|
-| Example | ECDSA P-256 | ML-DSA-65 | |
-| Public Key | 64 B | 1,952 B | ~30x larger |
-| Signature | 64 B | 3,309 B | ~50x larger |
-| Sign speed | Fast | Faster | ✓ Improved |
-| Verify speed | Fast | Faster | ✓ Improved |
+| | ECDSA P-384 | ML-DSA-65 | Change |
+|--|-------------|-----------|--------|
+| Public Key | 97 B | 1,952 B | 20x larger |
+| Signature | 96 B | 3,309 B | 34x larger |
+| Signing | 0.9 ms | 0.7 ms | **~20% faster** |
+| Verification | 0.3 ms | 0.15 ms | **2x faster** |
 
 **Key Exchange (protects against SNDL)**
 
-| | Classical | Post-Quantum | Change |
-|--|-----------|--------------|--------|
-| Example | X25519 | ML-KEM-768 | |
-| Public Key | 32 B | 1,184 B | ~37x larger |
-| Ciphertext | 32 B | 1,088 B | ~34x larger |
-| Speed | Very fast | Fast | ~ Similar |
+| | X25519 | ML-KEM-768 | Change |
+|--|--------|------------|--------|
+| Public Key | 32 B | 1,184 B | 37x larger |
+| Ciphertext | 32 B | 1,088 B | 34x larger |
+| Speed | ~0.05 ms | ~0.1 ms | ~2x slower (still sub-ms) |
 
-**Bottom line:** Larger sizes, but performance is comparable or better. The trade-off is worth it for quantum resistance.
+**Bottom line:** Larger sizes, but signing/verification is faster. The trade-off is worth it for quantum resistance.
+
+*For detailed sizes, variants, and benchmarks, see [Algorithm Reference](../../docs/ALGORITHM-SIZES.md#performance-benchmarks).*
 
 ---
 
