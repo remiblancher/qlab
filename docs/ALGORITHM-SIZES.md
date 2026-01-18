@@ -91,6 +91,8 @@ Technical reference for NIST post-quantum algorithm variants.
 
 > ML-KEM is faster than X25519 for key exchange, despite larger key sizes.
 > RSA key transport is orders of magnitude slower and rarely used in modern TLS.
+>
+> *X25519 = ECDH (Elliptic Curve Diffie-Hellman) on Curve25519.*
 
 ## References
 
