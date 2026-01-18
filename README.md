@@ -53,7 +53,7 @@ Then start with: `./journey/00-quickstart/demo.sh`
 
 ## Learning Path
 
-**Total time: ~1h45** | **Minimum path: 20 min** (Quick Start + Revelation)
+**Total time: ~2h** | **Minimum path: 20 min** (Quick Start + Revelation)
 
 ### 🧭 Story Arc
 
