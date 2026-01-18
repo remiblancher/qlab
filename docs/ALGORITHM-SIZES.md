@@ -66,9 +66,37 @@ Technical reference for NIST post-quantum algorithm variants.
 > Ratios remain valid across different machines.
 > Absolute values are indicative (CPU @ 3.3 GHz).
 
+### RSA vs ML-DSA (Signatures)
+
+*Sources: [OpenSSL Cookbook](https://www.feistyduck.com/library/openssl-cookbook/online/openssl-command-line/performance.html), [arXiv:2503.12952](https://arxiv.org/abs/2503.12952)*
+
+| Algorithm | Sign | Verify | Ratio vs ML-DSA-65 |
+|-----------|------|--------|-------------------|
+| RSA-2048 | ~1 ms | 0.045 ms | Sign: **7x slower** |
+| RSA-3072 | ~4.8 ms | 0.096 ms | Sign: **7x slower** |
+| ML-DSA-65 | 0.70 ms | 0.15 ms | — |
+
+> RSA verification is faster, but signing is significantly slower than ML-DSA.
+> For servers that sign frequently, ML-DSA provides better throughput.
+
+### ML-KEM vs X25519 vs RSA (Key Exchange)
+
+*Sources: [arXiv:2508.01694](https://arxiv.org/html/2508.01694v3), [filippo.io](https://words.filippo.io/dispatches/mlkem768/)*
+
+| Algorithm | Operation | Time | Ratio |
+|-----------|-----------|------|-------|
+| ML-KEM-768 | Encaps + Decaps | ~0.2 ms | **Baseline** |
+| X25519 | ECDHE | ~0.65 ms | ~3x slower |
+| RSA-3072 | Key transport | >200 ms | ~1000x slower |
+
+> ML-KEM is faster than X25519 for key exchange, despite larger key sizes.
+> RSA key transport is orders of magnitude slower and rarely used in modern TLS.
+
 ## References
 
 - [FIPS 203: ML-KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
 - [FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
 - [FIPS 205: SLH-DSA Standard](https://csrc.nist.gov/pubs/fips/205/final)
 - [arXiv:2503.12952 - PQC Performance Analysis](https://arxiv.org/abs/2503.12952)
+- [arXiv:2508.01694 - ML-KEM vs RSA/ECC](https://arxiv.org/html/2508.01694v3)
+- [OpenSSL Cookbook - Performance](https://www.feistyduck.com/library/openssl-cookbook/online/openssl-command-line/performance.html)
