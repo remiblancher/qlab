@@ -31,9 +31,9 @@ This lab demonstrates:
 - **Hybrid certificates provide a quantum-safe migration path** — protect legacy and future clients
 - **The PKI model is algorithm-agnostic** — your workflow stays exactly the same
 
-> ⏰ **The Clock is Ticking**
-> Your 2024 TLS traffic is being recorded right now. In 2035, it could be plaintext.
-> How long must your data stay secret? [Calculate your urgency →](journey/01-revelation/)
+> 🎯 **When Should You Start?**
+> PQC migration takes 2–5 years. Your data's confidentiality requirement determines urgency.
+> [Calculate your timeline →](journey/01-revelation/)
 
 ---
 
