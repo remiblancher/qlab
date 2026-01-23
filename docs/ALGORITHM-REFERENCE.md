@@ -79,6 +79,31 @@ Technical reference for NIST post-quantum algorithm variants.
 > RSA verification is faster, but signing is significantly slower than ML-DSA.
 > For servers that sign frequently, ML-DSA provides better throughput.
 
+### SLH-DSA vs ML-DSA (Signatures)
+
+*Sources: [arXiv:2503.12952](https://arxiv.org/abs/2503.12952) (x86 @ 3.3 GHz), [conduition.io](https://conduition.io/code/fast-slh-dsa/) (Intel 12th gen @ 2.8 GHz)*
+
+| Algorithm | Sign | Verify | Signature | Public Key |
+|-----------|------|--------|-----------|------------|
+| ML-DSA-65 | 0.70 ms | 0.15 ms | 3,309 B | 1,952 B |
+| SLH-DSA-128f | ~30 ms | ~10 ms | 17,088 B | 32 B |
+| SLH-DSA-128s | ~200 ms | ~3 ms | 7,856 B | 32 B |
+
+| Metric | ML-DSA-65 | SLH-DSA-128f | SLH-DSA-128s |
+|--------|-----------|--------------|--------------|
+| Sign | 0.70 ms | ~30 ms | ~200 ms |
+| Ratio | — | **~40x slower** | **~300x slower** |
+
+> **When to use SLH-DSA:**
+> - Conservative security (hash-based, no lattice assumptions)
+> - Root of Trust, firmware signing (sign rarely, verify often)
+> - Long-term archival signatures
+>
+> **When to use ML-DSA:**
+> - Performance-critical applications (TLS, API signing)
+> - Frequent signing operations
+> - Bandwidth-constrained environments
+
 ### ML-KEM vs X25519 vs RSA (Key Exchange)
 
 *Sources: [arXiv:2508.01694](https://arxiv.org/html/2508.01694v3), [filippo.io](https://words.filippo.io/dispatches/mlkem768/)*
@@ -102,3 +127,4 @@ Technical reference for NIST post-quantum algorithm variants.
 - [arXiv:2503.12952 - PQC Performance Analysis](https://arxiv.org/abs/2503.12952)
 - [arXiv:2508.01694 - ML-KEM vs RSA/ECC](https://arxiv.org/html/2508.01694v3)
 - [OpenSSL Cookbook - Performance](https://www.feistyduck.com/library/openssl-cookbook/online/openssl-command-line/performance.html)
+- [Making SLH-DSA Faster](https://conduition.io/code/fast-slh-dsa/) - Desktop benchmarks (Intel 12th gen)
