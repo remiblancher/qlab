@@ -47,7 +47,7 @@ cd post-quantum-pki-lab
 ./tooling/install.sh
 ```
 
-Then start with: `./journey/00-quickstart/demo.sh`
+Then start with: `./journey/01-revelation/demo.sh`
 
 ---
 
@@ -58,12 +58,12 @@ Then start with: `./journey/00-quickstart/demo.sh`
 ### 🧭 Story Arc
 
 ```
-UC-00: "Same workflow, but PKI must evolve"
+UC-01: "Your data is already being recorded" (WHY)
          │
-         ▼ Why evolve?
-UC-01: "Your data is already being recorded"
+         ▼ But migration is simple...
+UC-00: "Same workflow, just different algorithms" (HOW)
          │
-         ▼ How to evolve?
+         ▼ Let's build!
 UC-02: "Build a 100% PQC chain"
 UC-03: "Or hybrid to coexist with legacy"
          │
@@ -84,8 +84,8 @@ UC-10: "Crypto-agility = CA versioning + trust bundles"
 ┌─────────────────────────────────────────────────────────────────┐
 │  AWARENESS              BUILD                    LIFECYCLE      │
 │  ┌──────┐ ┌──────┐      ┌──────┐ ┌──────┐    ┌──────┐ ┌──────┐ │
-│  │UC-00 │→│UC-01 │  →   │UC-02 │→│UC-03 │ →  │UC-04 │→│UC-05 │ │
-│  │Start │ │Why?  │      │Chain │ │Hybrid│    │CRL   │ │OCSP  │ │
+│  │UC-01 │→│UC-00 │  →   │UC-02 │→│UC-03 │ →  │UC-04 │→│UC-05 │ │
+│  │Why?  │ │How?  │      │Chain │ │Hybrid│    │CRL   │ │OCSP  │ │
 │  └──────┘ └──────┘      └──────┘ └──────┘    └──────┘ └──────┘ │
 │                                                       ↓        │
 │  MIGRATION              ENCRYPTION           LONG-TERM SIGS    │
@@ -100,8 +100,8 @@ UC-10: "Crypto-agility = CA versioning + trust bundles"
 
 | # | Mission | Time | Key Message |
 |---|---------|------|-------------|
-| 0 | [**Quick Start**](journey/00-quickstart/) — Create your first CA | 10 min | Same commands, evolved PKI. Multi-algorithm support is the new baseline. |
 | 1 | [**The Revelation**](journey/01-revelation/) — Why PQC matters? | 10 min | Your data is already being recorded. The clock is ticking. |
+| 0 | [**Quick Start**](journey/00-quickstart/) — Create your first CA | 10 min | Same commands, evolved PKI. Multi-algorithm support is the new baseline. |
 
 ### 📚 Core PKI
 
@@ -141,8 +141,8 @@ UC-10: "Crypto-agility = CA versioning + trust bundles"
 |---|---------|------|-------------|
 | 10 | [**Crypto-Agility**](journey/10-crypto-agility/) — Migrate ECDSA → ML-DSA | 15 min | Crypto-agility = reversible migration via CA versioning. |
 
-> 💡 **After UC-01**, you'll understand WHY migration is urgent.
-> Continue to UC-02+ to learn HOW to do it.
+> 💡 **Start with UC-01** to understand WHY migration is urgent.
+> Then UC-00 shows it's simple. Continue to UC-02+ to build real chains.
 
 ---
 
