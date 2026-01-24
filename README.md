@@ -33,7 +33,7 @@ This lab demonstrates:
 
 > 🎯 **When Should You Start?**
 > PQC migration takes 2–5 years. Your data's confidentiality requirement determines urgency.
-> [Calculate your timeline →](journey/01-revelation/)
+> [Calculate your timeline →](journey/00-revelation/)
 
 ---
 
@@ -47,7 +47,7 @@ cd post-quantum-pki-lab
 ./tooling/install.sh
 ```
 
-Then start with: `./journey/01-revelation/demo.sh`
+Then start with: `./journey/00-revelation/demo.sh`
 
 ---
 
@@ -58,10 +58,10 @@ Then start with: `./journey/01-revelation/demo.sh`
 ### 🧭 Story Arc
 
 ```
-UC-01: "Your data is already being recorded" (WHY)
+UC-00: "Your data is already being recorded" (WHY)
          │
          ▼ But migration is simple...
-UC-00: "Same workflow, just different algorithms" (HOW)
+UC-01: "Same workflow, just different algorithms" (HOW)
          │
          ▼ Let's build!
 UC-02: "Build a 100% PQC chain"
@@ -84,7 +84,7 @@ UC-10: "Crypto-agility = CA versioning + trust bundles"
 ┌─────────────────────────────────────────────────────────────────┐
 │  AWARENESS              BUILD                    LIFECYCLE      │
 │  ┌──────┐ ┌──────┐      ┌──────┐ ┌──────┐    ┌──────┐ ┌──────┐ │
-│  │UC-01 │→│UC-00 │  →   │UC-02 │→│UC-03 │ →  │UC-04 │→│UC-05 │ │
+│  │UC-00 │→│UC-01 │  →   │UC-02 │→│UC-03 │ →  │UC-04 │→│UC-05 │ │
 │  │Why?  │ │How?  │      │Chain │ │Hybrid│    │CRL   │ │OCSP  │ │
 │  └──────┘ └──────┘      └──────┘ └──────┘    └──────┘ └──────┘ │
 │                                                       ↓        │
@@ -100,8 +100,8 @@ UC-10: "Crypto-agility = CA versioning + trust bundles"
 
 | # | Mission | Time | Key Message |
 |---|---------|------|-------------|
-| 1 | [**The Revelation**](journey/01-revelation/) — Why PQC matters? | 10 min | Your data is already being recorded. The clock is ticking. |
-| 0 | [**Quick Start**](journey/00-quickstart/) — Create your first CA | 10 min | Same commands, evolved PKI. Multi-algorithm support is the new baseline. |
+| 0 | [**The Revelation**](journey/00-revelation/) — Why PQC matters? | 10 min | Your data is already being recorded. The clock is ticking. |
+| 1 | [**Quick Start**](journey/01-quickstart/) — Create your first CA | 10 min | Same commands, evolved PKI. Multi-algorithm support is the new baseline. |
 
 ### 📚 Core PKI
 
@@ -141,8 +141,8 @@ UC-10: "Crypto-agility = CA versioning + trust bundles"
 |---|---------|------|-------------|
 | 10 | [**Crypto-Agility**](journey/10-crypto-agility/) — Migrate ECDSA → ML-DSA | 15 min | Crypto-agility = reversible migration via CA versioning. |
 
-> 💡 **Start with UC-01** to understand WHY migration is urgent.
-> Then UC-00 shows it's simple. Continue to UC-02+ to build real chains.
+> 💡 **Start with UC-00** to understand WHY migration is urgent.
+> Then UC-01 shows it's simple. Continue to UC-02+ to build real chains.
 
 ---
 

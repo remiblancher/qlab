@@ -40,7 +40,7 @@ Short answer: **No.** The PKI workflow is identical. Only the algorithm name cha
 ## Run the Demo
 
 ```bash
-./journey/00-quickstart/demo.sh
+./journey/01-quickstart/demo.sh
 ```
 
 **Duration:** 10 minutes
@@ -182,4 +182,4 @@ ML-DSA     ├───────────────────┼──
 
 ---
 
-← [QLAB Home](../../README.md) | [Next: The Revelation →](../01-revelation/)
+← [The Revelation](../00-revelation/) | [QLAB Home](../../README.md) | [Next: Full Chain →](../02-full-chain/)

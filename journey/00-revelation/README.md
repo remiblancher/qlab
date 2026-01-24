@@ -6,7 +6,7 @@
 
 You just created a classical PKI with ECDSA. It works. So why change?
 
-The PKI you built in [Quick Start](../00-quickstart/) is structurally correct — but cryptographically fragile in the long term.
+The PKI you built in [Quick Start](../01-quickstart/) is structurally correct — but cryptographically fragile in the long term.
 
 Because **quantum computers will break everything**.
 
@@ -200,4 +200,4 @@ NIST finalized 3 post-quantum algorithms (August 2024).
 
 ---
 
-← [Quick Start](../00-quickstart/) | [QLAB Home](../../README.md) | [Next: Full Chain →](../02-full-chain/)
+← [Quick Start](../01-quickstart/) | [QLAB Home](../../README.md) | [Next: Full Chain →](../02-full-chain/)
