@@ -53,7 +53,7 @@ Then start with: `./journey/00-revelation/demo.sh`
 
 ## Learning Path
 
-**Total time: ~2h** | **Minimum path: 20 min** (Revelation + Quick Start)
+**Total time: ~2h** | **Quick path: 20 min** (Revelation + Quick Start)
 
 ### 🗺️ Journey Map
 
@@ -75,55 +75,55 @@ Then start with: `./journey/00-revelation/demo.sh`
 
 ---
 
-### 🚀 Awareness — WHY then HOW
+### 🚀 Awareness
 
-| # | Mission | Time | Key Message |
-|---|---------|------|-------------|
+| # | Lab | Time | Takeaway |
+|---|-----|------|----------|
 | 0 | [**The Revelation**](journey/00-revelation/) | 10 min | Your data is already being recorded |
 | 1 | [**Quick Start**](journey/01-quickstart/) | 10 min | Same workflow, just different algorithms |
 
 ↓ *Let's build!*
 
-### 📚 Build — Full PQC or Hybrid
+### 📚 Build
 
-| # | Mission | Time | Key Message |
-|---|---------|------|-------------|
+| # | Lab | Time | Takeaway |
+|---|-----|------|----------|
 | 2 | [**Full PQC Chain**](journey/02-full-chain/) | 10 min | Build a 100% PQC chain |
 | 3 | [**Hybrid Catalyst**](journey/03-hybrid/) | 10 min | Or hybrid to coexist with legacy |
 
 ↓ *PKI operations stay identical*
 
-### ⚙️ Lifecycle — Same commands
+### ⚙️ Lifecycle
 
-| # | Mission | Time | Key Message |
-|---|---------|------|-------------|
+| # | Lab | Time | Takeaway |
+|---|-----|------|----------|
 | 4 | [**Revocation**](journey/04-revocation/) | 10 min | Revoke = same command |
 | 5 | [**OCSP**](journey/05-ocsp/) | 10 min | Verify = same protocol |
 
 ↓ *Sign, timestamp, archive for decades*
 
-### 💼 Long-Term Signatures — Sign → Timestamp → Archive
+### 💼 Long-Term Signatures
 
-| # | Mission | Time | Key Message |
-|---|---------|------|-------------|
+| # | Lab | Time | Takeaway |
+|---|-----|------|----------|
 | 6 | [**Code Signing**](journey/06-code-signing/) | 10 min | Signatures that outlive the threat |
 | 7 | [**Timestamping**](journey/07-timestamping/) | 15 min | Prove WHEN, forever |
 | 8 | [**LTV**](journey/08-ltv-signatures/) | 15 min | Bundle proofs for offline verification |
 
 ↓ *Except for encryption...*
 
-### 🔐 Encryption — KEM requires attestation
+### 🔐 Encryption
 
-| # | Mission | Time | Key Message |
-|---|---------|------|-------------|
+| # | Lab | Time | Takeaway |
+|---|-----|------|----------|
 | 9 | [**CMS Encryption**](journey/09-cms-encryption/) | 15 min | KEM keys require a new pattern: attestation |
 
 ↓ *And for production migration?*
 
-### 🧭 Migration — Crypto-agility
+### 🧭 Migration
 
-| # | Mission | Time | Key Message |
-|---|---------|------|-------------|
+| # | Lab | Time | Takeaway |
+|---|-----|------|----------|
 | 10 | [**Crypto-Agility**](journey/10-crypto-agility/) | 15 min | CA versioning + trust bundles |
 
 ---
@@ -148,7 +148,7 @@ Then start with: `./journey/00-revelation/demo.sh`
 
 ---
 
-## Useful Links
+## Resources
 
 - [QPKI - Post-Quantum PKI](https://github.com/remiblancher/post-quantum-pki) — The PKI toolkit used by QLAB
 - [Glossary](docs/GLOSSARY.md) — PQC and PKI terminology
