@@ -116,7 +116,7 @@ Then start with: `./journey/00-revelation/demo.sh`
 
 | # | Mission | Time | Key Message |
 |---|---------|------|-------------|
-| 9 | [**CMS Encryption**](journey/09-cms-encryption/) | 15 min | KEM keys can't sign → attestation |
+| 9 | [**CMS Encryption**](journey/09-cms-encryption/) | 15 min | KEM keys require a new pattern: attestation |
 
 ↓ *And for production migration?*
 
