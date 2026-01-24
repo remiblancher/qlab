@@ -33,7 +33,7 @@ This lab demonstrates:
 
 > 🎯 **When Should You Start?**
 > PQC migration takes 2–5 years. Your data's confidentiality requirement determines urgency.
-> [Calculate your timeline →](journey/01-revelation/)
+> [Calculate your timeline →](journey/00-revelation/)
 
 ---
 
@@ -47,75 +47,84 @@ cd post-quantum-pki-lab
 ./tooling/install.sh
 ```
 
-Then start with: `./journey/00-quickstart/demo.sh`
+Then start with: `./journey/00-revelation/demo.sh`
 
 ---
 
 ## Learning Path
 
-**Total time: ~2h** | **Minimum path: 20 min** (Quick Start + Revelation)
+**Total time: ~2h** | **Minimum path: 20 min** (Revelation + Quick Start)
 
-### 🧭 Story Arc
+### 🗺️ Journey Map
 
 ```
-UC-00: "Same workflow, but PKI must evolve"
-         │
-         ▼ Why evolve?
-UC-01: "Your data is already being recorded"
-         │
-         ▼ How to evolve?
-UC-02: "Build a 100% PQC chain"
-UC-03: "Or hybrid to coexist with legacy"
-         │
-         ▼ PKI evolves, but operations stay identical
-UC-04/05: "Revoke, verify = same commands"
-UC-06/07/08: "Sign, timestamp, archive = same workflows"
-         │
-         ▼ Except for encryption...
-UC-09: "KEM keys require a new pattern: attestation"
-         │
-         ▼ And for production migration?
-UC-10: "Crypto-agility = CA versioning + trust bundles"
+┌─────────────────────────────────────────────────────────────────┐
+│  AWARENESS              BUILD                    LIFECYCLE      │
+│  ┌──────┐ ┌──────┐      ┌──────┐ ┌──────┐    ┌──────┐ ┌──────┐ │
+│  │UC-00 │→│UC-01 │  →   │UC-02 │→│UC-03 │ →  │UC-04 │→│UC-05 │ │
+│  │Why?  │ │How?  │      │Chain │ │Hybrid│    │CRL   │ │OCSP  │ │
+│  └──────┘ └──────┘      └──────┘ └──────┘    └──────┘ └──────┘ │
+│                                                       ↓        │
+│  MIGRATION              ENCRYPTION           LONG-TERM SIGS    │
+│  ┌──────┐               ┌──────┐            ┌──────┬──────┬────┐│
+│  │UC-10 │  ←            │UC-09 │    ←       │UC-06 │UC-07 │UC-08│
+│  │Agility│              │KEM   │            │Sign  │Time  │LTV ││
+│  └──────┘               └──────┘            └──────┴──────┴────┘│
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### 🚀 Getting Started
+---
+
+### 🚀 Awareness — WHY then HOW
 
 | # | Mission | Time | Key Message |
 |---|---------|------|-------------|
-| 0 | [**Quick Start**](journey/00-quickstart/) — Create your first CA | 10 min | Same commands, evolved PKI. Multi-algorithm support is the new baseline. |
-| 1 | [**The Revelation**](journey/01-revelation/) — Why PQC matters? | 10 min | Your data is already being recorded. The clock is ticking. |
+| 0 | [**The Revelation**](journey/00-revelation/) | 10 min | Your data is already being recorded |
+| 1 | [**Quick Start**](journey/01-quickstart/) | 10 min | Same workflow, just different algorithms |
 
-### 📚 Core PKI
+↓ *Let's build!*
 
-| # | Mission | Time | Key Message |
-|---|---------|------|-------------|
-| 2 | [**Full PQC Chain**](journey/02-full-chain/) — Root → Issuing → TLS (ML-DSA) | 10 min | End-to-end PQC chain = same architecture, quantum-safe. |
-| 3 | [**Hybrid Catalyst**](journey/03-hybrid/) — Dual-key certificate (ECDSA + ML-DSA) | 10 min | Hybrid = parallel algorithms. Legacy and PQC coexist. |
-
-### ⚙️ PKI Lifecycle
+### 📚 Build — Full PQC or Hybrid
 
 | # | Mission | Time | Key Message |
 |---|---------|------|-------------|
-| 4 | [**Revocation**](journey/04-revocation/) — CRL generation | 10 min | Revoking PQC certs = same command, same workflow. |
-| 5 | [**PQC OCSP**](journey/05-ocsp/) — Is This Cert Still Good? | 10 min | OCSP real-time status = same HTTP protocol. |
+| 2 | [**Full PQC Chain**](journey/02-full-chain/) | 10 min | Build a 100% PQC chain |
+| 3 | [**Hybrid Catalyst**](journey/03-hybrid/) | 10 min | Or hybrid to coexist with legacy |
 
-### 💼 Real-World Applications
+↓ *PKI operations stay identical*
 
-| # | Mission | Time | Key Message |
-|---|---------|------|-------------|
-| 6 | [**PQC Code Signing**](journey/06-code-signing/) — Signatures That Outlive the Threat | 10 min | Code signatures live 10-30 years. PQC makes them unforgeable. |
-| 7 | [**PQC Timestamping**](journey/07-timestamping/) — Trust Now, Verify Forever | 15 min | Timestamps prove WHEN — even after cert expiration. |
-| 8 | [**PQC LTV**](journey/08-ltv-signatures/) — Sign Today, Verify in 30 Years | 15 min | LTV bundles all proofs for offline verification in 2055. |
-| 9 | [**CMS Encryption**](journey/09-cms-encryption/) — Encrypt documents (ML-KEM) | 10 min | KEM keys can't sign. Attestation links encryption to identity. |
-
-### 🧭 Architecture & Migration
+### ⚙️ Lifecycle — Same commands
 
 | # | Mission | Time | Key Message |
 |---|---------|------|-------------|
-| 10 | [**Crypto-Agility**](journey/10-crypto-agility/) — Migrate ECDSA → ML-DSA | 15 min | Crypto-agility = reversible migration via CA versioning. |
+| 4 | [**Revocation**](journey/04-revocation/) | 10 min | Revoke = same command |
+| 5 | [**OCSP**](journey/05-ocsp/) | 10 min | Verify = same protocol |
 
-> 💡 **After UC-01**, you'll understand WHY migration is urgent.
-> Continue to UC-02+ to learn HOW to do it.
+↓ *Sign, timestamp, archive for decades*
+
+### 💼 Long-Term Signatures — Sign → Timestamp → Archive
+
+| # | Mission | Time | Key Message |
+|---|---------|------|-------------|
+| 6 | [**Code Signing**](journey/06-code-signing/) | 10 min | Signatures that outlive the threat |
+| 7 | [**Timestamping**](journey/07-timestamping/) | 15 min | Prove WHEN, forever |
+| 8 | [**LTV**](journey/08-ltv-signatures/) | 15 min | Bundle proofs for offline verification |
+
+↓ *Except for encryption...*
+
+### 🔐 Encryption — KEM requires attestation
+
+| # | Mission | Time | Key Message |
+|---|---------|------|-------------|
+| 9 | [**CMS Encryption**](journey/09-cms-encryption/) | 15 min | KEM keys can't sign → attestation |
+
+↓ *And for production migration?*
+
+### 🧭 Migration — Crypto-agility
+
+| # | Mission | Time | Key Message |
+|---|---------|------|-------------|
+| 10 | [**Crypto-Agility**](journey/10-crypto-agility/) | 15 min | CA versioning + trust bundles |
 
 ---
 
@@ -143,6 +152,7 @@ UC-10: "Crypto-agility = CA versioning + trust bundles"
 
 - [QPKI - Post-Quantum PKI](https://github.com/remiblancher/post-quantum-pki) — The PKI toolkit used by QLAB
 - [Glossary](docs/GLOSSARY.md) — PQC and PKI terminology
+- [Troubleshooting](docs/TROUBLESHOOTING.md) — Common issues and solutions
 - [NIST Post-Quantum Cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
 - [FIPS 203 (ML-KEM)](https://csrc.nist.gov/pubs/fips/203/final)
 - [FIPS 204 (ML-DSA)](https://csrc.nist.gov/pubs/fips/204/final)

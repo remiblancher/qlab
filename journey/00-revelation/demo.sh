@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-#  UC-01: The Revelation - Store Now, Decrypt Later
+#  UC-00: The Revelation - Store Now, Decrypt Later
 #
 #  Interactive Mosca calculator to assess your PQC migration urgency
 #
