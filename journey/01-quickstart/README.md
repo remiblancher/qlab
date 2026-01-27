@@ -155,7 +155,7 @@ ML-DSA     ├──────────────────┼───
            │                  │                                      │
 ```
 
-*Q-Day estimates range from 2030-2035. See [The Revelation](../00-revelation/) for details.*
+*Q-Day: NIST recommends completing PQC migration by 2030-2035. See [The Revelation](../00-revelation/) for threat analysis.*
 
 ---
 
