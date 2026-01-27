@@ -294,7 +294,7 @@ echo ""
 echo "  Verifying CMS signature using bundled chain..."
 echo ""
 
-run_cmd "$PKI_BIN cms verify $BUNDLE_DIR/signature.p7s --data $BUNDLE_DIR/document.txt"
+run_cmd "$PKI_BIN cms verify $BUNDLE_DIR/signature.p7s --data $BUNDLE_DIR/document.txt --ca $DEMO_TMP/ltv-ca/ca.crt"
 
 echo ""
 echo -e "  ${GREEN}✓${NC} Signature VALID"
