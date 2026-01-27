@@ -99,7 +99,7 @@ qpki cert issue --ca-dir ./pqc-ca \
 
 **Notice anything?** The workflow is identical. Only the algorithm name changes.
 
-> **Tip:** For detailed ASN.1 output, use `openssl x509 -in <cert> -text -noout`
+> **Tip:** Use `qpki inspect <cert>` for a quick overview, or `openssl x509 -in <cert> -text -noout` for detailed ASN.1 output.
 
 ## Expected Results
 
