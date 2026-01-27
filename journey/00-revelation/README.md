@@ -154,29 +154,6 @@ No need to capture anything beforehand — just your public key.
 
 ---
 
-## Regulatory Timeline
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                                                                  │
-│   2025    2026    2027    2028    2029    2030    2031    2035   │
-│     │       │       │                       │               │    │
-│     ▼       ▼       ▼                       ▼               ▼    │
-│   Today  Inventory  PQC in         High-risk       All use      │
-│          & Risk     product        transitions     cases        │
-│          Analysis   qualification  complete        complete     │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-Sources:
-- NIS Cooperation Group (EU): Coordinated PQC Transition Roadmap (2025)
-- ANSSI (France): Post-Quantum Cryptography FAQ (2025)
-
-**By 2030:** "No longer reasonable to purchase products without PQC"
-
----
-
 ## Mosca's Theorem
 
 Michele Mosca formalized the urgency of migration:
