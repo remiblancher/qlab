@@ -126,11 +126,14 @@ Embed EVERYTHING needed in a self-sufficient bundle:
 ## What We'll Do
 
 1. Create a CA for document signing
-2. Issue TSA and signing certificates
-3. Sign a 30-year contract
-4. Request a timestamp (proof of when it was signed)
-5. Create an LTV bundle (signature + timestamp + chain)
-6. Verify offline (simulating year 2055)
+2. Issue TSA certificate
+3. Start TSA server
+4. Issue signing certificate
+5. Create & sign the 30-year contract
+6. Request a timestamp (via HTTP)
+7. Create an LTV bundle
+8. Verify offline (simulating 2055)
+9. Stop TSA server
 
 ---
 

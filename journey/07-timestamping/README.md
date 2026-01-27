@@ -112,9 +112,11 @@ A trusted authority (TSA) proves when the signature was created:
 1. Create a TSA CA (ML-DSA-65)
 2. Issue a TSA certificate
 3. Start an RFC 3161 timestamp server
-4. Create a document and request a timestamp
-5. Verify the timestamp
-6. Tamper with document and verify again (should fail)
+4. Create a document
+5. Request a timestamp (via HTTP)
+6. Verify the timestamp (VALID)
+7. Tamper and verify again (INVALID)
+8. Stop TSA server
 
 ---
 
