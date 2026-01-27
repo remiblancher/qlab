@@ -247,12 +247,30 @@ NIST finalized 3 post-quantum algorithms (August 2024).
 
 ---
 
+## Security Agency Recommendations
+
+Major security agencies worldwide are already mandating PQC migration:
+
+| Agency | Country | Recommendation |
+|--------|---------|----------------|
+| **NSA (CNSA 2.0)** | USA | Full PQC migration by 2035 for national security systems |
+| **NIST** | USA | Standards finalized (2024), migration guidance published |
+| **ANSSI** | France | Hybrid approach recommended, PQC integration by 2025 |
+| **BSI** | Germany | PQC migration planning required for critical infrastructure |
+| **NCSC** | UK | Begin PQC planning now, prioritize high-value data |
+
+**The message is unanimous:** Start now. The transition takes years, and the threat is real.
+
+---
+
 ## References
 
 - [FIPS 203: ML-KEM Standard](https://csrc.nist.gov/pubs/fips/203/final)
 - [FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
 - [FIPS 205: SLH-DSA Standard](https://csrc.nist.gov/pubs/fips/205/final)
 - [Mosca's Theorem](https://globalriskinstitute.org/publication/quantum-threat-timeline/)
+- [NSA CNSA 2.0](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)
+- [ANSSI PQC Position](https://www.ssi.gouv.fr/publication/avis-de-lanssi-sur-la-migration-vers-la-cryptographie-post-quantique/)
 
 ---
 
