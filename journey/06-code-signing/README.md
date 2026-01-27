@@ -164,6 +164,9 @@ Sign the code BEFORE distributing it:
 qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="Code Signing CA" \
     --ca-dir output/code-ca
+
+# Export CA certificate for verification
+qpki ca export --ca-dir output/code-ca --out output/code-ca/ca.crt
 ```
 
 ### Step 2: Issue Code Signing Certificate
@@ -198,9 +201,10 @@ qpki cms sign --data output/firmware.bin \
 ### Step 4: Verify the Signature
 
 ```bash
-# Verify signature against original binary
+# Verify signature and certificate chain
 qpki cms verify output/firmware.p7s \
-    --data output/firmware.bin
+    --data output/firmware.bin \
+    --ca output/code-ca/ca.crt
 # Result: VALID
 ```
 
@@ -212,7 +216,8 @@ echo "MALWARE" >> output/firmware.bin
 
 # Verify again
 qpki cms verify output/firmware.p7s \
-    --data output/firmware.bin
+    --data output/firmware.bin \
+    --ca output/code-ca/ca.crt
 # Result: INVALID - signature verification failed
 ```
 

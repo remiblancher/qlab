@@ -52,6 +52,9 @@ echo ""
 
 run_cmd "$PKI_BIN ca init --profile $PROFILES/pqc-ca.yaml --var cn=\"Code Signing CA\" --ca-dir $DEMO_TMP/code-ca"
 
+# Export CA certificate for verification
+$PKI_BIN ca export --ca-dir $DEMO_TMP/code-ca --out $DEMO_TMP/code-ca/ca.crt
+
 echo ""
 
 pause
@@ -126,12 +129,12 @@ print_step "Step 4: Verify the Signature"
 echo "  Simulating client-side verification..."
 echo ""
 
-run_cmd "$PKI_BIN cms verify $DEMO_TMP/firmware.p7s --data $DEMO_TMP/firmware.bin"
+run_cmd "$PKI_BIN cms verify $DEMO_TMP/firmware.p7s --data $DEMO_TMP/firmware.bin --ca $DEMO_TMP/code-ca/ca.crt"
 
 echo ""
 echo -e "  ${GREEN}✓${NC} Signature valid!"
 echo -e "  ${GREEN}✓${NC} Firmware has not been modified"
-echo -e "  ${GREEN}✓${NC} Signed by ACME Software (code signing certificate)"
+echo -e "  ${GREEN}✓${NC} Certificate chain verified against CA"
 echo ""
 
 pause
@@ -153,10 +156,10 @@ echo ""
 echo "  Verifying the tampered firmware..."
 echo ""
 
-echo -e "  ${DIM}$ qpki cms verify $DEMO_TMP/firmware.p7s --data $DEMO_TMP/firmware.bin${NC}"
+echo -e "  ${DIM}$ qpki cms verify $DEMO_TMP/firmware.p7s --data $DEMO_TMP/firmware.bin --ca $DEMO_TMP/code-ca/ca.crt${NC}"
 echo ""
 
-if $PKI_BIN cms verify $DEMO_TMP/firmware.p7s --data $DEMO_TMP/firmware.bin > /dev/null 2>&1; then
+if $PKI_BIN cms verify $DEMO_TMP/firmware.p7s --data $DEMO_TMP/firmware.bin --ca $DEMO_TMP/code-ca/ca.crt > /dev/null 2>&1; then
     echo -e "  ${GREEN}✓${NC} Signature valid"
 else
     echo -e "  ${RED}✗${NC} Signature verification FAILED!"
