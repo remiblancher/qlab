@@ -65,7 +65,7 @@ cd post-quantum-pki-lab
 
 Run: `./journey/00-revelation/demo.sh`
 
-**Requirements:** OpenSSL 3.x (for demo verification commands)
+**Optional:** OpenSSL 3.x (only needed for some verification commands in demos)
 
 ---
 
