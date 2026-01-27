@@ -64,6 +64,21 @@ TODAY            +10 years         +50 years
 ▓▓▓ EXPOSED for 40 years (until required confidentiality ends)
 ```
 
+**The harvest attack:**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  1. Adversary taps network traffic (undersea cables, ISPs...)   │
+│  2. Stores ALL encrypted data — cheap storage, patient waiting  │
+│  3. Quantum computer arrives                                    │
+│  4. Adversary decrypts entire archive at once                   │
+│  5. Medical records, state secrets, financial data — exposed    │
+└─────────────────────────────────────────────────────────────────┘
+
+The attack requires NO action after quantum arrives.
+Everything was already captured. Just decrypt and read.
+```
+
 → **Solution:** ML-KEM (quantum-resistant key exchange)
 
 ### TNFL: Trust Now, Forge Later
