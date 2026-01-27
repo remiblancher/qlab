@@ -251,7 +251,7 @@ NIST finalized 3 post-quantum algorithms (August 2024).
 
 Major security agencies have published concrete migration timelines:
 
-### [NSA CNSA 2.0](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF) (USA) — Timeline
+### [NSA CNSA 2.0](https://media.defense.gov/2022/Sep/07/2003071836/-1/-1/0/CSI_CNSA_2.0_FAQ_.PDF) (USA) — Timeline
 
 | Use Case | Deadline | Algorithms |
 |----------|----------|------------|
@@ -283,7 +283,7 @@ Major security agencies have published concrete migration timelines:
 - [FIPS 204: ML-DSA Standard](https://csrc.nist.gov/pubs/fips/204/final)
 - [FIPS 205: SLH-DSA Standard](https://csrc.nist.gov/pubs/fips/205/final)
 - [Mosca's Theorem](https://globalriskinstitute.org/publication/quantum-threat-timeline/)
-- [NSA CNSA 2.0](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF)
+- [NSA CNSA 2.0](https://media.defense.gov/2022/Sep/07/2003071836/-1/-1/0/CSI_CNSA_2.0_FAQ_.PDF)
 - [ANSSI PQC Position](https://www.ssi.gouv.fr/publication/avis-de-lanssi-sur-la-migration-vers-la-cryptographie-post-quantique/)
 
 ---
