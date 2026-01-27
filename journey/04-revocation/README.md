@@ -75,6 +75,9 @@ The same way you revoke any certificate. PKI operations are algorithm-agnostic.
 qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="PQC CA" \
     --ca-dir output/pqc-ca
+
+# Export CA certificate for verification
+qpki ca export --ca-dir output/pqc-ca --out output/pqc-ca/ca.crt
 ```
 
 ### Step 2: Issue Certificate
@@ -112,7 +115,7 @@ But clients don't know yet — we need to publish a CRL.
 qpki crl gen --ca-dir output/pqc-ca
 
 # View the CRL contents
-openssl crl -in output/pqc-ca/crl/ca.crl -text -noout
+qpki inspect output/pqc-ca/crl/ca.crl
 ```
 
 The CRL is now published. Clients can check if certificates are revoked.

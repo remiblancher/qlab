@@ -54,6 +54,9 @@ echo ""
 
 run_cmd "$PKI_BIN ca init --profile $PROFILES/pqc-ca.yaml --var cn=\"Demo CA\" --ca-dir $DEMO_TMP/demo-ca"
 
+# Export CA certificate for verification
+$PKI_BIN ca export --ca-dir $DEMO_TMP/demo-ca --out $DEMO_TMP/demo-ca/ca.crt
+
 echo ""
 
 pause
@@ -148,6 +151,12 @@ if [[ -f "$DEMO_TMP/demo-ca/crl/ca.crl" ]]; then
     echo ""
     echo -e "  ${DIM}Note: CRL size depends on number of revoked certificates${NC}"
 fi
+
+echo ""
+echo "  View the CRL contents..."
+echo ""
+
+run_cmd "$PKI_BIN inspect $DEMO_TMP/demo-ca/crl/ca.crl"
 
 echo ""
 
