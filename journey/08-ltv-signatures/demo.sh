@@ -251,6 +251,7 @@ cp $DEMO_TMP/contract.txt "$BUNDLE_DIR/document.txt"
 cp $DEMO_TMP/contract.p7s "$BUNDLE_DIR/signature.p7s"
 cp $DEMO_TMP/contract.tsr "$BUNDLE_DIR/timestamp.tsr"
 cat $DEMO_TMP/alice.crt $DEMO_TMP/ltv-ca/ca.crt > "$BUNDLE_DIR/chain.pem"
+cp $DEMO_TMP/ltv-ca/ca.crt "$BUNDLE_DIR/ca.crt"
 
 # Create manifest
 cat > "$BUNDLE_DIR/manifest.json" << EOF
@@ -262,7 +263,8 @@ cat > "$BUNDLE_DIR/manifest.json" << EOF
     "document": "document.txt",
     "signature": "signature.p7s",
     "timestamp": "timestamp.tsr",
-    "chain": "chain.pem"
+    "chain": "chain.pem",
+    "ca": "ca.crt"
   },
   "note": "This bundle contains all proofs needed for offline verification in 2055+"
 }
@@ -297,7 +299,7 @@ echo ""
 echo "  Verifying CMS signature using bundled chain..."
 echo ""
 
-run_cmd "$PKI_BIN cms verify $BUNDLE_DIR/signature.p7s --data $BUNDLE_DIR/document.txt --ca $DEMO_TMP/ltv-ca/ca.crt"
+run_cmd "$PKI_BIN cms verify $BUNDLE_DIR/signature.p7s --data $BUNDLE_DIR/document.txt --ca $BUNDLE_DIR/chain.pem"
 
 echo ""
 echo -e "  ${GREEN}✓${NC} Signature VALID"
