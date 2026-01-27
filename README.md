@@ -55,6 +55,8 @@ cd post-quantum-pki-lab
 .\tooling\install.ps1
 ```
 
+> **Note:** The demos require a bash shell. Use [Git Bash](https://git-scm.com/downloads) or [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) to run them.
+
 Then start with: `./journey/00-revelation/demo.sh`
 
 **Requirements:** OpenSSL 3.x (for demo verification commands)
