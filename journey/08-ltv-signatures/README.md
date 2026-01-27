@@ -250,7 +250,7 @@ cat output/alice.crt output/ltv-ca/ca.crt > output/ltv-bundle/chain.pem
 # Verify using only the bundle (no network)
 qpki cms verify output/ltv-bundle/signature.p7s \
     --data output/ltv-bundle/document.txt \
-    --ca output/ltv-ca/ca.crt
+    --ca output/ltv-bundle/chain.pem
 # Result: VALID - signature verified with bundled chain
 ```
 
