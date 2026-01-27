@@ -275,6 +275,25 @@ Major security agencies have published concrete migration timelines:
 
 **The message is unanimous:** Start now. The transition takes years, and the threat is real.
 
+### EU Regulatory Timeline (NIS Cooperation Group)
+
+The European Union has established a coordinated roadmap for PQC adoption:
+
+| Deadline | Requirement |
+|----------|-------------|
+| **End of 2026** | Complete cryptographic inventory and risk assessment. Begin pilot projects. |
+| **End of 2030** | Migrate all high-risk systems to PQC. |
+| **End of 2035** | Achieve full PQC coverage across all use cases. |
+
+**What This Means:**
+
+1. **Now**: Map all cryptographic assets and identify long-term data
+2. **2025-2026**: Run hybrid pilots, test compatibility
+3. **2027-2030**: Prioritize migration of sensitive systems
+4. **Post-2030**: Complete transition, phase out classical-only systems
+
+> The timeline is aggressive but achievable. Starting your inventory today is the first step.
+
 ---
 
 ## References
@@ -285,6 +304,7 @@ Major security agencies have published concrete migration timelines:
 - [Mosca's Theorem](https://globalriskinstitute.org/publication/quantum-threat-timeline/)
 - [NSA CNSA 2.0](https://media.defense.gov/2022/Sep/07/2003071836/-1/-1/0/CSI_CNSA_2.0_FAQ_.PDF)
 - [ANSSI PQC Position](https://www.ssi.gouv.fr/publication/avis-de-lanssi-sur-la-migration-vers-la-cryptographie-post-quantique/)
+- [NIS Cooperation Group PQC Roadmap](https://digital-strategy.ec.europa.eu/en/library/coordinated-implementation-roadmap-transition-post-quantum-cryptography)
 
 ---
 
