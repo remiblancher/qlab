@@ -46,7 +46,7 @@ The same way you revoke any certificate. PKI operations are algorithm-agnostic.
 
 ---
 
-## What This Demo Shows
+## What We'll Do
 
 | Step | What Happens | Key Concept |
 |------|--------------|-------------|

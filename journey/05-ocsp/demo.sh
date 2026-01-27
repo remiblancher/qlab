@@ -215,12 +215,14 @@ print_step "Step 7: Query Again (REVOKED)"
 echo "  Query again - status should change immediately!"
 echo ""
 
-# Re-query
-curl -s -X POST \
-    -H "Content-Type: application/ocsp-request" \
-    --data-binary @$DEMO_TMP/request.ocsp \
-    "http://localhost:$OCSP_PORT/" \
-    -o $DEMO_TMP/response2.ocsp 2>/dev/null
+echo "  Send request to OCSP responder via HTTP POST..."
+echo ""
+
+run_cmd "curl -s -X POST -H \"Content-Type: application/ocsp-request\" --data-binary @$DEMO_TMP/request.ocsp http://localhost:$OCSP_PORT/ -o $DEMO_TMP/response2.ocsp"
+
+echo ""
+echo "  Inspect the response..."
+echo ""
 
 if [[ -f "$DEMO_TMP/response2.ocsp" ]] && [[ -s "$DEMO_TMP/response2.ocsp" ]]; then
     $PKI_BIN ocsp info $DEMO_TMP/response2.ocsp 2>/dev/null || echo -e "  ${RED}✗${NC} Status: revoked"

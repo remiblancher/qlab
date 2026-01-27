@@ -35,7 +35,7 @@ Yes. Same HTTP protocol, same request/response format. Only signature sizes chan
 
 ---
 
-## What This Demo Shows
+## What We'll Do
 
 | Step | What Happens | Expected Result |
 |------|--------------|-----------------|

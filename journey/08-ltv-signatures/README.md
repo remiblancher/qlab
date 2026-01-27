@@ -123,7 +123,7 @@ Embed EVERYTHING needed in a self-sufficient bundle:
 
 ---
 
-## What This Demo Shows
+## What We'll Do
 
 | Step | What Happens | Expected Result |
 |------|--------------|-----------------|

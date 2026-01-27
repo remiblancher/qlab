@@ -29,7 +29,7 @@ Short answer: **No.** The PKI workflow is identical. Only the algorithm name cha
 
 ---
 
-## What This Demo Shows
+## What We'll Do
 
 | Step | Classical | Post-Quantum |
 |------|-----------|--------------|

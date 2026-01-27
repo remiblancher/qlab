@@ -44,7 +44,7 @@ This is the reality of PQC migration. You can't flip a switch and move everythin
 
 ---
 
-## What This Demo Shows
+## What We'll Do
 
 | Component | Classical | Hybrid (Catalyst) |
 |-----------|-----------|-------------------|

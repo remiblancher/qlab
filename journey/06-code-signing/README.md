@@ -137,7 +137,7 @@ Sign the code BEFORE distributing it:
 
 ---
 
-## What This Demo Shows
+## What We'll Do
 
 | Aspect | Classical (ECDSA) | Post-Quantum (ML-DSA) |
 |--------|-------------------|----------------------|

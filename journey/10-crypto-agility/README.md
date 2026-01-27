@@ -141,7 +141,7 @@ CURRENT SITUATION
 
 ---
 
-## What This Demo Shows
+## What We'll Do
 
 | Step | What Happens | Key Concept |
 |------|--------------|-------------|

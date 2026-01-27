@@ -107,7 +107,7 @@ A trusted authority (TSA) proves when the signature was created:
 
 ---
 
-## What This Demo Shows
+## What We'll Do
 
 | Step | What Happens | Expected Result |
 |------|--------------|-----------------|
