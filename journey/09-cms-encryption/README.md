@@ -81,11 +81,13 @@ Traditional CSR workflow:
 
 ## What We'll Do
 
-1. Understand the KEM key problem (can't sign CSR!)
-2. Issue a signing certificate (ML-DSA)
-3. Use CSR attestation to get encryption certificate (ML-KEM)
-4. Encrypt a document with CMS EnvelopedData
-5. Decrypt with the recipient's private key
+1. Create Encryption CA
+2. Issue signing certificate (ML-DSA)
+3. Generate encryption CSR with attestation (ML-KEM)
+4. Issue encryption certificate
+5. View Alice's certificate pair
+6. Encrypt a document
+7. Decrypt the document
 
 ---
 
