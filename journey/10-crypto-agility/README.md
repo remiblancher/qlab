@@ -146,9 +146,10 @@ CURRENT SITUATION
 1. Create a classic CA (ECDSA)
 2. Rotate to hybrid (ECDSA + ML-DSA)
 3. Rotate to full PQC (ML-DSA)
-4. Create trust bundles for different clients
-5. Verify interoperability
-6. Simulate rollback
+4. Issue PQC server certificate
+5. Create trust stores
+6. Verify interoperability
+7. Simulate rollback
 
 ---
 
