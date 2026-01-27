@@ -152,7 +152,7 @@ print_step "Step 7: Verify Revocation Status"
 echo "  Let's verify the certificate is now rejected..."
 echo ""
 
-echo -e "  ${DIM}$ qpki cert verify output/server.crt --ca $DEMO_TMP/demo-ca/ca.crt --crl $DEMO_TMP/demo-ca/crl/ca.crl${NC}"
+echo -e "  ${DIM}$ qpki cert verify $DEMO_TMP/server.crt --ca $DEMO_TMP/demo-ca/ca.crt --crl $DEMO_TMP/demo-ca/crl/ca.crl${NC}"
 
 if ! $PKI_BIN cert verify $DEMO_TMP/server.crt --ca $DEMO_TMP/demo-ca/ca.crt --crl $DEMO_TMP/demo-ca/crl/ca.crl 2>&1; then
     echo ""
