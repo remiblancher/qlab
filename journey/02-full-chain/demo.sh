@@ -52,9 +52,6 @@ echo ""
 run_cmd "$PKI_BIN ca init --profile $PROFILES/pqc-root-ca.yaml --var cn=\"PQC Root CA\" --ca-dir $DEMO_TMP/pqc-root-ca"
 
 echo ""
-echo -e "  ${BOLD}Root CA details:${NC}"
-$PKI_BIN inspect $DEMO_TMP/pqc-root-ca/ca.crt 2>/dev/null | head -8 | sed 's/^/    /'
-echo ""
 
 pause
 
@@ -109,9 +106,6 @@ echo ""
 
 run_cmd "$PKI_BIN cert issue --ca-dir $DEMO_TMP/pqc-issuing-ca --profile $PROFILES/pqc-tls-server.yaml --csr $DEMO_TMP/server.csr --out $DEMO_TMP/server.crt"
 
-echo ""
-echo -e "  ${BOLD}Certificate details:${NC}"
-$PKI_BIN inspect $DEMO_TMP/server.crt 2>/dev/null | head -10 | sed 's/^/    /'
 echo ""
 
 pause
