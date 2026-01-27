@@ -12,6 +12,12 @@ QLAB is an educational resource to help teams understand PKI and Post-Quantum Cr
 
 QLAB uses **[QPKI](https://github.com/remiblancher/post-quantum-pki)** for all PKI operations.
 
+## Prerequisites
+
+- **Git** — for cloning the repository
+- **Bash** — for running demos (Git Bash or WSL on Windows)
+- **OpenSSL 3.x** — optional, for cross-verification commands
+
 ---
 
 ## Why This Matters
