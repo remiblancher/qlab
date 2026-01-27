@@ -144,15 +144,18 @@ Only the algorithm (and sizes) change.
 ## Security Timeline
 
 ```
-         Today                2030              2040              2050
-           │                   │                 │                 │
-ECDSA      ├───────────────────┼─────────────────┼─────────────────┤
-           │     SECURE        │   AT RISK       │   BROKEN        │
-           │                   │                 │                 │
-ML-DSA     ├───────────────────┼─────────────────┼─────────────────┤
-           │     SECURE        │   SECURE        │   SECURE        │
-           │                   │                 │                 │
+         Today              Q-Day                                 Future
+         (2025)            (~2035)                                (2050+)
+           │                  │                                      │
+ECDSA      ├──────────────────┼──────────────────────────────────────┤
+           │     SECURE       │              BROKEN                  │
+           │                  │                                      │
+ML-DSA     ├──────────────────┼──────────────────────────────────────┤
+           │     SECURE       │              SECURE                  │
+           │                  │                                      │
 ```
+
+*Q-Day estimates range from 2030-2035. See [The Revelation](../00-revelation/) for details.*
 
 ---
 
