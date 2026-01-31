@@ -71,10 +71,12 @@ TODAY            Q-DAY             +50 years
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  1. Adversary taps network traffic (undersea cables, ISPs...)   │
-│  2. Stores ALL encrypted data — cheap storage, patient waiting  │
-│  3. Quantum computer arrives                                    │
-│  4. Adversary decrypts entire archive at once                   │
-│  5. Medical records, state secrets, financial data — exposed    │
+│  2. Captures everything: diplomatic exchanges, medical records, │
+│     financial transactions, trade secrets                       │
+│  3. Stores ALL encrypted data — cheap storage, patient waiting  │
+│  4. Quantum computer arrives                                    │
+│  5. Adversary decrypts entire archive at once                   │
+│  6. Medical records, state secrets, financial data — exposed    │
 └─────────────────────────────────────────────────────────────────┘
 
 The attack requires NO action after quantum arrives.
@@ -140,6 +142,8 @@ No need to capture anything beforehand — just your public key.
 *\*But what about the content? User actions, exchanged data, and browsing patterns may remain sensitive long after the session ends.*
 
 **If your data must remain secret for more than 10 years, you're already late.**
+
+*Legal, medical, and industrial records outlive the cryptographic algorithms that protect them.*
 
 ---
 

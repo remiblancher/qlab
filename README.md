@@ -12,39 +12,28 @@ QLAB is an educational resource to help teams understand PKI and Post-Quantum Cr
 
 QLAB uses **[QPKI](https://github.com/remiblancher/post-quantum-pki)** for all PKI operations.
 
-## Prerequisites
-
-- **Git** — for cloning the repository
-- **Bash** — for running demos (Git Bash or WSL on Windows)
-- **OpenSSL 3.x** — optional, for cross-verification commands
-
 ---
 
-## Why This Matters
+## What You'll Build
 
-> **"The question is not *if* quantum computers will break our cryptography, but *when*."**
-> — Michele Mosca, co-founder of the Institute for Quantum Computing
+By completing this lab, you'll be able to:
 
-Intelligence agencies are already storing encrypted traffic — undersea cables, internet communications, diplomatic exchanges, medical records — waiting patiently for quantum computers to decrypt it all.
-
-This matters today because:
-
-- **Store Now, Decrypt Later (SNDL):** Encrypted data captured now can be decrypted later
-- **Trust Now, Forge Later (TNFL):** Software signatures must remain valid for 10–30 years
-- **Long-term records:** Legal, medical, and industrial records outlive cryptographic algorithms
-
-This lab demonstrates:
-- **Classical and post-quantum PKI work the same way** — only the algorithm changes
-- **Hybrid certificates provide a quantum-safe migration path** — protect legacy and future clients
-- **The PKI model is algorithm-agnostic** — your workflow stays exactly the same
-
-> 🎯 **When Should You Start?**
-> PQC migration takes 2–5 years. Your data's confidentiality requirement determines urgency.
-> [Calculate your timeline →](journey/00-revelation/)
+- Issue classical and post-quantum certificates with the **same workflow**
+- Build complete PQC hierarchies (Root CA → Issuing CA → End-Entity)
+- Deploy **hybrid certificates** for backward-compatible migration
+- Manage full lifecycle: revocation, OCSP, CRL
+- Sign code, timestamp documents, and create **LTV signatures**
+- Encrypt with **ML-KEM** key encapsulation (the new pattern)
+- Practice **crypto-agile** CA migration
 
 ---
 
 ## Installation
+
+**Prerequisites:**
+- **Git** — for cloning the repository
+- **Bash** — for running demos (Git Bash or WSL on Windows)
+- **OpenSSL 3.x** — optional, for cross-verification commands
 
 ### macOS / Linux
 
@@ -73,8 +62,6 @@ cd post-quantum-pki-lab
 ```bash
 ./journey/00-revelation/demo.sh
 ```
-
-**Optional:** OpenSSL 3.x (only needed for some cross-verification commands in demos)
 
 ---
 
