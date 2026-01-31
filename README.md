@@ -141,7 +141,7 @@ cd post-quantum-pki-lab
 ### Classical (Production)
 - ECDSA P-256, P-384, P-521
 - RSA 2048, 4096
-- Ed25519
+- Ed25519, Ed448
 
 ### Post-Quantum (NIST Standards 2024)
 - **ML-DSA** (FIPS 204) — Lattice-based signatures
