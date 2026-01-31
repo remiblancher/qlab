@@ -6,17 +6,7 @@
 
 QLAB is an educational resource to help teams understand PKI and Post-Quantum Cryptography (PQC) migration through hands-on practice.
 
-- **Lab exercises** — Learn PQC migration with real scenarios
-- **Interactive demos** — Quantum-safe certificate operations
-- **Step-by-step journeys** — From classical to post-quantum PKI
-
-QLAB uses **[QPKI](https://github.com/remiblancher/post-quantum-pki)** for all PKI operations.
-
----
-
-## What You'll Build
-
-By completing this lab, you'll be able to:
+**What you'll learn:**
 
 - Understand the quantum threats to current cryptography (**SNDL**, **TNFL**)
 - **Assess your PQC migration urgency** using Mosca's theorem
@@ -27,6 +17,8 @@ By completing this lab, you'll be able to:
 - Sign code, timestamp documents, and create **LTV signatures**
 - Encrypt with **ML-KEM** key encapsulation (the new pattern)
 - Practice **crypto-agile** CA migration
+
+QLAB uses **[QPKI](https://github.com/remiblancher/post-quantum-pki)** for all PKI operations.
 
 ---
 
