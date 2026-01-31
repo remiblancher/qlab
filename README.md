@@ -136,23 +136,18 @@ cd post-quantum-pki-lab
 
 ---
 
-## Supported Algorithms
+## Algorithms
 
-### Classical (Production)
-- ECDSA P-256, P-384, P-521
-- RSA 2048, 4096
-- Ed25519, Ed448
-
-### Post-Quantum (NIST Standards 2024)
-- **ML-DSA** (FIPS 204) — Lattice-based signatures
-- **SLH-DSA** (FIPS 205) — Hash-based signatures
-- **ML-KEM** (FIPS 203) — Key encapsulation
-
-*Standards finalized in 2024, ecosystem still maturing.*
+### Post-Quantum (NIST 2024)
+- **ML-DSA** (FIPS 204) — Lattice-based signatures → replaces ECDSA
+- **SLH-DSA** (FIPS 205) — Hash-based signatures (conservative)
+- **ML-KEM** (FIPS 203) — Key encapsulation → replaces ECDH
 
 ### Hybrid (Transition)
 - Catalyst certificates (ITU-T X.509 9.8)
 - Composite certificates *(supported, no lab demo)*
+
+See [QPKI](https://github.com/remiblancher/post-quantum-pki#supported-algorithms) for the full list of supported algorithms.
 
 ---
 
