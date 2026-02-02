@@ -7,7 +7,7 @@
 export NC='\033[0m'
 
 # Dim (faded text)
-export DIM='\033[2m'
+export DIM='\033[90m'
 
 # Regular Colors
 export BLACK='\033[0;30m'
@@ -53,13 +53,13 @@ print_error() {
 }
 
 print_step() {
-    echo -e "\n${BOLD_BLUE}==> ${BOLD_WHITE}$1${NC}"
+    echo -e "\n${BOLD_CYAN}==> ${BOLD}$1${NC}"
 }
 
 print_substep() {
-    echo -e "  ${BLUE}->>${NC} $1"
+    echo -e "  ${CYAN}->>${NC} $1"
 }
 
 print_key_message() {
-    echo -e "\n${BG_BLUE}${BOLD_WHITE} KEY MESSAGE ${NC} ${BOLD}$1${NC}\n"
+    echo -e "\n${BG_CYAN}${BOLD_WHITE} KEY MESSAGE ${NC} ${BOLD}$1${NC}\n"
 }
