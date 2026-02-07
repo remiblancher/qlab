@@ -3,6 +3,7 @@ title: "Classical vs Post-Quantum"
 description: "Compare classical ECDSA and post-quantum ML-DSA PKI workflows side by side."
 ---
 
+# Classical vs Post-Quantum
 
 ## Same PKI, Different Crypto
 

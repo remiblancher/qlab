@@ -3,6 +3,7 @@ title: "Full PQC Chain of Trust"
 description: "Build a complete post-quantum PKI hierarchy with Root CA, Issuing CA, and TLS certificates using ML-DSA algorithms."
 ---
 
+# Full PQC Chain of Trust
 
 ## Build a Complete PQC PKI Hierarchy
 

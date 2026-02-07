@@ -3,6 +3,7 @@ title: "PQC LTV: Sign Today, Verify in 30 Years"
 description: "Build long-term validation bundles that package all proofs for offline verification decades later, without external dependencies."
 ---
 
+# PQC LTV: Sign Today, Verify in 30 Years
 
 ## Long-Term Validation for Document Signing
 

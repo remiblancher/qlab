@@ -3,6 +3,7 @@ title: "PQC Crypto-Agility: Migrate Without Breaking"
 description: "Implement CA rotation and trust bundle migration to switch algorithms without downtime, enabling gradual client migration."
 ---
 
+# PQC Crypto-Agility: Migrate Without Breaking
 
 ## CA Rotation and Trust Bundle Migration
 

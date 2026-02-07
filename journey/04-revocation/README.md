@@ -3,6 +3,7 @@ title: "PQC CRL: Oops, We Need to Revoke!"
 description: "Handle certificate revocation and CRL generation for post-quantum certificates using the same familiar PKI workflow."
 ---
 
+# PQC CRL: Oops, We Need to Revoke!
 
 ## Incident Response: When Keys Are Compromised
 

@@ -3,6 +3,7 @@ title: "PQC Encryption: For Your Eyes Only"
 description: "Encrypt documents with ML-KEM key encapsulation, including CSR attestation workflow for KEM keys that cannot sign."
 ---
 
+# PQC Encryption: For Your Eyes Only
 
 ## Post-Quantum Document Encryption with ML-KEM + CSR Attestation
 

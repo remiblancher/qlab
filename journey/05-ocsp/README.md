@@ -3,6 +3,7 @@ title: "PQC OCSP: Is This Cert Still Good?"
 description: "Implement real-time certificate status verification with OCSP using post-quantum signatures for immediate revocation checks."
 ---
 
+# PQC OCSP: Is This Cert Still Good?
 
 ## Real-Time Certificate Verification with OCSP
 
