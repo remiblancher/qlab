@@ -1,3 +1,8 @@
+---
+title: "Troubleshooting"
+description: "Common issues and solutions when working with post-quantum PKI"
+---
+
 # Troubleshooting
 
 Common issues and solutions when working with post-quantum PKI.

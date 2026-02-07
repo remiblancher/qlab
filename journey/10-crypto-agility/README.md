@@ -1,4 +1,8 @@
-# PQC Crypto-Agility: Migrate Without Breaking
+---
+title: "PQC Crypto-Agility: Migrate Without Breaking"
+description: "Implement CA rotation and trust bundle migration to switch algorithms without downtime, enabling gradual client migration."
+---
+
 
 ## CA Rotation and Trust Bundle Migration
 
@@ -182,7 +186,6 @@ qpki credential enroll --ca-dir output/ca \
     --profile profiles/classic-tls-server.yaml \
     --var cn=server.example.com
 
-# Export the credential
 qpki credential export <credential-id> \
     --ca-dir output/ca \
     --cred-dir output/credentials \
@@ -196,14 +199,10 @@ qpki credential export <credential-id> \
 qpki ca rotate --ca-dir output/ca \
     --profile profiles/hybrid-ca.yaml
 
-# Activate the new version
 qpki ca activate --ca-dir output/ca --version v2
 
-# Check versions
 qpki ca versions --ca-dir output/ca
-# VERSION  STATUS    ALGORITHM
 # v1       archived  ecdsa-p256
-# v2       active    hybrid-catalyst
 ```
 
 ### Step 4: Rotate to Full PQC CA
@@ -213,14 +212,10 @@ qpki ca versions --ca-dir output/ca
 qpki ca rotate --ca-dir output/ca \
     --profile profiles/pqc-ca.yaml
 
-# Activate the new version
 qpki ca activate --ca-dir output/ca --version v3
 
-# Check versions
 qpki ca versions --ca-dir output/ca
-# VERSION  STATUS    ALGORITHM
 # v1       archived  ecdsa-p256
-# v2       archived  hybrid-catalyst
 # v3       active    ml-dsa-65
 ```
 
@@ -233,7 +228,6 @@ qpki credential enroll --ca-dir output/ca \
     --profile profiles/pqc-tls-server.yaml \
     --var cn=server.example.com
 
-# Export the credential
 qpki credential export <credential-id> \
     --ca-dir output/ca \
     --cred-dir output/credentials \
@@ -246,10 +240,8 @@ qpki credential export <credential-id> \
 # Trust store for legacy clients (v1 only)
 qpki ca export --ca-dir output/ca --version v1 --out output/trust-legacy.pem
 
-# Trust store for modern clients (v3 only)
 qpki ca export --ca-dir output/ca --version v3 --out output/trust-modern.pem
 
-# Trust store for transition (all versions)
 qpki ca export --ca-dir output/ca --all --out output/trust-transition.pem
 ```
 
@@ -259,10 +251,8 @@ qpki ca export --ca-dir output/ca --all --out output/trust-transition.pem
 # Old cert validates with legacy trust
 qpki cert verify output/server-v1.pem --ca output/trust-legacy.pem
 
-# New cert validates with modern trust
 qpki cert verify output/server-v3.pem --ca output/trust-modern.pem
 
-# ALL certs validate with transition bundle
 qpki cert verify output/server-v1.pem --ca output/trust-transition.pem
 qpki cert verify output/server-v3.pem --ca output/trust-transition.pem
 ```
@@ -271,11 +261,9 @@ qpki cert verify output/server-v3.pem --ca output/trust-transition.pem
 
 ```bash
 # Scenario: A compatibility issue is detected on legacy appliances.
-# Action: Rollback to Hybrid CA (v2) to restore service.
 
 qpki ca activate --ca-dir output/ca --version v2
 
-# Verify rollback succeeded
 qpki ca versions --ca-dir output/ca
 ```
 

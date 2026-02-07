@@ -1,4 +1,8 @@
-# The Revelation: The Quantum Threat to Your Data Today
+---
+title: "The Quantum Threat to Your Data Today"
+description: "Understand the quantum threat with SNDL and TNFL attacks, Mosca's theorem for migration urgency, and NIST post-quantum algorithm standards."
+---
+
 
 > **Key Message:** Your data is already being recorded. The clock is ticking.
 

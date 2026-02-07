@@ -1,4 +1,8 @@
-# Hybrid PQC: Best of Both Worlds
+---
+title: "Hybrid PQC: Best of Both Worlds"
+description: "Create hybrid certificates combining classical ECDSA and post-quantum ML-DSA for backward compatibility with legacy clients while being quantum-ready."
+---
+
 
 ## Hybrid Certificates: Classical + Post-Quantum
 
@@ -71,10 +75,8 @@ qpki ca init --profile profiles/hybrid-root-ca.yaml \
     --var cn="Hybrid Root CA" \
     --ca-dir output/hybrid-ca
 
-# Export CA certificate for verification
 qpki ca export --ca-dir output/hybrid-ca --out output/hybrid-ca/ca.crt
 
-# Inspect
 qpki inspect output/hybrid-ca/ca.crt
 ```
 
@@ -98,7 +100,6 @@ qpki cert issue --ca-dir output/hybrid-ca \
     --csr output/hybrid-server.csr \
     --out output/hybrid-server.crt
 
-# Inspect
 qpki inspect output/hybrid-server.crt
 ```
 
@@ -109,9 +110,7 @@ qpki inspect output/hybrid-server.crt
 openssl verify -CAfile output/hybrid-ca/ca.crt output/hybrid-server.crt
 # → OK (uses ECDSA, ignores PQC extensions)
 
-# PQC-aware client (qpki tool)
 qpki cert verify output/hybrid-server.crt --ca output/hybrid-ca/ca.crt
-# → OK (verifies BOTH ECDSA and ML-DSA signatures)
 ```
 
 > **Tip:** For detailed ASN.1 output, use `openssl x509 -in output/hybrid-server.crt -text -noout`

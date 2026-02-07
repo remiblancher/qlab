@@ -1,4 +1,8 @@
-# PQC OCSP: Is This Cert Still Good?
+---
+title: "PQC OCSP: Is This Cert Still Good?"
+description: "Implement real-time certificate status verification with OCSP using post-quantum signatures for immediate revocation checks."
+---
+
 
 ## Real-Time Certificate Verification with OCSP
 
@@ -66,7 +70,6 @@ qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="PQC CA" \
     --ca-dir output/pqc-ca
 
-# Export CA certificate for OCSP requests
 qpki ca export --ca-dir output/pqc-ca --out output/pqc-ca/ca.crt
 ```
 
@@ -79,7 +82,6 @@ qpki csr gen --algorithm ml-dsa-65 \
     --cn "OCSP Responder" \
     --out output/ocsp-responder.csr
 
-# Issue delegated OCSP responder certificate
 # Best practice: CA key stays offline
 qpki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-ocsp-responder.yaml \
@@ -105,7 +107,6 @@ qpki csr gen --algorithm ml-dsa-65 \
     --cn server.example.com \
     --out output/server.csr
 
-# Issue TLS certificate
 qpki cert issue --ca-dir output/pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
     --csr output/server.csr \
@@ -120,16 +121,13 @@ qpki ocsp request --issuer output/pqc-ca/ca.crt \
     --cert output/server.crt \
     --out output/request.ocsp
 
-# Send to responder via HTTP POST
 curl -s -X POST \
     -H "Content-Type: application/ocsp-request" \
     --data-binary @output/request.ocsp \
     http://localhost:8888/ \
     -o output/response.ocsp
 
-# Inspect response
 qpki ocsp info output/response.ocsp
-# Status: good
 ```
 
 ### Step 6: Revoke Certificate
@@ -151,7 +149,6 @@ curl -s -X POST \
 
 qpki ocsp info output/response2.ocsp
 # Status: revoked
-# Revocation Reason: keyCompromise
 ```
 
 ### Step 8: Stop OCSP Responder

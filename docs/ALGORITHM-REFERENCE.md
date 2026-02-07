@@ -1,3 +1,8 @@
+---
+title: "Algorithm Reference"
+description: "PQC algorithm sizes and specifications reference"
+---
+
 # PQC Algorithm Sizes Reference
 
 Technical reference for NIST post-quantum algorithm variants.

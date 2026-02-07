@@ -1,10 +1,15 @@
+---
+title: "Overview"
+description: "Post-Quantum PKI Lab - Hands-on learning for PQC migration"
+---
+
 # QLAB
 
 **Post-Quantum PKI Lab**
 
-> **"The PKI is the tool for transition — post-quantum is an engineering problem, not magic."**
-
 QLAB is an educational resource to help teams understand PKI and Post-Quantum Cryptography (PQC) migration through hands-on practice.
+
+> **"The PKI is the tool for transition — post-quantum is an engineering problem, not magic."**
 
 **What you'll learn:**
 
@@ -165,4 +170,4 @@ See [QPKI](https://github.com/remiblancher/post-quantum-pki#supported-algorithms
 
 ## License
 
-Apache License 2.0 — See [LICENSE](LICENSE)
+Apache License 2.0 — See [LICENSE](https://github.com/remiblancher/post-quantum-pki-lab/blob/main/LICENSE)

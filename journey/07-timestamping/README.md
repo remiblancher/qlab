@@ -1,4 +1,8 @@
-# PQC Timestamping: Trust Now, Verify Forever
+---
+title: "PQC Timestamping: Trust Now, Verify Forever"
+description: "Create RFC 3161 timestamps with ML-DSA to prove when documents were signed, with proofs that remain valid for decades."
+---
+
 
 ## Post-Quantum Timestamping with ML-DSA
 
@@ -138,7 +142,6 @@ qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="TSA Root CA" \
     --ca-dir output/tsa-ca
 
-# Export CA certificate for verification
 qpki ca export --ca-dir output/tsa-ca --out output/tsa-ca/ca.crt
 ```
 
@@ -151,7 +154,6 @@ qpki csr gen --algorithm ml-dsa-65 \
     --cn "PQC Timestamp Authority" \
     --out output/tsa.csr
 
-# Issue TSA certificate (EKU: timeStamping)
 qpki cert issue --ca-dir output/tsa-ca \
     --profile profiles/pqc-tsa.yaml \
     --csr output/tsa.csr \
@@ -181,14 +183,12 @@ echo "Contract content - signed on $(date)" > output/document.txt
 qpki tsa request --data output/document.txt \
     --out output/request.tsq
 
-# Send to TSA server via HTTP POST
 curl -s -X POST \
     -H "Content-Type: application/timestamp-query" \
     --data-binary @output/request.tsq \
     http://localhost:8318/ \
     -o output/document.tsr
 
-# Inspect token
 qpki tsa info output/document.tsr
 ```
 
@@ -208,11 +208,9 @@ qpki tsa verify output/document.tsr \
 # Modify the document (simulate fraud)
 echo "FRAUDULENT MODIFICATION" >> output/document.txt
 
-# Verify again
 qpki tsa verify output/document.tsr \
     --data output/document.txt \
     --ca output/tsa-ca/ca.crt
-# Status: INVALID - document modified after timestamping
 ```
 
 ### Step 8: Stop TSA Server

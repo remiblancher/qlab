@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-#  UC-09: CMS Encryption - For Your Eyes Only
+#  UC-09: PQC Encryption - For Your Eyes Only
 #
 #  Post-quantum document encryption with ML-KEM
 #  + CSR Attestation workflow (RFC 9883)
@@ -19,7 +19,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../../lib/common.sh"
 
-setup_demo "PQC CMS Encryption + CSR Attestation"
+setup_demo "PQC Encryption: For Your Eyes Only"
 
 PROFILES="$SCRIPT_DIR/profiles"
 

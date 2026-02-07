@@ -1,4 +1,8 @@
-# Oops, We Need to Revoke!
+---
+title: "PQC CRL: Oops, We Need to Revoke!"
+description: "Handle certificate revocation and CRL generation for post-quantum certificates using the same familiar PKI workflow."
+---
+
 
 ## Incident Response: When Keys Are Compromised
 
@@ -74,7 +78,6 @@ qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="PQC CA" \
     --ca-dir output/pqc-ca
 
-# Export CA certificate for verification
 qpki ca export --ca-dir output/pqc-ca --out output/pqc-ca/ca.crt
 ```
 
@@ -92,7 +95,6 @@ qpki cert issue --ca-dir output/pqc-ca \
     --csr output/server.csr \
     --out output/server.crt
 
-# Note the serial number (needed for revocation)
 openssl x509 -in output/server.crt -noout -serial
 ```
 
@@ -112,7 +114,6 @@ But clients don't know yet — we need to publish a CRL.
 # Generate the Certificate Revocation List
 qpki crl gen --ca-dir output/pqc-ca
 
-# View the CRL contents
 qpki inspect output/pqc-ca/crl/ca.crl
 ```
 

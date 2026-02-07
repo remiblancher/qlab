@@ -1,4 +1,8 @@
-# Full PQC Chain of Trust
+---
+title: "Full PQC Chain of Trust"
+description: "Build a complete post-quantum PKI hierarchy with Root CA, Issuing CA, and TLS certificates using ML-DSA algorithms."
+---
+
 
 ## Build a Complete PQC PKI Hierarchy
 
@@ -69,7 +73,6 @@ qpki ca init --profile profiles/pqc-root-ca.yaml \
     --var cn="PQC Root CA" \
     --ca-dir output/pqc-root-ca
 
-# Inspect
 qpki inspect output/pqc-root-ca/ca.crt
 ```
 
@@ -82,7 +85,6 @@ qpki ca init --profile profiles/pqc-issuing-ca.yaml \
     --parent output/pqc-root-ca \
     --ca-dir output/pqc-issuing-ca
 
-# Inspect
 qpki inspect output/pqc-issuing-ca/ca.crt
 ```
 
@@ -105,7 +107,6 @@ qpki cert issue --ca-dir output/pqc-issuing-ca \
     --csr output/server.csr \
     --out output/server.crt
 
-# Inspect
 qpki inspect output/server.crt
 ```
 

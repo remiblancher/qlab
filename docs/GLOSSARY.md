@@ -1,3 +1,8 @@
+---
+title: "Glossary"
+description: "PKI and post-quantum cryptography terminology"
+---
+
 # Glossary
 
 ## Cryptographic Algorithms

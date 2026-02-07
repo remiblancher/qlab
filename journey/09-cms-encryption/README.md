@@ -1,4 +1,8 @@
-# PQC CMS Encryption: For Your Eyes Only
+---
+title: "PQC Encryption: For Your Eyes Only"
+description: "Encrypt documents with ML-KEM key encapsulation, including CSR attestation workflow for KEM keys that cannot sign."
+---
+
 
 ## Post-Quantum Document Encryption with ML-KEM + CSR Attestation
 
@@ -118,7 +122,6 @@ qpki csr gen --algorithm ml-dsa-65 \
     --cn "Alice" \
     --out output/alice-sign.csr
 
-# CA verifies CSR signature and issues certificate
 qpki cert issue --ca-dir output/encryption-ca \
     --profile profiles/pqc-signing.yaml \
     --csr output/alice-sign.csr \
@@ -129,7 +132,6 @@ qpki cert issue --ca-dir output/encryption-ca \
 
 ```bash
 # Generate ML-KEM key and create CSR
-# CSR is signed by Alice's SIGNING key (attestation per RFC 9883)
 qpki csr gen --algorithm ml-kem-768 \
     --keyout output/alice-enc.key \
     --cn "Alice" \
@@ -142,7 +144,6 @@ qpki csr gen --algorithm ml-kem-768 \
 
 ```bash
 # CA verifies attestation and issues certificate
-# Certificate includes RelatedCertificate extension
 qpki cert issue --ca-dir output/encryption-ca \
     --csr output/alice-enc.csr \
     --profile profiles/pqc-encryption.yaml \

@@ -12,7 +12,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../../lib/common.sh"
 
-setup_demo "The Revelation: The Quantum Threat"
+setup_demo "The Quantum Threat to Your Data Today"
 
 # Introduction
 echo -e "${BOLD}SCENARIO:${NC}"

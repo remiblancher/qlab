@@ -1,4 +1,8 @@
-# Quick Start: Classical vs Post-Quantum
+---
+title: "Classical vs Post-Quantum"
+description: "Compare classical ECDSA and post-quantum ML-DSA PKI workflows side by side."
+---
+
 
 ## Same PKI, Different Crypto
 
@@ -67,7 +71,6 @@ qpki csr gen --algorithm ecdsa-p384 \
     --cn classic.example.com \
     --out classic-server.csr
 
-# Issue TLS certificate
 qpki cert issue --ca-dir ./classic-ca \
     --profile profiles/classic-tls-server.yaml \
     --csr classic-server.csr \
@@ -90,7 +93,6 @@ qpki csr gen --algorithm ml-dsa-65 \
     --cn pq.example.com \
     --out pq-server.csr
 
-# Issue TLS certificate
 qpki cert issue --ca-dir ./pqc-ca \
     --profile profiles/pqc-tls-server.yaml \
     --csr pq-server.csr \

@@ -1,4 +1,8 @@
-# PQC LTV: Sign Today, Verify in 30 Years
+---
+title: "PQC LTV: Sign Today, Verify in 30 Years"
+description: "Build long-term validation bundles that package all proofs for offline verification decades later, without external dependencies."
+---
+
 
 ## Long-Term Validation for Document Signing
 
@@ -155,7 +159,6 @@ qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="LTV Demo CA" \
     --ca-dir output/ltv-ca
 
-# Export CA certificate
 qpki ca export --ca-dir output/ltv-ca --out output/ltv-ca/ca.crt
 ```
 
@@ -168,7 +171,6 @@ qpki csr gen --algorithm ml-dsa-65 \
     --cn "LTV Timestamp Authority" \
     --out output/tsa.csr
 
-# Issue TSA certificate
 qpki cert issue --ca-dir output/ltv-ca \
     --profile profiles/pqc-tsa.yaml \
     --csr output/tsa.csr \
@@ -193,7 +195,6 @@ qpki csr gen --algorithm ml-dsa-65 \
     --cn "Alice (Legal Counsel)" \
     --out output/alice.csr
 
-# Issue document signing certificate
 qpki cert issue --ca-dir output/ltv-ca \
     --profile profiles/pqc-document-signing.yaml \
     --csr output/alice.csr \
@@ -211,7 +212,6 @@ Expiration: 2054-12-22
 Parties: ACME Properties / TechCorp Industries
 EOF
 
-# Sign with CMS (ML-DSA)
 qpki cms sign --data output/contract.txt \
     --cert output/alice.crt \
     --key output/alice.key \
@@ -225,7 +225,6 @@ qpki cms sign --data output/contract.txt \
 qpki tsa request --data output/contract.p7s \
     --out output/request.tsq
 
-# Send to TSA server via HTTP POST
 curl -s -X POST \
     -H "Content-Type: application/timestamp-query" \
     --data-binary @output/request.tsq \

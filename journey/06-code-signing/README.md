@@ -1,4 +1,8 @@
-# PQC Code Signing: Signatures That Outlive the Threat
+---
+title: "PQC Code Signing: Signatures That Outlive the Threat"
+description: "Sign software and firmware with ML-DSA to ensure signatures remain unforgeable by future quantum computers."
+---
+
 
 ## Post-Quantum Code Signing with ML-DSA
 
@@ -165,7 +169,6 @@ qpki ca init --profile profiles/pqc-ca.yaml \
     --var cn="Code Signing CA" \
     --ca-dir output/code-ca
 
-# Export CA certificate for verification
 qpki ca export --ca-dir output/code-ca --out output/code-ca/ca.crt
 ```
 
@@ -178,7 +181,6 @@ qpki csr gen --algorithm ml-dsa-65 \
     --cn "ACME Software" \
     --out output/code-signing.csr
 
-# Issue certificate from CSR
 qpki cert issue --ca-dir output/code-ca \
     --profile profiles/pqc-code-signing.yaml \
     --csr output/code-signing.csr \
@@ -191,7 +193,6 @@ qpki cert issue --ca-dir output/code-ca \
 # Create a test firmware
 dd if=/dev/urandom of=output/firmware.bin bs=1024 count=100
 
-# Sign with PQC (CMS/PKCS#7 format)
 qpki cms sign --data output/firmware.bin \
     --cert output/code-signing.crt \
     --key output/code-signing.key \
@@ -214,11 +215,9 @@ qpki cms verify output/firmware.p7s \
 # Modify the firmware (simulate tampering)
 echo "MALWARE" >> output/firmware.bin
 
-# Verify again
 qpki cms verify output/firmware.p7s \
     --data output/firmware.bin \
     --ca output/code-ca/ca.crt
-# Result: INVALID - signature verification failed
 ```
 
 ---
