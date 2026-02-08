@@ -92,8 +92,8 @@ cd post-quantum-pki-lab
 
 | # | Lab | Time | Takeaway |
 |---|-----|------|----------|
-| 0 | [**The Revelation**](journey/00-revelation/) | 10 min | Your data is already being recorded |
-| 1 | [**Quick Start**](journey/01-quickstart/) | 10 min | Same workflow, just different algorithms |
+| 0 | [**The Quantum Threat**](journey/00-revelation/) | 10 min | Your data is already being recorded |
+| 1 | [**Classical vs Post-Quantum**](journey/01-quickstart/) | 10 min | Same workflow, just different algorithms |
 
 ↓ *Let's build!*
 
@@ -102,7 +102,7 @@ cd post-quantum-pki-lab
 | # | Lab | Time | Takeaway |
 |---|-----|------|----------|
 | 2 | [**Full PQC Chain**](journey/02-full-chain/) | 10 min | Build a 100% PQC chain |
-| 3 | [**Hybrid Catalyst**](journey/03-hybrid/) | 10 min | Or hybrid to coexist with legacy |
+| 3 | [**Hybrid PQC**](journey/03-hybrid/) | 10 min | Or hybrid to coexist with legacy |
 
 ↓ *PKI operations stay identical*
 
@@ -129,7 +129,7 @@ cd post-quantum-pki-lab
 
 | # | Lab | Time | Takeaway |
 |---|-----|------|----------|
-| 9 | [**CMS Encryption**](journey/09-cms-encryption/) | 15 min | KEM keys require a new pattern: attestation |
+| 9 | [**PQC Encryption**](journey/09-cms-encryption/) | 15 min | KEM keys require a new pattern: attestation |
 
 ↓ *And for production migration?*
 

@@ -1,9 +1,9 @@
 ---
-title: "Hybrid PQC: Best of Both Worlds"
+title: "Hybrid Catalyst: Best of Both Worlds"
 description: "Create hybrid certificates combining classical ECDSA and post-quantum ML-DSA for backward compatibility with legacy clients while being quantum-ready."
 ---
 
-# Hybrid PQC: Best of Both Worlds
+# Hybrid Catalyst: Best of Both Worlds
 
 ## Hybrid Certificates: Classical + Post-Quantum
 
