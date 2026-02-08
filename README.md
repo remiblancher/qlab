@@ -1,5 +1,5 @@
 ---
-title: "Overview"
+title: "Learning Path"
 description: "Post-Quantum PKI Lab - Hands-on learning for PQC migration"
 ---
 
