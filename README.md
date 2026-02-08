@@ -102,7 +102,7 @@ cd post-quantum-pki-lab
 | # | Lab | Time | Takeaway |
 |---|-----|------|----------|
 | 2 | [**Full PQC Chain**](journey/02-full-chain/) | 10 min | Build a 100% PQC chain |
-| 3 | [**Hybrid PQC**](journey/03-hybrid/) | 10 min | Or hybrid to coexist with legacy |
+| 3 | [**Hybrid**](journey/03-hybrid/) | 10 min | Or hybrid to coexist with legacy |
 
 ↓ *PKI operations stay identical*
 
