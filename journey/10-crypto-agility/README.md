@@ -249,13 +249,31 @@ qpki ca export --ca-dir output/ca --all --out output/trust-transition.pem
 ### Step 7: Verify Certificates Against Trust Stores
 
 ```bash
-# Old cert validates with legacy trust
+# Legacy cert validates with legacy trust store (legacy clients scenario)
 qpki cert verify output/server-v1.pem --ca output/trust-legacy.pem
 
+# PQC cert validates with modern trust store (modern clients scenario)
 qpki cert verify output/server-v3.pem --ca output/trust-modern.pem
 
+# Transition trust store accepts BOTH old and new certificates
+# This is the key to gradual migration - all certs work during transition
 qpki cert verify output/server-v1.pem --ca output/trust-transition.pem
 qpki cert verify output/server-v3.pem --ca output/trust-transition.pem
+```
+
+```
+INTEROPERABILITY MATRIX
+───────────────────────────────────────────
+  Certificate    │  Trust Store        │  Result
+─────────────────┼─────────────────────┼─────────
+  v1 (ECDSA)     │  trust-legacy.pem   │  ✓ OK
+  v3 (ML-DSA)    │  trust-modern.pem   │  ✓ OK
+  v1 (ECDSA)     │  trust-transition   │  ✓ OK
+  v3 (ML-DSA)    │  trust-transition   │  ✓ OK
+───────────────────────────────────────────
+
+Key insight: The transition bundle supports ALL certificate versions,
+enabling gradual client migration without breaking existing services.
 ```
 
 ### Step 8: Simulate Rollback
