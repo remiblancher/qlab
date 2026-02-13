@@ -149,14 +149,14 @@ CURRENT SITUATION
 ## What We'll Do
 
 1. Create Migration CA (ECDSA)
-2. Issue ECDSA server certificate (v1)
-3. Rotate to hybrid (ECDSA + ML-DSA)
-3b. Issue hybrid server certificate (v2) *(optional)*
-4. Rotate to full PQC (ML-DSA)
-5. Issue PQC server certificate (v3)
-6. Create trust stores
-7. Verify certificates against trust stores
-8. Simulate rollback
+1b. Issue ECDSA server certificate (v1)
+2. Rotate to hybrid (ECDSA + ML-DSA)
+2b. Issue hybrid server certificate (v2) *(optional)*
+3. Rotate to full PQC (ML-DSA)
+3b. Issue PQC server certificate (v3)
+4. Create trust stores
+5. Verify certificates against trust stores
+6. Simulate rollback
 
 ---
 
@@ -179,7 +179,7 @@ qpki ca init --profile profiles/classic-ca.yaml \
     --ca-dir output/ca
 ```
 
-### Step 2: Issue ECDSA Server Certificate (v1)
+### Step 1b: Issue ECDSA Server Certificate (v1)
 
 ```bash
 # Issue ECDSA server certificate
@@ -194,7 +194,7 @@ qpki credential export <credential-id> \
     --out output/server-v1.pem
 ```
 
-### Step 3: Rotate to Hybrid CA
+### Step 2: Rotate to Hybrid CA
 
 ```bash
 # Rotate to hybrid mode (ECDSA + ML-DSA)
@@ -208,7 +208,7 @@ qpki ca versions --ca-dir output/ca
 # v2       active    ecdsa-p256+ml-dsa-65
 ```
 
-### Step 3b: Issue Hybrid Server Certificate (v2)
+### Step 2b: Issue Hybrid Server Certificate (v2)
 
 ```bash
 # Issue hybrid server certificate (optional but useful for testing)
@@ -223,7 +223,7 @@ qpki credential export <credential-id> \
     --out output/server-v2.pem
 ```
 
-### Step 4: Rotate to Full PQC CA
+### Step 3: Rotate to Full PQC CA
 
 ```bash
 # Rotate to full post-quantum
@@ -238,7 +238,7 @@ qpki ca versions --ca-dir output/ca
 # v3       active    ml-dsa-65
 ```
 
-### Step 5: Issue PQC Server Certificate (v3)
+### Step 3b: Issue PQC Server Certificate (v3)
 
 ```bash
 # Issue PQC server certificate
@@ -253,7 +253,7 @@ qpki credential export <credential-id> \
     --out output/server-v3.pem
 ```
 
-### Step 6: Create Trust Stores
+### Step 4: Create Trust Stores
 
 ```bash
 # Trust store for legacy clients (v1 only)
@@ -266,7 +266,7 @@ qpki ca export --ca-dir output/ca --version v3 --out output/trust-modern.pem
 qpki ca export --ca-dir output/ca --all --out output/trust-transition.pem
 ```
 
-### Step 7: Verify Certificates Against Trust Stores
+### Step 5: Verify Certificates Against Trust Stores
 
 ```bash
 # Legacy cert validates with legacy trust store (legacy clients scenario)
@@ -296,7 +296,7 @@ Key insight: The transition bundle supports ALL certificate versions,
 enabling gradual client migration without breaking existing services.
 ```
 
-### Step 8: Simulate Rollback
+### Step 6: Simulate Rollback
 
 ```bash
 # Scenario: A compatibility issue is detected on legacy appliances.

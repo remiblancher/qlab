@@ -26,14 +26,14 @@ echo "   How do I rotate CA algorithms safely?\""
 echo ""
 
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
-echo "  1. Create Migration CA (ECDSA)"
-echo "  2. Issue ECDSA server certificate (v1)"
-echo "  3. Rotate to hybrid (ECDSA + ML-DSA)"
-echo "  4. Rotate to full PQC (ML-DSA)"
-echo "  5. Issue PQC server certificate (v3)"
-echo "  6. Create trust stores"
-echo "  7. Verify certificates against trust stores"
-echo "  8. Simulate rollback"
+echo "  1.  Create Migration CA (ECDSA)"
+echo "  1b. Issue ECDSA server certificate (v1)"
+echo "  2.  Rotate to hybrid (ECDSA + ML-DSA)"
+echo "  3.  Rotate to full PQC (ML-DSA)"
+echo "  3b. Issue PQC server certificate (v3)"
+echo "  4.  Create trust stores"
+echo "  5.  Verify certificates against trust stores"
+echo "  6.  Simulate rollback"
 echo ""
 
 echo -e "${DIM}Crypto-agility = change algorithms without breaking clients.${NC}"
@@ -120,7 +120,7 @@ pause
 # Step 2: Issue ECDSA Server Certificate (v1)
 # =============================================================================
 
-print_step "Step 2: Issue ECDSA Server Certificate (v1)"
+print_step "Step 1b: Issue ECDSA Server Certificate (v1)"
 
 echo "  Issuing a server certificate with ECDSA..."
 echo "  This v1 certificate will be used to test backward compatibility."
@@ -145,7 +145,7 @@ pause
 # Step 3: Rotate to Hybrid CA (Phase 2)
 # =============================================================================
 
-print_step "Step 3: Rotate to Hybrid CA (ECDSA + ML-DSA)"
+print_step "Step 2: Rotate to Hybrid CA (ECDSA + ML-DSA)"
 
 echo "  Rotating the CA to hybrid mode (Catalyst)..."
 echo "  The old ECDSA version becomes archived, new hybrid version is active."
@@ -181,7 +181,7 @@ pause
 # Step 4: Rotate to Full PQC CA (Phase 3)
 # =============================================================================
 
-print_step "Step 4: Rotate to Full PQC CA (ML-DSA)"
+print_step "Step 3: Rotate to Full PQC CA (ML-DSA)"
 
 echo "  Rotating the CA to full post-quantum..."
 echo "  ML-DSA-65 only (no classical fallback)."
@@ -217,7 +217,7 @@ pause
 # Step 5: Issue PQC Server Certificate (v3)
 # =============================================================================
 
-print_step "Step 5: Issue PQC Server Certificate (v3)"
+print_step "Step 3b: Issue PQC Server Certificate (v3)"
 
 echo "  Issuing a server certificate with ML-DSA..."
 echo ""
@@ -241,7 +241,7 @@ pause
 # Step 6: Create Trust Stores
 # =============================================================================
 
-print_step "Step 6: Create Trust Stores"
+print_step "Step 4: Create Trust Stores"
 
 echo "  Creating trust stores for different client scenarios..."
 echo ""
@@ -287,7 +287,7 @@ pause
 # Step 7: Verify Certificates Against Trust Stores
 # =============================================================================
 
-print_step "Step 7: Verify Certificates Against Trust Stores"
+print_step "Step 5: Verify Certificates Against Trust Stores"
 
 echo "  Testing that certificates validate correctly with their trust stores:"
 echo ""
@@ -344,7 +344,7 @@ pause
 # Step 8: Simulate Rollback
 # =============================================================================
 
-print_step "Step 8: Simulate Rollback"
+print_step "Step 6: Simulate Rollback"
 
 echo "  ┌─────────────────────────────────────────────────────────────────┐"
 echo "  │  SCENARIO: Compatibility issue detected on legacy appliances   │"
