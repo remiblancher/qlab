@@ -151,6 +151,7 @@ CURRENT SITUATION
 1. Create Migration CA (ECDSA)
 2. Issue ECDSA server certificate (v1)
 3. Rotate to hybrid (ECDSA + ML-DSA)
+3b. Issue hybrid server certificate (v2) *(optional)*
 4. Rotate to full PQC (ML-DSA)
 5. Issue PQC server certificate (v3)
 6. Create trust stores
@@ -204,6 +205,22 @@ qpki ca activate --ca-dir output/ca --version v2
 
 qpki ca versions --ca-dir output/ca
 # v1       archived  ecdsa-p256
+# v2       active    ecdsa-p256+ml-dsa-65
+```
+
+### Step 3b: Issue Hybrid Server Certificate (v2)
+
+```bash
+# Issue hybrid server certificate (optional but useful for testing)
+qpki credential enroll --ca-dir output/ca \
+    --cred-dir output/credentials \
+    --profile profiles/hybrid-tls-server.yaml \
+    --var cn=server.example.com
+
+qpki credential export <credential-id> \
+    --ca-dir output/ca \
+    --cred-dir output/credentials \
+    --out output/server-v2.pem
 ```
 
 ### Step 4: Rotate to Full PQC CA
@@ -217,6 +234,7 @@ qpki ca activate --ca-dir output/ca --version v3
 
 qpki ca versions --ca-dir output/ca
 # v1       archived  ecdsa-p256
+# v2       archived  ecdsa-p256+ml-dsa-65
 # v3       active    ml-dsa-65
 ```
 
@@ -241,8 +259,10 @@ qpki credential export <credential-id> \
 # Trust store for legacy clients (v1 only)
 qpki ca export --ca-dir output/ca --version v1 --out output/trust-legacy.pem
 
+# Trust store for modern PQC-capable clients (v3 only)
 qpki ca export --ca-dir output/ca --version v3 --out output/trust-modern.pem
 
+# Trust store for transition period (all versions - enables gradual migration)
 qpki ca export --ca-dir output/ca --all --out output/trust-transition.pem
 ```
 
@@ -280,10 +300,19 @@ enabling gradual client migration without breaking existing services.
 
 ```bash
 # Scenario: A compatibility issue is detected on legacy appliances.
+# Solution: Rollback to Hybrid CA (v2) - the "best of both worlds"
+#
+# Why v2 (Hybrid) is ideal for rollback:
+# - Legacy clients can still verify using ECDSA
+# - Modern clients benefit from PQC protection
+# - No certificates are invalidated
 
 qpki ca activate --ca-dir output/ca --version v2
 
 qpki ca versions --ca-dir output/ca
+# v1       archived  ecdsa-p256
+# v2       active    ecdsa-p256+ml-dsa-65    <-- rolled back here
+# v3       archived  ml-dsa-65
 ```
 
 ---
