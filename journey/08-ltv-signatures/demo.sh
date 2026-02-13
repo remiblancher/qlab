@@ -43,15 +43,16 @@ echo "   can still be verified in 2055 when the CA is long gone?\""
 echo ""
 
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
-echo "  1. Create a CA for document signing"
-echo "  2. Issue TSA certificate"
-echo "  3. Start TSA server"
-echo "  4. Issue signing certificate"
-echo "  5. Create & sign the 30-year contract"
-echo "  6. Request a timestamp (via HTTP)"
-echo "  7. Create an LTV bundle"
-echo "  8. Verify offline (simulating 2055)"
-echo "  9. Stop TSA server"
+echo "  1.  Create a CA for document signing"
+echo "  1b. Issue TSA certificate"
+echo "  1c. Issue signing certificate"
+echo "  2.  Start TSA server"
+echo "  3.  Create document"
+echo "  3b. Sign document"
+echo "  3c. Request a timestamp (via HTTP)"
+echo "  4.  Create an LTV bundle"
+echo "  5.  Verify offline (simulating 2055)"
+echo "  2b. Stop TSA server"
 echo ""
 
 echo -e "${DIM}LTV = Long-Term Validation. Bundle everything for offline verification.${NC}"
@@ -81,7 +82,7 @@ pause
 # Step 2: Issue TSA Certificate
 # =============================================================================
 
-print_step "Step 2: Issue TSA Certificate"
+print_step "Step 1b: Issue TSA Certificate"
 
 echo "  Generate TSA key and issue certificate..."
 echo ""
@@ -100,7 +101,7 @@ pause
 # Step 3: Start TSA Server
 # =============================================================================
 
-print_step "Step 3: Start TSA Server"
+print_step "Step 2: Start TSA Server"
 
 echo "  Starting RFC 3161 HTTP timestamp server on port $TSA_PORT..."
 echo ""
@@ -129,7 +130,7 @@ pause
 # Step 4: Issue Signing Certificate
 # =============================================================================
 
-print_step "Step 4: Issue Signing Certificate"
+print_step "Step 1c: Issue Signing Certificate"
 
 echo "  Generate document signing key and CSR for Alice..."
 echo ""
@@ -148,7 +149,28 @@ pause
 # Step 5: Create and Sign Document
 # =============================================================================
 
-print_step "Step 5: Create & Sign the 30-Year Contract"
+print_step "Step 3: Create Document"
+
+echo "  Creating a 30-year lease agreement..."
+echo ""
+
+cat > $DEMO_TMP/contract.txt << 'EOF'
+30-YEAR COMMERCIAL LEASE AGREEMENT
+Signing Date: 2024-12-22
+Expiration: 2054-12-22
+Parties: ACME Properties / TechCorp Industries
+EOF
+
+echo "  Document created."
+echo ""
+
+pause
+
+# =============================================================================
+# Step 3b: Sign Document
+# =============================================================================
+
+print_step "Step 3b: Sign Document"
 
 SIGN_DATE=$(date "+%Y-%m-%d %H:%M:%S")
 
@@ -203,7 +225,7 @@ pause
 # Step 6: Request Timestamp (via HTTP)
 # =============================================================================
 
-print_step "Step 6: Request Timestamp (via HTTP)"
+print_step "Step 3c: Request Timestamp (via HTTP)"
 
 echo "  The timestamp proves WHEN the document was signed."
 echo "  This is critical because it proves the certificate was valid at signing time."
@@ -239,7 +261,7 @@ pause
 # Step 7: Create LTV Bundle
 # =============================================================================
 
-print_step "Step 7: Create LTV Bundle"
+print_step "Step 4: Create LTV Bundle"
 
 echo "  Packaging everything for long-term verification..."
 echo ""
@@ -287,7 +309,7 @@ pause
 # Step 8: Verify Offline (Simulating 2055)
 # =============================================================================
 
-print_step "Step 8: Verify Offline (Simulating Year 2055)"
+print_step "Step 5: Verify Offline (Simulating Year 2055)"
 
 echo "  ┌─────────────────────────────────────────────────────────────────┐"
 echo "  │  SIMULATING: It's now 2055. The original CA is long gone.      │"
@@ -313,7 +335,7 @@ pause
 # Step 9: Stop TSA Server
 # =============================================================================
 
-print_step "Step 9: Stop TSA Server"
+print_step "Step 2b: Stop TSA Server"
 
 echo "  Stopping the TSA server..."
 echo ""

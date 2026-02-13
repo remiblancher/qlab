@@ -28,11 +28,11 @@ echo "   How do I sign code with quantum-resistant signatures?\""
 echo ""
 
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
-echo "  1. Create a Code Signing CA (ML-DSA-65)"
-echo "  2. Issue a code signing certificate"
-echo "  3. Sign a firmware binary (CMS/PKCS#7)"
-echo "  4. Verify the signature"
-echo "  5. Tamper with the binary and verify again (should fail)"
+echo "  1.  Create a Code Signing CA (ML-DSA-65)"
+echo "  1b. Issue a code signing certificate"
+echo "  2.  Sign a firmware binary (CMS/PKCS#7)"
+echo "  2b. Verify the signature (VALID)"
+echo "  3.  Tamper with the binary and verify again (INVALID)"
 echo ""
 
 echo -e "${DIM}CMS/PKCS#7 is the industry standard for code signing.${NC}"
@@ -63,7 +63,7 @@ pause
 # Step 2: Issue Code Signing Certificate
 # =============================================================================
 
-print_step "Step 2: Issue Code Signing Certificate"
+print_step "Step 1b: Issue Code Signing Certificate"
 
 echo "  The code signing certificate has:"
 echo "    - Extended Key Usage: codeSigning"
@@ -92,7 +92,7 @@ pause
 # Step 3: Sign a Binary
 # =============================================================================
 
-print_step "Step 3: Sign a Binary"
+print_step "Step 2: Sign a Binary"
 
 echo "  Creating a test firmware (100 KB)..."
 echo ""
@@ -124,7 +124,7 @@ pause
 # Step 4: Verify the Signature
 # =============================================================================
 
-print_step "Step 4: Verify the Signature"
+print_step "Step 2b: Verify the Signature"
 
 echo "  Simulating client-side verification..."
 echo ""
@@ -143,7 +143,7 @@ pause
 # Step 5: Tamper and Verify Again
 # =============================================================================
 
-print_step "Step 5: Tamper and Verify Again"
+print_step "Step 3: Tamper and Verify Again"
 
 echo -e "  ${RED}Simulating malware injection...${NC}"
 echo ""

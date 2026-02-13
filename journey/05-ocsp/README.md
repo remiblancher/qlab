@@ -43,13 +43,13 @@ Yes. Same HTTP protocol, same request/response format. Only signature sizes chan
 ## What We'll Do
 
 1. Create a PQC CA
-2. Issue OCSP responder certificate
-3. Start OCSP responder
-4. Issue TLS certificate
-5. Query certificate status (GOOD)
-6. Revoke the certificate
-7. Query again (REVOKED)
-8. Stop OCSP responder
+1b. Issue OCSP responder certificate
+2. Start OCSP responder
+2b. Issue TLS certificate
+3. Query certificate status (GOOD)
+4. Revoke the certificate
+3b. Query again (REVOKED)
+2c. Stop OCSP responder
 
 ---
 
@@ -74,7 +74,7 @@ qpki ca init --profile profiles/pqc-ca.yaml \
 qpki ca export --ca-dir output/pqc-ca --out output/pqc-ca/ca.crt
 ```
 
-### Step 2: Issue OCSP Responder Certificate
+### Step 1b: Issue OCSP Responder Certificate
 
 ```bash
 # Generate OCSP responder key and CSR
@@ -90,7 +90,7 @@ qpki cert issue --ca-dir output/pqc-ca \
     --out output/ocsp-responder.crt
 ```
 
-### Step 3: Start OCSP Responder
+### Step 2: Start OCSP Responder
 
 ```bash
 # Start with delegated certificate (recommended)
@@ -99,7 +99,7 @@ qpki ocsp serve --port 8888 --ca-dir output/pqc-ca \
     --key output/ocsp-responder.key
 ```
 
-### Step 4: Issue TLS Certificate
+### Step 2b: Issue TLS Certificate
 
 ```bash
 # Generate TLS server key and CSR
@@ -114,7 +114,7 @@ qpki cert issue --ca-dir output/pqc-ca \
     --out output/server.crt
 ```
 
-### Step 5: Query Certificate Status (GOOD)
+### Step 3: Query Certificate Status (GOOD)
 
 ```bash
 # Generate OCSP request
@@ -122,6 +122,7 @@ qpki ocsp request --issuer output/pqc-ca/ca.crt \
     --cert output/server.crt \
     --out output/request.ocsp
 
+# Send OCSP request (RFC 6960) - response is immediate, unlike CRL
 curl -s -X POST \
     -H "Content-Type: application/ocsp-request" \
     --data-binary @output/request.ocsp \
@@ -131,17 +132,17 @@ curl -s -X POST \
 qpki ocsp info output/response.ocsp
 ```
 
-### Step 6: Revoke Certificate
+### Step 4: Revoke Certificate
 
 ```bash
 # Revoke certificate
 qpki cert revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
 ```
 
-### Step 7: Query Again (REVOKED)
+### Step 3b: Query Again (REVOKED)
 
 ```bash
-# Query again - status changes immediately!
+# Query again - status changes immediately! (CRL would take hours)
 curl -s -X POST \
     -H "Content-Type: application/ocsp-request" \
     --data-binary @output/request.ocsp \
@@ -152,7 +153,7 @@ qpki ocsp info output/response2.ocsp
 # Status: revoked
 ```
 
-### Step 8: Stop OCSP Responder
+### Step 2c: Stop OCSP Responder
 
 ```bash
 # Stop the OCSP responder

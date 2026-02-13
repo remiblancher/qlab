@@ -33,13 +33,12 @@ echo "   How do I get encryption certificates with ML-KEM?\""
 echo ""
 
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
-echo "  1. Create Encryption CA"
-echo "  2. Issue signing certificate (ML-DSA)"
-echo "  3. Generate encryption CSR with attestation (ML-KEM)"
-echo "  4. Issue encryption certificate"
-echo "  5. View Alice's certificate pair"
-echo "  6. Encrypt a document"
-echo "  7. Decrypt the document"
+echo "  1.  Create Encryption CA"
+echo "  2.  Issue signing certificate (ML-DSA)"
+echo "  2b. Generate encryption CSR with attestation (ML-KEM)"
+echo "  2c. Issue encryption certificate"
+echo "  3.  Encrypt a document"
+echo "  3b. Decrypt the document"
 echo ""
 
 echo -e "${DIM}RFC 9883 defines CSR attestation for KEM keys.${NC}"
@@ -131,7 +130,7 @@ pause
 # Step 3: Generate Encryption CSR with Attestation (ML-KEM-768)
 # =============================================================================
 
-print_step "Step 3: Generate Encryption CSR (ML-KEM-768)"
+print_step "Step 2b: Generate Encryption CSR (ML-KEM-768)"
 
 echo "  Now Alice creates a CSR for her ENCRYPTION key."
 echo "  The CSR is signed by her SIGNING key (attestation)."
@@ -181,7 +180,7 @@ pause
 # Step 4: Issue Encryption Certificate (ML-KEM-768)
 # =============================================================================
 
-print_step "Step 4: Issue Encryption Certificate (ML-KEM-768)"
+print_step "Step 2c: Issue Encryption Certificate (ML-KEM-768)"
 
 echo "  The CA verifies the CSR attestation and issues the encryption cert."
 echo "  The certificate includes RelatedCertificate extension pointing"
@@ -225,7 +224,7 @@ pause
 # Step 5: Alice's Certificate Pair
 # =============================================================================
 
-print_step "Step 5: Alice's Certificate Pair"
+print_step "Alice's Certificate Pair"
 
 echo "  Alice now has TWO linked certificates:"
 echo ""
@@ -262,7 +261,7 @@ pause
 # Step 6: Encrypt Document
 # =============================================================================
 
-print_step "Step 6: Encrypt Document"
+print_step "Step 3: Encrypt Document"
 
 echo "  Now that Alice has her certificates, she can receive encrypted documents."
 echo ""
@@ -314,7 +313,7 @@ pause
 # Step 7: Decrypt Document
 # =============================================================================
 
-print_step "Step 7: Decrypt Document"
+print_step "Step 3b: Decrypt Document"
 
 echo "  Alice decrypts with her ML-KEM private key..."
 echo ""

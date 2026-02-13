@@ -88,11 +88,10 @@ Traditional CSR workflow:
 
 1. Create Encryption CA
 2. Issue signing certificate (ML-DSA)
-3. Generate encryption CSR with attestation (ML-KEM)
-4. Issue encryption certificate
-5. View Alice's certificate pair
-6. Encrypt a document
-7. Decrypt the document
+2b. Generate encryption CSR with attestation (ML-KEM)
+2c. Issue encryption certificate
+3. Encrypt a document
+3b. Decrypt the document
 
 ---
 
@@ -129,10 +128,12 @@ qpki cert issue --ca-dir output/encryption-ca \
     --out output/alice-sign.crt
 ```
 
-### Step 3: Generate Encryption Key and CSR (ML-KEM-768)
+### Step 2b: Generate Encryption Key and CSR (ML-KEM-768)
 
 ```bash
-# Generate ML-KEM key and create CSR
+# RFC 9883: KEM keys cannot sign, so signing cert "attests" ownership
+# --attest-cert: signing certificate that vouches for this KEM key
+# --attest-key: proves possession of the signing key
 qpki csr gen --algorithm ml-kem-768 \
     --keyout output/alice-enc.key \
     --cn "Alice" \
@@ -141,7 +142,7 @@ qpki csr gen --algorithm ml-kem-768 \
     --out output/alice-enc.csr
 ```
 
-### Step 4: Issue Encryption Certificate (ML-KEM-768)
+### Step 2c: Issue Encryption Certificate (ML-KEM-768)
 
 ```bash
 # CA verifies attestation and issues certificate
@@ -154,10 +155,11 @@ qpki cert issue --ca-dir output/encryption-ca \
 
 *Step 5 (Show Certificate Pair) is displayed in the demo but has no command.*
 
-### Step 6: Encrypt Document (CMS EnvelopedData)
+### Step 3: Encrypt Document (CMS EnvelopedData)
 
 ```bash
-# Encrypt document for Alice using her ML-KEM encryption certificate
+# Hybrid encryption: AES-256-GCM (fast, symmetric) + ML-KEM (quantum-safe key exchange)
+# ML-KEM encapsulates a shared secret → derives AES key → encrypts content
 qpki cms encrypt \
     --recipient output/alice-enc.crt \
     --content-enc aes-256-gcm \
@@ -165,7 +167,7 @@ qpki cms encrypt \
     --out output/secret-document.p7m
 ```
 
-### Step 7: Decrypt Document
+### Step 3b: Decrypt Document
 
 ```bash
 # Alice decrypts using her ML-KEM private key

@@ -42,14 +42,15 @@ echo "   How do I create quantum-resistant timestamps?\""
 echo ""
 
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
-echo "  1. Create a TSA CA (ML-DSA-65)"
-echo "  2. Issue a TSA certificate"
-echo "  3. Start an RFC 3161 timestamp server"
-echo "  4. Create a document"
-echo "  5. Request a timestamp (via HTTP)"
-echo "  6. Verify the timestamp (VALID)"
-echo "  7. Tamper and verify again (INVALID)"
-echo "  8. Stop TSA server"
+echo "  1.  Create a TSA CA (ML-DSA-65)"
+echo "  1b. Issue a TSA certificate"
+echo "  2.  Start an RFC 3161 timestamp server"
+echo "  3.  Create a document"
+echo "  3b. Request a timestamp (via HTTP)"
+echo "  4.  Verify the timestamp (VALID)"
+echo "  5.  Tamper document"
+echo "  4b. Verify again (INVALID)"
+echo "  2b. Stop TSA server"
 echo ""
 
 echo -e "${DIM}RFC 3161 timestamps are the industry standard for proof of existence.${NC}"
@@ -79,7 +80,7 @@ pause
 # Step 2: Issue TSA Certificate
 # =============================================================================
 
-print_step "Step 2: Issue TSA Certificate"
+print_step "Step 1b: Issue TSA Certificate"
 
 echo "  Generate an ML-DSA-65 key pair and issue TSA certificate."
 echo "  The certificate has Extended Key Usage: timeStamping."
@@ -106,7 +107,7 @@ pause
 # Step 3: Start TSA Server
 # =============================================================================
 
-print_step "Step 3: Start TSA Server"
+print_step "Step 2: Start TSA Server"
 
 echo "  Starting RFC 3161 HTTP timestamp server on port $TSA_PORT..."
 echo ""
@@ -135,7 +136,7 @@ pause
 # Step 4: Create Document
 # =============================================================================
 
-print_step "Step 4: Create Document"
+print_step "Step 3: Create Document"
 
 echo "  Creating a test contract..."
 echo ""
@@ -163,7 +164,7 @@ pause
 # Step 5: Request Timestamp (via HTTP)
 # =============================================================================
 
-print_step "Step 5: Request Timestamp (via HTTP)"
+print_step "Step 3b: Request Timestamp (via HTTP)"
 
 echo "  Creating timestamp request and sending to TSA server..."
 echo ""
@@ -199,7 +200,7 @@ pause
 # Step 6: Verify Timestamp (VALID)
 # =============================================================================
 
-print_step "Step 6: Verify Timestamp (VALID)"
+print_step "Step 4: Verify Timestamp (VALID)"
 
 echo "  Verifying that the document hasn't been modified"
 echo "  and the timestamp is valid..."
@@ -219,7 +220,22 @@ pause
 # Step 7: Tamper and Verify Again (INVALID)
 # =============================================================================
 
-print_step "Step 7: Tamper and Verify Again (INVALID)"
+print_step "Step 5: Tamper Document"
+
+echo "  Simulating document tampering (fraud attempt)..."
+echo ""
+
+run_cmd "echo 'FRAUDULENT MODIFICATION' >> $DEMO_TMP/document.txt"
+
+echo ""
+
+pause
+
+# =============================================================================
+# Step 4b: Verify Timestamp Again (INVALID)
+# =============================================================================
+
+print_step "Step 4b: Verify Timestamp (INVALID)"
 
 echo -e "  ${RED}Simulating fraudulent modification...${NC}"
 echo ""
@@ -259,7 +275,7 @@ pause
 # Step 8: Stop TSA Server
 # =============================================================================
 
-print_step "Step 8: Stop TSA Server"
+print_step "Step 2b: Stop TSA Server"
 
 echo "  Stopping the TSA server..."
 echo ""

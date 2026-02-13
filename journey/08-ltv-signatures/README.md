@@ -131,14 +131,15 @@ Embed EVERYTHING needed in a self-sufficient bundle:
 ## What We'll Do
 
 1. Create a CA for document signing
-2. Issue TSA certificate
-3. Start TSA server
-4. Issue signing certificate
-5. Create & sign the 30-year contract
-6. Request a timestamp (via HTTP)
-7. Create an LTV bundle
-8. Verify offline (simulating 2055)
-9. Stop TSA server
+1b. Issue TSA certificate
+1c. Issue signing certificate
+2. Start TSA server
+3. Create document
+3b. Sign document
+3c. Request a timestamp (via HTTP)
+4. Create an LTV bundle
+5. Verify offline (simulating 2055)
+2b. Stop TSA server
 
 ---
 
@@ -163,7 +164,7 @@ qpki ca init --profile profiles/pqc-ca.yaml \
 qpki ca export --ca-dir output/ltv-ca --out output/ltv-ca/ca.crt
 ```
 
-### Step 2: Issue TSA Certificate
+### Step 1b: Issue TSA Certificate
 
 ```bash
 # Generate TSA key and CSR
@@ -178,7 +179,7 @@ qpki cert issue --ca-dir output/ltv-ca \
     --out output/tsa.crt
 ```
 
-### Step 3: Start TSA Server
+### Step 2: Start TSA Server
 
 ```bash
 # Start RFC 3161 HTTP timestamp server
@@ -187,7 +188,7 @@ qpki tsa serve --port 8318 \
     --key output/tsa.key
 ```
 
-### Step 4: Issue Signing Certificate
+### Step 1c: Issue Signing Certificate
 
 ```bash
 # Generate document signing key and CSR (Alice)
@@ -202,7 +203,7 @@ qpki cert issue --ca-dir output/ltv-ca \
     --out output/alice.crt
 ```
 
-### Step 5: Create & Sign Document
+### Step 3: Create Document
 
 ```bash
 # Create a 30-year lease agreement
@@ -212,14 +213,18 @@ Signing Date: 2024-12-22
 Expiration: 2054-12-22
 Parties: ACME Properties / TechCorp Industries
 EOF
+```
 
+### Step 3b: Sign Document
+
+```bash
 qpki cms sign --data output/contract.txt \
     --cert output/alice.crt \
     --key output/alice.key \
     --out output/contract.p7s
 ```
 
-### Step 6: Request Timestamp (via HTTP)
+### Step 3c: Request Timestamp (via HTTP)
 
 ```bash
 # Create timestamp request
@@ -233,10 +238,14 @@ curl -s -X POST \
     -o output/contract.tsr
 ```
 
-### Step 7: Create LTV Bundle
+### Step 4: Create LTV Bundle
 
 ```bash
-# Package everything for long-term verification
+# LTV Bundle contains everything needed for offline verification:
+# - document.txt: original content
+# - signature.p7s: proves WHO signed
+# - timestamp.tsr: proves WHEN signed
+# - chain.pem: proves trust path (signer → CA)
 mkdir -p output/ltv-bundle
 cp output/contract.txt output/ltv-bundle/document.txt
 cp output/contract.p7s output/ltv-bundle/signature.p7s
@@ -244,7 +253,7 @@ cp output/contract.tsr output/ltv-bundle/timestamp.tsr
 cat output/alice.crt output/ltv-ca/ca.crt > output/ltv-bundle/chain.pem
 ```
 
-### Step 8: Verify Offline (Simulating 2055)
+### Step 5: Verify Offline (Simulating 2055)
 
 ```bash
 # Verify using only the bundle (no network)
@@ -254,7 +263,7 @@ qpki cms verify output/ltv-bundle/signature.p7s \
 # Result: VALID - signature verified with bundled chain
 ```
 
-### Step 9: Stop TSA Server
+### Step 2b: Stop TSA Server
 
 ```bash
 # Stop the TSA server

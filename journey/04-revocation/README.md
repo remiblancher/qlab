@@ -54,10 +54,10 @@ The same way you revoke any certificate. PKI operations are algorithm-agnostic.
 ## What We'll Do
 
 1. Create a CA (ML-DSA-65)
-2. Issue a TLS certificate
-3. Revoke the certificate (after key compromise)
-4. Generate a CRL (Certificate Revocation List)
-5. Verify the revoked certificate is rejected
+1b. Issue a TLS certificate
+2. Revoke the certificate (after key compromise)
+2b. Generate a CRL (Certificate Revocation List)
+3. Verify the revoked certificate is rejected
 
 ---
 
@@ -82,7 +82,7 @@ qpki ca init --profile profiles/pqc-ca.yaml \
 qpki ca export --ca-dir output/pqc-ca --out output/pqc-ca/ca.crt
 ```
 
-### Step 2: Issue Certificate
+### Step 1b: Issue Certificate
 
 ```bash
 # Generate ML-DSA-65 key, CSR, and issue certificate
@@ -96,10 +96,11 @@ qpki cert issue --ca-dir output/pqc-ca \
     --csr output/server.csr \
     --out output/server.crt
 
+# Extract serial number - needed for revocation command
 openssl x509 -in output/server.crt -noout -serial
 ```
 
-### Step 3: Revoke Certificate
+### Step 2: Revoke Certificate
 
 ```bash
 # Revoke certificate with reason
@@ -109,7 +110,7 @@ qpki cert revoke <serial> --ca-dir output/pqc-ca --reason keyCompromise
 The certificate is now marked as revoked in the CA database.
 But clients don't know yet — we need to publish a CRL.
 
-### Step 4: Generate CRL
+### Step 2b: Generate CRL
 
 ```bash
 # Generate the Certificate Revocation List
@@ -120,7 +121,7 @@ qpki inspect output/pqc-ca/crl/ca.crl
 
 The CRL is now published. Clients can check if certificates are revoked.
 
-### Step 5: Verify CRL
+### Step 3: Verify CRL
 
 ```bash
 # Verify certificate against CRL (should fail - certificate is revoked)

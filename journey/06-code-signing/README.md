@@ -145,10 +145,10 @@ Sign the code BEFORE distributing it:
 ## What We'll Do
 
 1. Create a Code Signing CA (ML-DSA-65)
-2. Issue a code signing certificate
-3. Sign a firmware binary (CMS/PKCS#7)
-4. Verify the signature
-5. Tamper with the binary and verify again (should fail)
+1b. Issue a code signing certificate
+2. Sign a firmware binary (CMS/PKCS#7)
+2b. Verify the signature (VALID)
+3. Tamper with the binary and verify again (INVALID)
 
 ---
 
@@ -173,7 +173,7 @@ qpki ca init --profile profiles/pqc-ca.yaml \
 qpki ca export --ca-dir output/code-ca --out output/code-ca/ca.crt
 ```
 
-### Step 2: Issue Code Signing Certificate
+### Step 1b: Issue Code Signing Certificate
 
 ```bash
 # Generate key and CSR
@@ -188,7 +188,7 @@ qpki cert issue --ca-dir output/code-ca \
     --out output/code-signing.crt
 ```
 
-### Step 3: Sign a Binary
+### Step 2: Sign a Binary
 
 ```bash
 # Create a test firmware
@@ -200,25 +200,26 @@ qpki cms sign --data output/firmware.bin \
     --out output/firmware.p7s
 ```
 
-### Step 4: Verify the Signature
+### Step 2b: Verify the Signature
 
 ```bash
-# Verify signature and certificate chain
+# Verify: 1) hash matches 2) signature valid 3) cert chain trusted
 qpki cms verify output/firmware.p7s \
     --data output/firmware.bin \
     --ca output/code-ca/ca.crt
 # Result: VALID
 ```
 
-### Step 5: Tamper and Verify Again
+### Step 3: Tamper and Verify Again
 
 ```bash
-# Modify the firmware (simulate tampering)
+# Any modification changes the hash → signature becomes invalid
 echo "MALWARE" >> output/firmware.bin
 
 qpki cms verify output/firmware.p7s \
     --data output/firmware.bin \
     --ca output/code-ca/ca.crt
+# Result: INVALID - hash mismatch
 ```
 
 ---

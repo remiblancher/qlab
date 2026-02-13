@@ -39,14 +39,14 @@ echo "   Does OCSP work with post-quantum certificates?\""
 echo ""
 
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
-echo "  1. Create a PQC CA"
-echo "  2. Issue OCSP responder certificate"
-echo "  3. Start OCSP responder"
-echo "  4. Issue TLS certificate"
-echo "  5. Query certificate status (GOOD)"
-echo "  6. Revoke the certificate"
-echo "  7. Query again (REVOKED)"
-echo "  8. Stop OCSP responder"
+echo "  1.  Create a PQC CA"
+echo "  1b. Issue OCSP responder certificate"
+echo "  2.  Start OCSP responder"
+echo "  2b. Issue TLS certificate"
+echo "  3.  Query certificate status (GOOD)"
+echo "  4.  Revoke the certificate"
+echo "  3b. Query again (REVOKED)"
+echo "  2c. Stop OCSP responder"
 echo ""
 
 echo -e "${DIM}OCSP provides immediate revocation status - no waiting for CRL refresh.${NC}"
@@ -76,7 +76,7 @@ pause
 # Step 2: Issue OCSP Responder Certificate
 # =============================================================================
 
-print_step "Step 2: Issue OCSP Responder Certificate"
+print_step "Step 1b: Issue OCSP Responder Certificate"
 
 echo "  Generate OCSP responder key and issue certificate."
 echo "  Best practice: CA key stays offline, responder has delegated certificate."
@@ -96,7 +96,7 @@ pause
 # Step 3: Start OCSP Responder
 # =============================================================================
 
-print_step "Step 3: Start OCSP Responder"
+print_step "Step 2: Start OCSP Responder"
 
 echo "  The OCSP responder is an HTTP service that answers status queries."
 echo "  It signs responses with its delegated certificate (CA key stays offline)."
@@ -128,7 +128,7 @@ pause
 # Step 4: Issue TLS Certificate
 # =============================================================================
 
-print_step "Step 4: Issue TLS Certificate"
+print_step "Step 2b: Issue TLS Certificate"
 
 echo "  Generate TLS server key and issue certificate to verify."
 echo ""
@@ -157,7 +157,7 @@ pause
 # Step 5: Query Certificate Status
 # =============================================================================
 
-print_step "Step 5: Query Certificate Status (GOOD)"
+print_step "Step 3: Query Certificate Status (GOOD)"
 
 echo "  Let's query the OCSP responder for our server certificate status..."
 echo ""
@@ -193,7 +193,7 @@ pause
 # Step 6: Revoke Certificate
 # =============================================================================
 
-print_step "Step 6: Revoke Certificate"
+print_step "Step 4: Revoke Certificate"
 
 echo -e "  ${RED}Simulating key compromise...${NC}"
 echo ""
@@ -210,7 +210,7 @@ pause
 # Step 7: Query Again (REVOKED)
 # =============================================================================
 
-print_step "Step 7: Query Again (REVOKED)"
+print_step "Step 3b: Query Again (REVOKED)"
 
 echo "  Query again - status should change immediately!"
 echo ""
@@ -251,7 +251,7 @@ pause
 # Step 8: Stop OCSP Responder
 # =============================================================================
 
-print_step "Step 8: Stop OCSP Responder"
+print_step "Step 2c: Stop OCSP Responder"
 
 echo "  Stopping the OCSP responder..."
 echo ""

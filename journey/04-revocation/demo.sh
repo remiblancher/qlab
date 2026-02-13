@@ -31,11 +31,11 @@ echo "   How do I revoke the certificate and inform clients?\""
 echo ""
 
 echo -e "${BOLD}WHAT WE'LL DO:${NC}"
-echo "  1. Create a CA (ML-DSA-65)"
-echo "  2. Issue a TLS certificate"
-echo "  3. Revoke the certificate (after key compromise)"
-echo "  4. Generate a CRL (Certificate Revocation List)"
-echo "  5. Verify the revoked certificate is rejected"
+echo "  1.  Create a CA (ML-DSA-65)"
+echo "  1b. Issue a TLS certificate"
+echo "  2.  Revoke the certificate (after key compromise)"
+echo "  2b. Generate a CRL (Certificate Revocation List)"
+echo "  3.  Verify the revoked certificate is rejected"
 echo ""
 
 echo -e "${DIM}Revocation workflow is identical for classical and PQC algorithms.${NC}"
@@ -65,7 +65,7 @@ pause
 # Step 2: Issue Certificate
 # =============================================================================
 
-print_step "Step 2: Issue Certificate"
+print_step "Step 1b: Issue Certificate"
 
 echo "  Generate an ML-DSA-65 key pair and issue a TLS certificate."
 echo ""
@@ -111,7 +111,7 @@ pause
 # Step 3: Revoke the Certificate
 # =============================================================================
 
-print_step "Step 3: Revoke the Certificate"
+print_step "Step 2: Revoke the Certificate"
 
 echo "  Revocation reasons (RFC 5280):"
 echo ""
@@ -135,7 +135,7 @@ pause
 # Step 4: Generate CRL
 # =============================================================================
 
-print_step "Step 4: Generate CRL (Certificate Revocation List)"
+print_step "Step 2b: Generate CRL (Certificate Revocation List)"
 
 echo "  The CRL is a signed list of all revoked certificates."
 echo "  Clients download it to check certificate validity."
@@ -166,7 +166,7 @@ pause
 # Step 5: Verify Revocation Status
 # =============================================================================
 
-print_step "Step 5: Verify Revocation Status"
+print_step "Step 3: Verify Revocation Status"
 
 echo "  Let's verify the certificate is now rejected..."
 echo ""

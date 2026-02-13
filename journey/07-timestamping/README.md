@@ -115,13 +115,14 @@ A trusted authority (TSA) proves when the signature was created:
 ## What We'll Do
 
 1. Create a TSA CA (ML-DSA-65)
-2. Issue a TSA certificate
-3. Start an RFC 3161 timestamp server
-4. Create a document
-5. Request a timestamp (via HTTP)
-6. Verify the timestamp (VALID)
-7. Tamper and verify again (INVALID)
-8. Stop TSA server
+1b. Issue a TSA certificate
+2. Start an RFC 3161 timestamp server
+3. Create a document
+3b. Request a timestamp (via HTTP)
+4. Verify the timestamp (VALID)
+5. Tamper document
+4b. Verify again (INVALID)
+2b. Stop TSA server
 
 ---
 
@@ -146,7 +147,7 @@ qpki ca init --profile profiles/pqc-ca.yaml \
 qpki ca export --ca-dir output/tsa-ca --out output/tsa-ca/ca.crt
 ```
 
-### Step 2: Issue TSA Certificate
+### Step 1b: Issue TSA Certificate
 
 ```bash
 # Generate ML-DSA-65 key and CSR for TSA
@@ -161,7 +162,7 @@ qpki cert issue --ca-dir output/tsa-ca \
     --out output/tsa.crt
 ```
 
-### Step 3: Start TSA Server
+### Step 2: Start TSA Server
 
 ```bash
 # Start RFC 3161 HTTP timestamp server
@@ -170,20 +171,21 @@ qpki tsa serve --port 8318 \
     --key output/tsa.key
 ```
 
-### Step 4: Create Document
+### Step 3: Create Document
 
 ```bash
 # Create a test document
 echo "Contract content - signed on $(date)" > output/document.txt
 ```
 
-### Step 5: Request Timestamp (via HTTP)
+### Step 3b: Request Timestamp (via HTTP)
 
 ```bash
 # Create timestamp request
 qpki tsa request --data output/document.txt \
     --out output/request.tsq
 
+# RFC 3161: TSA signs hash + certified time → proves document existed at this moment
 curl -s -X POST \
     -H "Content-Type: application/timestamp-query" \
     --data-binary @output/request.tsq \
@@ -193,7 +195,7 @@ curl -s -X POST \
 qpki tsa info output/document.tsr
 ```
 
-### Step 6: Verify Timestamp (VALID)
+### Step 4: Verify Timestamp (VALID)
 
 ```bash
 # Verify token against original document
@@ -203,18 +205,24 @@ qpki tsa verify output/document.tsr \
 # Status: VALID
 ```
 
-### Step 7: Tamper and Verify Again (INVALID)
+### Step 5: Tamper Document
 
 ```bash
 # Modify the document (simulate fraud)
 echo "FRAUDULENT MODIFICATION" >> output/document.txt
+```
 
+### Step 4b: Verify Timestamp (INVALID)
+
+```bash
+# Hash changed → timestamp no longer matches document
 qpki tsa verify output/document.tsr \
     --data output/document.txt \
     --ca output/tsa-ca/ca.crt
+# Result: INVALID - hash mismatch
 ```
 
-### Step 8: Stop TSA Server
+### Step 2b: Stop TSA Server
 
 ```bash
 # Stop the TSA server
