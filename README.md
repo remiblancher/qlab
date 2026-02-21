@@ -23,7 +23,7 @@ QLAB is an educational resource to help teams understand PKI and Post-Quantum Cr
 - Encrypt with **ML-KEM** key encapsulation (the new pattern)
 - Practice **crypto-agile** CA migration
 
-QLAB uses **[QPKI](https://github.com/remiblancher/post-quantum-pki)** for all PKI operations.
+QLAB uses **[Qpki](https://github.com/remiblancher/qpki)** for all PKI operations.
 
 ---
 
@@ -37,8 +37,8 @@ QLAB uses **[QPKI](https://github.com/remiblancher/post-quantum-pki)** for all P
 ### macOS / Linux
 
 ```bash
-git clone https://github.com/remiblancher/post-quantum-pki-lab.git
-cd post-quantum-pki-lab
+git clone https://github.com/remiblancher/qlab.git
+cd qlab
 ./tooling/install.sh
 ```
 
@@ -46,8 +46,8 @@ cd post-quantum-pki-lab
 
 ```powershell
 # 1. Install QPKI (PowerShell)
-git clone https://github.com/remiblancher/post-quantum-pki-lab.git
-cd post-quantum-pki-lab
+git clone https://github.com/remiblancher/qlab.git
+cd qlab
 .\tooling\install.ps1
 
 # 2. Run demos (requires Git Bash or WSL)
@@ -152,13 +152,13 @@ cd post-quantum-pki-lab
 - Catalyst certificates (ITU-T X.509 9.8)
 - Composite certificates *(supported, no lab demo)*
 
-See [QPKI](https://github.com/remiblancher/post-quantum-pki#supported-algorithms) for the full list of supported algorithms.
+See [Qpki](https://github.com/remiblancher/qpki#supported-algorithms) for the full list of supported algorithms.
 
 ---
 
 ## Resources
 
-- [QPKI - Post-Quantum PKI](https://github.com/remiblancher/post-quantum-pki) — The PKI toolkit used by QLAB
+- [Qpki](https://github.com/remiblancher/qpki) — The PKI toolkit used by QLAB
 - [Glossary](docs/GLOSSARY.md) — PQC and PKI terminology
 - [Troubleshooting](docs/TROUBLESHOOTING.md) — Common issues and solutions
 - [NIST Post-Quantum Cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
@@ -170,4 +170,4 @@ See [QPKI](https://github.com/remiblancher/post-quantum-pki#supported-algorithms
 
 ## License
 
-Apache License 2.0 — See [LICENSE](https://github.com/remiblancher/post-quantum-pki-lab/blob/main/LICENSE)
+Apache License 2.0 — See [LICENSE](https://github.com/remiblancher/qlab/blob/main/LICENSE)
